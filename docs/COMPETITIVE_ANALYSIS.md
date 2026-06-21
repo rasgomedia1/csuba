@@ -94,11 +94,13 @@ FEATURE                      SubastaHub   MapaSub   AlertaSub  SubastasIA   BOE 
 ─────────────────────────────────────────────────────────────────────────────────────────
 Web app                      ✅ MVP      ✅ SÍ     ✅ SÍ      ✅ SÍ       ✅ SÍ  ✅ SÍ
 App iOS                      ⏳ FASE 3   ✅ SÍ     ✅ SÍ      ✅ SÍ       ❌    ✅ SÍ
-App Android                  ⏳ FASE 3   ✅ SÍ     ✅ SÍ      ✅ SÍ       ❌    ✅ SÍ
+App Android                  ⏳ FASE 3   ❌ NO*    ✅ SÍ      ✅ SÍ       ❌    ✅ SÍ
 Responsive mobile            ✅ MVP      ✅ SÍ     ✅ SÍ      ✅ SÍ       ⚠️ POBRE  ✅ SÍ
 Offline mode                 ❌          ❌        ❌         ❌          ❌    ❌
 API REST públic              ❌ (privado) ❌       ❌         ❌          ❌    ❌
 Integración webhook          ⏳ FUTURO   ❌        ❌         ❌          ❌    ❌
+
+*MapaSubastas: NO tiene app Android oficial en Google Play Store (verificado 2026-06-21)
 ```
 
 ---
