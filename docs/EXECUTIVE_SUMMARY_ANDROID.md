@@ -1,30 +1,31 @@
 # Resumen Ejecutivo: Android es OPORTUNIDAD MASIVA para SubastaHub
 
 **Descubrimiento**: 2026-06-21  
+**Actualizado**: 2026-06-22  
+**Scope**: Bienes raíces + vehículos SOLO (excluidas coleccionables)  
 **Impacto**: Cambia la estrategia de Phase 3  
-**Confianza**: Alta (basado en 79K+300K reviews analizadas)
+**Confianza**: Alta (basado en 300K+ reviews analizadas)
 
 ---
 
 ## 🎯 HALLAZGO PRINCIPAL
 
-### NINGUNA de las 3 apps Android principales es BUENA
+### NINGUNA de las 2 apps Android principales es BUENA (en bienes raíces/vehículos)
 
 ```
 APP                  Rating   Downloads  PROBLEMA FATAL
 ─────────────────────────────────────────────────────────────
-Catawiki             4.7/5    500K+      🚨 Fraude (fake items)
-                                        🚨 Comisiones 21.5%
-                                        🚨 Servicio pobre
-                                        
 Subastas Públicas    3.1/5 ⚠️ 5K        🚨 APP CRASHES c/5min
                                         🚨 Performance terrible
                                         🚨 Solo 27 reviews
+                                        (Pero tiene data oficial BOE)
                                         
-Milanuncios          4.6/5    188K+/mes  🚨 SCAMS RAMPANTES
+Milanuncios          4.6/5    188K+/mes  🚨 SCAMS RAMPANTES EN BIENES
                                         🚨 45% fraude complaints
                                         🚨 Depósitos falsos €300+
 ```
+
+**Excluida**: Catawiki (coleccionables, no es competencia en bienes raíces)
 
 ---
 

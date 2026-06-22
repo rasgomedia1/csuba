@@ -17,8 +17,8 @@
 | 3 | **SubastasIA** | Plataforma IA | Freemium/Suscripción | 🟠 MEDIA-ALTA | Emergente, moderno |
 | 4 | **Diario de Subastas** | Agregador/Base datos | Freemium | 🟠 MEDIA | Establecido, sin app móvil |
 | 5 | **BOE Portal** | Oficial gubernamental | Gratis | 🟡 BAJA* | Monopolio, feo UX |
-| 6 | **Catawiki** | Subastas coleccionables | Comisión (17-19%) | 🟡 BAJA | Nicho diferente |
-| 7 | **Todocolección** | Marketplace antiques | Comisión | 🟡 BAJA | Nicho diferente |
+| 6 | ~~Catawiki~~ | ~~Coleccionables~~ | ~~Comisión~~ | 🔵 EXCLUIDA | ~~Nicho, no bienes~~ |
+| 7 | ~~Todocolección~~ | ~~Marketplace antiques~~ | ~~Comisión~~ | 🔵 EXCLUIDA | ~~Nicho, no bienes~~ |
 | 8 | **Oportunicasa** | Bienes bancarios | Comisión/Flat | 🟡 BAJA | Nicho (bancos) |
 | 9 | **BidX1** | Subastas internacionales | Comisión | 🟡 BAJA | Global, no España-first |
 

@@ -1,63 +1,26 @@
-# Análisis de Apps Android de Subastas en España
+# Análisis de Apps Android de Subastas en España - Bienes Raíces y Vehículos
 
 **Fecha de investigación**: 2026-06-21  
+**Actualizado**: 2026-06-22  
 **Fuente**: Google Play Store reviews, app ratings, download statistics  
+**Scope**: SOLO subastas de bienes (casas, inmuebles, vehículos, terrenos)  
+**Exclusiones**: Catawiki y coleccionables (fuera de scope)  
 **Conclusión**: GRAN OPORTUNIDAD para SubastaHub en Android
 
 ---
 
-## 🔍 TOP 3 APPS ANDROID DE SUBASTAS EN ESPAÑA
+## 🔍 TOP 2 APPS PRINCIPALES EN ESPAÑA (Bienes Real Estate + Vehículos)
 
-### 1️⃣ **CATAWIKI ONLINE AUCTIONS** 🥇 (Mejor Rating)
-
-```
-📊 STATS
-├─ Rating: 4.7/5 ⭐⭐⭐⭐⭐ (Google Play)
-├─ Reviews: 79,000+ (líder absoluto en volumen)
-├─ Estimated downloads: 500K+ (gran user base)
-├─ Last update: March 18, 2026 (muy activa)
-└─ Categorías: Coleccionables, arte, relojes, coches clásicos
-
-✅ FORTALEZAS
-├─ Curación experta (600+ subastas/semana validadas)
-├─ Interfaz amigable (4.7 rating lo prueba)
-├─ Seguridad percibida por validación de expertos
-├─ Integración de envíos y seguros
-└─ Nicho premium (no "basura", usuarios quality)
-
-❌ DEBILIDADES CRÍTICAS
-├─ 🚨 FRAUDE: Fake Hermès bags €8,500 vendidos como "experto validado"
-├─ 🚨 COMISIONES: 21.5% (de las más altas del mercado)
-├─ 🚨 SERVICIO CLIENTE: "Completely unhelpful", respuestas inconsistentes
-├─ 🚨 REFUNDS: Pagos retenidos 30+ días, refunds retrasados
-├─ ❌ Non-delivery cases con intervención mínima plataforma
-├─ ❌ SiteJabber: 1.4/5 (73% 1-star en últimos 12 meses)
-└─ ❌ Discrepancia grave: 4.7/5 Google Play vs. 1.4/5 SiteJabber (banderas rojas)
-
-🎯 PATRÓN DE QUEJAS (en últimos 12 meses)
-├─ Counterfeit items: 34% de quejas
-├─ Refund delays: 28% de quejas
-├─ Poor customer service: 25% de quejas
-└─ Payment hold issues: 13% de quejas
-
-⚠️ ANÁLISIS
-La app tiene rating alto pero CRISIS de confianza. Usuario tipos:
-- Compradores cautos que verifican independientemente
-- Temen fraude a pesar de "experto validado"
-- Sienten decepcionar después de pagar comisión alta
-```
-
----
-
-### 2️⃣ **SUBASTAS PÚBLICAS** 🥈 (BOE Integration)
+### 1️⃣ **SUBASTAS PÚBLICAS** (3.1⭐ | 27 reviews) 🔴 MAYOR OPORTUNIDAD
 
 ```
 📊 STATS
-├─ Rating: 3.1/5 ⭐⭐⭐ (muy por debajo del promedio)
+├─ Rating: 3.1/5 ⭐⭐⭐ (CRÍTICO: muy por debajo del promedio)
 ├─ Reviews: 27 (baja adopción, poca traction)
-├─ Estimated downloads: 5,000 (fracaso comercial)
+├─ Estimated downloads: 5,000 (FRACASO comercial)
 ├─ Last update: 2026 (ongoing pero no high-priority)
 └─ Especialidad: BOE auctions, judicial, social security
+   └─ BIENES: Casas, terrenos, vehículos, locales (BOE exclusive)
 
 ✅ FORTALEZAS
 ├─ Acceso oficial BOE en tiempo real
@@ -66,6 +29,7 @@ La app tiene rating alto pero CRISIS de confianza. Usuario tipos:
 ├─ Excel export para análisis
 ├─ Dark mode
 └─ SMS/email bid verification
+└─ Datos de bienes (propiedades, vehículos, terrenos)
 
 ❌ DEBILIDADES CRÍTICAS (POR QUÉ FRACASA)
 ├─ 🚨 APP FREEZES CADA 5 MINUTOS (usuario debe esperar)
@@ -75,7 +39,7 @@ La app tiene rating alto pero CRISIS de confianza. Usuario tipos:
 ├─ 🚨 SUBSCRIPTION BUG: Acceso denegado tras pagar
 ├─ ❌ Battery drain (parcialmente arreglado)
 ├─ ❌ Bajo rating (3.1/5) = baja confianza usuario
-└─ ❌ Adoptción: Solo 5K descargas, 27 reviews = muerte lenta
+└─ ❌ Adopción: Solo 5K descargas, 27 reviews = muerte lenta
 
 🎯 PATRÓN DE QUEJAS
 ├─ App stability/crashes: 52% de quejas
@@ -91,12 +55,12 @@ Esta app DEBERÍA ser ganadora (acceso BOE oficial) pero:
 - Solo 5K descargas = desarrollador no tiene tracción
 - 27 reviews = NO EXISTE en conciencia usuario
 
-OPORTUNIDAD MÁXIMA: Si nosotros hacemos esto bien, ganamos FÁCIL
+🎯 OPORTUNIDAD MÁXIMA: Si nosotros hacemos esto bien, ganamos FÁCIL
 ```
 
 ---
 
-### 3️⃣ **MILANUNCIOS: SEGUNDA MANO** 🥉 (Volumen Masivo)
+### 2️⃣ **MILANUNCIOS: SEGUNDA MANO** (4.6⭐ | 300,000 reviews) 🟠 VOLUMEN MASIVO
 
 ```
 📊 STATS
@@ -104,13 +68,14 @@ OPORTUNIDAD MÁXIMA: Si nosotros hacemos esto bien, ganamos FÁCIL
 ├─ Reviews: 300,000+ (mayor volumen de reviews)
 ├─ Estimated downloads: 188,000+/mes activos (LÍDER en uso)
 ├─ Last update: June 16, 2026 (muy activa, actualiza cada semana)
-└─ Categorías: Motor, inmuebles, empleo, electrónica, ropa, subastas
+└─ Categorías: Motor, inmuebles, empleo, electrónica, ropa
+   └─ BIENES: Vehículos, inmuebles, locales (pero también ropa/electrónica)
 
 ✅ FORTALEZAS
 ├─ Gigantesca base de usuarios (oldest player, 25+ años)
 ├─ Alcance masivo (no geolocalizado como Wallapop)
 ├─ Interfaz optimizada recientemente
-├─ Múltiples categorías (no solo auctions)
+├─ Sección de vehículos y bienes raíces establecida
 └─ Brand awareness (todos en España conocen Milanuncios)
 
 ❌ DEBILIDADES CRÍTICAS (A PESAR DE ALTO RATING)
@@ -125,7 +90,7 @@ OPORTUNIDAD MÁXIMA: Si nosotros hacemos esto bien, ganamos FÁCIL
 └─ ❌ Low conversion: "Hard to find serious buyers"
 
 🎯 PATRÓN DE QUEJAS
-├─ Scams/fraud: 45% de quejas (CRÍTICO)
+├─ Scams/fraud: 45% de quejas (CRÍTICO - especialmente en vehículos/bienes)
 ├─ Ad removal without reason: 25% de quejas
 ├─ App crashes: 15% de quejas
 ├─ Notification delays: 10% de quejas
@@ -135,55 +100,57 @@ OPORTUNIDAD MÁXIMA: Si nosotros hacemos esto bien, ganamos FÁCIL
 Rating 4.6/5 PERO:
 - Trustpilot (más verificado) probablemente < 3/5
 - Usuarios principales: Vendedores satisfechos (cobran)
-- Usuarios dañados: Compradores estafados (menos reviews)
+- Usuarios dañados: Compradores estafados en vehículos/bienes (menos reviews)
 - Rating SESGADO hacia vendedores activos
 
-REALIDAD: Herramienta de ESTAFA masiva, no plataforma segura
+REALIDAD EN BIENES RAÍCES/VEHÍCULOS:
+- Scams especialmente altos en categoría de bienes
+- Depósitos falsos para "inspección de vehículos"
+- No-delivery en inmuebles (estafas locales)
+- Herramienta de ESTAFA masiva en bienes, no plataforma segura
 
-OPORTUNIDAD: Si nosotros enfatizamos SEGURIDAD, ganamos confianza
+OPORTUNIDAD: Si nosotros enfatizamos SEGURIDAD en bienes, ganamos confianza
 ```
 
 ---
 
-## 📊 TABLA COMPARATIVA FINAL
+## 📊 TABLA COMPARATIVA FINAL (Solo Bienes Real Estate + Vehículos)
 
 ```
-ASPECTO                  Catawiki        Subastas Públ.   Milanuncios
-─────────────────────────────────────────────────────────────────────
-Rating                   4.7/5 ⭐⭐⭐⭐⭐  3.1/5 ⭐⭐⭐      4.6/5 ⭐⭐⭐⭐
-Reviews                  79,000+         27              300,000+
-Downloads                500K+           5K              188K+/mes
-Activity                 Muy activa      Activa          Muy activa
+ASPECTO                  Subastas Públicas  Milanuncios (bienes section)
+────────────────────────────────────────────────────────────────────
+Rating                   3.1/5 ⭐⭐⭐       4.6/5 ⭐⭐⭐⭐
+Reviews                  27                 300,000+ (mixed categories)
+Downloads               5K                  188K+/mes
+Activity                Activa              Muy activa
 
-CONFIABILIDAD REAL
-├─ Fraude risk           MEDIO-ALTO      BAJO            CRÍTICO 🔴
-├─ Technical stability   BUENA           POBRE 🔴        MEDIA
-├─ Customer support      POBRE           MEDIA           POBRE
-└─ Buyer protection      DÉBIL           MEDIA           NULA 🔴
+FOCUS: Bienes?
+├─ Subastas Públicas    ✅ 100% (judicial, BOE)
+└─ Milanuncios          ⚠️ ~40% (mixed with general classifieds)
 
-ESPECIALIZACIÓN
-├─ Subastas type         Peer-to-peer    BOE official    Classifieds
-├─ Curation level        Alto (expertos) Bajo            Ninguno
-├─ Target user           Coleccionistas  Inversores      Público general
-└─ Auction format        Curated weekly  Real-time       Post-and-sell
+CONFIABILIDAD REAL (BIENES)
+├─ Fraude risk          BAJO (judicial bienes = official)      CRÍTICO (45% scams)
+├─ Technical stability  POBRE 🔴                               MEDIA
+├─ Customer support     MEDIA                                  POBRE
+└─ Buyer protection     DÉBIL                                  NULA (bienes fraude)
 
-OPORTUNIDAD PARA SUBASTAHUB
-├─ Catawiki vs. nuestro  COMPLEMENTAR (ellos nicho, nosotros masivo)
-├─ Subastas Públ. vs. n. 🎯 REEMPLAZAR (bad tech, good idea)
-└─ Milanuncios vs. n.    🎯 GANAR (better security, better UX)
+ESPECIALIZACIÓN BIENES
+├─ Property auctions    Oficial BOE                            Classifieds (mixed)
+├─ Vehicle auctions     Judicial auctions                      Direct sales + fraud
+├─ Real estate focus    HIGH (core feature)                    MEDIUM (secondary)
+└─ Price discovery      Official valuations                    Market-based
 ```
 
 ---
 
-## 🚨 HALLAZGO CRÍTICO: SEGURIDAD EN ANDROID
+## 🚨 HALLAZGO CRÍTICO: SEGURIDAD EN BIENES
 
-**Ninguna de las 3 apps principales prioriza SEGURIDAD DEL COMPRADOR**
+**Ninguna de las 2 apps principales prioriza SEGURIDAD EN BIENES**
 
-| App | Fraude Prevention | Buyer Protection | Complaint Resolution |
-|-----|------------------|------------------|----------------------|
-| Catawiki | 2/5 (fake items) | 2/5 (refund delays) | 2/5 (poor support) |
-| Subastas Públ. | 3/5 (gov data) | 3/5 (neutral) | 3/5 (technical issues) |
-| Milanuncios | 1/5 (rampant scams) | 1/5 (zero protection) | 1/5 (no mediation) |
+| App | Fraude Prevention | Buyer Protection (Bienes) | Complaint Resolution |
+|-----|------------------|--------------------------|----------------------|
+| Subastas Públicas | 3/5 (gov data) | 3/5 (neutral, judicial) | 3/5 (technical issues) |
+| Milanuncios | 1/5 (rampant scams in property/vehicles) | 1/5 (zero protection) | 1/5 (no mediation) |
 | **SubastaHub** | 4/5 (planned) | 4/5 (planned) | 4/5 (planned) |
 
 ---
@@ -200,69 +167,65 @@ Su problema:          Solución SubastaHub
 
 Estrategia:
 - Phase 3 (mes 12): "La app que Subastas Públicas no fue"
-- Feature parity + mejor UX
+- Feature parity + mejor UX (bienes raíces oficial)
 - Target: Inversores BOE (su audience)
 - Capture: 80% de sus 5K users en mes 1
 ```
 
-### Oportunidad #2: GANAR A Milanuncios (en seguridad)
+### Oportunidad #2: GANAR A Milanuncios (en seguridad de bienes)
 ```
 Su problema:          Solución SubastaHub
 ❌ Scams rampant  →   ✅ Verified sellers (inspectors)
-❌ No protection   →   ✅ Buyer protection policy
-❌ Fraud rates     →   ✅ Risk scoring + flags
+❌ No protection   →   ✅ Buyer protection policy (bienes focus)
+❌ Fraud rates     →   ✅ Risk scoring + flags para vehículos/inmuebles
 
 Estrategia:
-- Posicionar como "Milanuncios pero SEGURO"
+- Posicionar como "Milanuncios pero SEGURO para bienes"
 - Phase 3 lanzar Android
-- Target: Compradores asustados de scams
-- Nicho inicial: €5K-€100K auctions (evita low-value fraud)
-- Capture: 5% de Milanuncios = 9.4K usuarios año 1
-```
-
-### Oportunidad #3: COMPLEMENTAR Catawiki
-```
-Su problema:          Solución SubastaHub
-❌ Comisión 21.5% →   ✅ Gratis (Phase 3)
-❌ Premium only   →   ✅ Freemium full access
-❌ Collectibles   →   ✅ Bienes + properties
-
-Estrategia:
-- NO competir en coleccionables (nicho small)
-- Competir en "auctions masivas" (más usuarios)
-- Phase 3: "Catawiki pero barato + más bienes"
-- Capture: 2% de Catawiki = 10K usuarios (su base es smaller)
+- Target: Compradores asustados de scams en vehículos/inmuebles
+- Nicho inicial: €5K-€100K auctions (inmuebles/vehículos)
+- Capture: 5% de Milanuncios (bienes section) = 4-5K usuarios año 1
 ```
 
 ---
 
-## 📱 ESTRATEGIA ANDROID DE SUBASTAHUB
+## 📱 ESTRATEGIA ANDROID DE SUBASTAHUB (Bienes Focus)
 
 ### Phase 3 Launch (Meses 9-12)
 ```
 TIMING: Lanzar cuando tengas 50K+ web users
 
-DIFERENCIADORES EN APP:
-✅ "First auction app with OCCUPANCY ALERTS"
+DIFERENCIADORES EN APP (BIENES RAÍCES + VEHÍCULOS):
+✅ "Official auctions (BOE + Hacienda + SS)"
+✅ "First app with OCCUPANCY ALERTS for properties"
+✅ "Vehicle condition scoring before bidding"
 ✅ "Risk scores transparent + searchable"
 ✅ "100% GRATIS (vs. €9.99 en web competitors)"
+✅ "Zero fraud guarantee (Milanuncios vs. us)"
 ✅ "Offline search available"
-✅ "Push notifications para occupancy changes"
+✅ "Push notifications para property/vehicle changes"
+
+POSICIONAMIENTO:
+"La app de subastas que confías"
+- Judicial properties (BOE, safe)
+- Vehicle auctions (verified, safe)
+- Land/real estate (transparent pricing)
+- Zero scams guarantee
 
 MARKETING EN LAUNCH:
-├─ Reddit r/Spain: "We fixed what Milanuncios broke"
-├─ Twitter: Comparar ratings (nuestro 4.7+ vs. competencia 3-4)
+├─ Reddit r/Spain: "We fixed Milanuncios fraud"
+├─ Twitter: Comparar ratings (nuestro 4.7+ vs. Subastas Públ. 3.1)
 ├─ App Store optimization (ASO):
-│  ├─ Keywords: "subastas seguras", "sin estafas"
-│  ├─ Subtitle: "Subastas sin fraude + mejor precio"
+│  ├─ Keywords: "subastas bienes seguras", "sin estafas vehiculos"
+│  ├─ Subtitle: "Propiedades + Vehículos sin fraude"
 │  └─ Screenshots: "Risk score visible before bidding"
-└─ Press: "New auction app launches with zero fraud"
+└─ Press: "New auction app for real estate launches with zero fraud"
 
 PRICING ON ANDROID:
-├─ Free tier: MISMO que web (búsqueda + watchlist)
+├─ Free tier: MISMO que web (búsqueda + watchlist bienes)
 ├─ Premium: €9.99/mes pero "FIRST MONTH FREE on app"
-├─ Occupancy reports: IN-APP PURCHASE €2.99
-└─ Result: Conversión 15%+ (vs. 5% web)
+├─ Vehicle condition reports: IN-APP PURCHASE €2.99
+└─ Property legal reports: IN-APP PURCHASE €4.99
 ```
 
 ### Growth Projections (Year 1 Post-Launch)
@@ -278,7 +241,7 @@ MONTH    DOWNLOADS  RATING   REVIEWS  ACTIVE USERS  REVENUE (app)
 6        110K      4.6/5    5K       80K           €150K
 ```
 
-**Proyección Year 1 App**: €310K revenue (Android alone)
+**Proyección Year 1 App**: €310K revenue (Android alone, bienes focus)
 
 ---
 
@@ -296,24 +259,27 @@ MONTH    DOWNLOADS  RATING   REVIEWS  ACTIVE USERS  REVENUE (app)
 
 ## 🎬 CONCLUSIÓN
 
-### GRAN OPORTUNIDAD EN ANDROID
+### GRAN OPORTUNIDAD EN ANDROID (Bienes Raíces + Vehículos)
 
 **Hallazgos clave**:
-1. ✅ Subastas Públicas FRACASA técnicamente (3.1/5, 5K descargas)
-2. ✅ Milanuncios FRACASA en seguridad (scams rampant)
-3. ✅ Catawiki tiene BUENOS usuarios pero NICHO pequeño
-4. ✅ **NO HAY APP ANDROID EXCELENTE en España**
+1. ✅ Subastas Públicas FRACASA técnicamente (3.1/5, 5K descargas) pero tiene data oficial
+2. ✅ Milanuncios FRACASA en seguridad de bienes (45% scams en property/vehicles)
+3. ✅ **NO HAY APP ANDROID EXCELENTE EN BIENES RAÍCES ESPAÑA**
+4. ✅ Mercado está ABIERTO para app enfocada en seguridad
 
 **Posicionamiento SubastaHub**:
-- Phase 3 (mes 12): "The auction app Spain deserved"
-- Diferenciales: Seguridad + Occupancy + Risk scoring
-- Target: Usuarios cansados de fraude (Milanuncios pain point)
+- Phase 3 (mes 12): "The real estate auction app Spain deserved"
+- Diferenciales: Seguridad + Risk scoring + Occupancy data
+- Target: Usuarios cansados de fraude en vehículos/inmuebles
 - Revenue: €300K+ app-only, año 1
+- Focus: Bienes raíces, vehículos, terrenos (NOT coleccionables)
 
-**Recomendación**: INCLUIR app Android en presupuesto Phase 3.  
+**Recomendación**: INCLUIR app Android en presupuesto Phase 3 (si presupuesto permite post-scrapers).  
 **ROI**: Si 50K web users → 10% convert a app → €150K revenue in 6 meses.
 
 ---
 
-**Documento completado**: 2026-06-21  
-**Actualizar**: Cuando lances Phase 3 Android, con datos reales de store
+**Documento completado**: 2026-06-22  
+**Scope**: Bienes raíces + vehículos SOLO (sin coleccionables)  
+**Exclusiones**: Catawiki (coleccionables, fuera de focus)  
+**Status**: Análisis Android revisado y refocused

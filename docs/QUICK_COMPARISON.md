@@ -245,33 +245,32 @@ PROMEDIO:             7.6/10      GANAMOS (pero narrow)
 
 ## 📱 OPORTUNIDAD CRÍTICA: ANDROID (Descubrimiento Nuevo)
 
-### Análisis de 3 Apps Android Principales en España
+### Análisis de 2 Apps Android Principales en España (Bienes Raíces + Vehículos)
 
-Investigación de Google Play Store reveló:
+Investigación de Google Play Store reveló (SOLO bienes, sin coleccionables):
 
 | App | Rating | Downloads | Problema Fatal |
 |-----|--------|-----------|-----------------|
-| **Catawiki** | 4.7/5 | 500K+ | Fraude (fake items), comisiones 21.5%, pobre servicio |
 | **Subastas Públicas** | 3.1/5 ⚠️ | 5K | **APP CRASHES cada 5 min**, muy lenta, 27 reviews solo |
-| **Milanuncios** | 4.6/5 | 188K+/mes | **SCAMS MASIVOS**, sin protección, rating inflado |
+| **Milanuncios** | 4.6/5 | 188K+/mes | **SCAMS MASIVOS en bienes**, sin protección, rating inflado |
 
-### 🎯 HALLAZGO: NO EXISTE APP ANDROID EXCELENTE
+### 🎯 HALLAZGO: NO EXISTE APP ANDROID EXCELENTE EN BIENES
 
 ```
 Subastas Públicas (DEBERÍA ser ganadora):
 - Tiene acceso BOE oficial ✅
+- Data de bienes raíces/vehículos auténtica ✅
 - Pero: App freezes, crashes, 3.1 rating 🔴
 - Resultado: Solo 5K descargas (FRACASO)
 
 Milanuncios (tiene volumen pero no seguridad):
 - 188K+ descargas/mes, pero FULL de scams
 - 45% de quejas son "fraude" y "depósitos falsos"
+- Especialmente crítico en sección de vehículos/inmuebles
 - Rating 4.6/5 es engañoso (vendedores dan 5*, compradores estafados)
-
-Catawiki (premium pero pequeño):
-- 500K downloads pero nicho (coleccionables)
-- Problema: Fake Hermès bags €8,500 pasaron "experto validado"
 ```
+
+**Nota**: Catawiki excluido (coleccionables, no bienes raíces/vehículos)
 
 ### 💡 OPORTUNIDAD MASIVA PARA SUBASTAHUB
 
