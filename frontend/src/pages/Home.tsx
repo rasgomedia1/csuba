@@ -11,7 +11,7 @@ export const Home: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            🏛️ SubastaHub
+            🏛️ CSUBA
           </h1>
           <p className="text-xl text-gray-700 mb-8">
             La plataforma integral para descubrir y gestionar subastas en España

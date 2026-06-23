@@ -15,7 +15,7 @@ export const Header: React.FC = () => {
     <header className="bg-white shadow">
       <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
         <Link to="/" className="text-2xl font-bold text-brand-600">
-          🏛️ SubastaHub
+          🏛️ CSUBA
         </Link>
 
         <nav className="flex gap-6 items-center">

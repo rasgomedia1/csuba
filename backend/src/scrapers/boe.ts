@@ -1,13 +1,33 @@
 import { ApifyClient } from 'apify-client';
 
 interface BoeAuction {
-  IDENTIFICADOR: string;
-  TITULO: string;
-  PROVINCIA: string;
-  PRECIO_PUJA: number;
-  TASACION: number;
-  CANTIDAD_RECLAMADA?: number;
-  URL?: string;
+  subasta_id: string;
+  estado_subasta: string;
+  fecha_cierre: string;
+  puja_minima_eur: number;
+  valor_tasacion_eur: number;
+  tramos_pujas_eur: number;
+  importe_deposito_eur: number;
+  cargas_detectadas: string;
+  descripcion_cargas: string;
+  score_inversion: string;
+  score_descripcion: string;
+  url_boe: string;
+  referencia_catastral: string;
+  catastro_disponible: string;
+  uso_catastro: string;
+  superficie_construida_m2: number | string;
+  superficie_suelo_m2: number | string;
+  antiguedad_ano: number | string;
+  direccion_boe: string;
+  direccion_catastro: string;
+  provincia_boe: string;
+  municipio_boe: string;
+  descripcion_boe: string;
+  coordenadas_gps: string;
+  expediente_juzgado: string;
+  expediente_numero: string;
+  expediente_tipo: string;
   [key: string]: any;
 }
 

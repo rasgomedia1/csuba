@@ -61,4 +61,11 @@ export function getPool() {
   return pool;
 }
 
+export const db = {
+  pool,
+  query,
+  initializeDatabase,
+  getPool
+};
+
 export default pool;
