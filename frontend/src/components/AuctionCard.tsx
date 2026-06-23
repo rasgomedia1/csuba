@@ -11,8 +11,14 @@ interface Auction {
   auction_status: string;
   occupancy_status: string;
   risk_score_overall: number;
+  investment_score?: string;
   auction_end: string;
   url?: string;
+  // Catastro fields
+  property_constructed_sqm?: number;
+  property_year_catastro?: number;
+  gps_latitude?: number;
+  gps_longitude?: number;
 }
 
 interface AuctionCardProps {
@@ -70,32 +76,38 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
 
         <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
           <div>
-            <span className="text-gray-600">📍 Provincia</span>
-            <p className="font-semibold">{auction.province}</p>
-          </div>
-          <div>
-            <span className="text-gray-600">🏠 Tipo</span>
-            <p className="font-semibold">{auction.property_type}</p>
-          </div>
-          <div>
-            <span className="text-gray-600">💰 Precio Inicial</span>
-            <p className="font-semibold text-lg text-brand-600">
+            <span className="text-gray-600">💰 Precio</span>
+            <p className="font-semibold text-brand-600">
               €{auction.price_initial?.toLocaleString('es-ES') || 'N/A'}
             </p>
           </div>
           <div>
-            <span className="text-gray-600">💎 Estimado</span>
-            <p className="font-semibold">€{auction.price_estimate?.toLocaleString('es-ES') || 'N/A'}</p>
+            <span className="text-gray-600">📍 {auction.province}</span>
+            <p className="font-semibold">{auction.property_type}</p>
           </div>
+          {auction.property_constructed_sqm && (
+            <div>
+              <span className="text-gray-600">📐 Superficie</span>
+              <p className="font-semibold">{auction.property_constructed_sqm} m²</p>
+            </div>
+          )}
+          {auction.property_year_catastro && (
+            <div>
+              <span className="text-gray-600">🏗️ Año Construcción</span>
+              <p className="font-semibold">{auction.property_year_catastro}</p>
+            </div>
+          )}
         </div>
 
-        <div className="flex gap-2 mb-4">
+        <div className="flex gap-2 mb-4 flex-wrap">
           <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
             {getStatusBadge(auction.auction_status)}
           </span>
-          <span className="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded">
-            {auction.occupancy_status === 'occupied' ? '👥 Ocupada' : '🏚️ Vacía'}
-          </span>
+          {auction.investment_score && (
+            <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs rounded font-semibold">
+              💎 {auction.investment_score}
+            </span>
+          )}
           {auction.auction_end && (
             <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">
               📅 {new Date(auction.auction_end).toLocaleDateString('es-ES')}
