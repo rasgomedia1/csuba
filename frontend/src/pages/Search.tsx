@@ -28,7 +28,7 @@ export const Search: React.FC = () => {
     if (!user) return;
     try {
       const response = await auctionsAPI.getWatchlist();
-      const ids = new Set(response.data.watchlist?.map((a: any) => a.id) || []);
+      const ids = new Set<string>(response.data.watchlist?.map((a: any) => a.id) || []);
       setWatchlist(ids);
     } catch {
       // Silently fail
