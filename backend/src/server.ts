@@ -5,6 +5,7 @@ import { initializeDatabase } from './db/index.js';
 import authRoutes from './routes/auth.js';
 import auctionRoutes from './routes/auctions.js';
 import userRoutes from './routes/users.js';
+import scraperRoutes from './routes/scrapers.js';
 import { authMiddleware } from './middleware/auth.js';
 
 dotenv.config();
@@ -23,6 +24,7 @@ app.get('/health', (req, res) => {
 
 // Public routes
 app.use('/api/auth', authRoutes);
+app.use('/api/scrapers', scraperRoutes);
 
 // Protected routes
 app.use('/api/auctions', auctionRoutes);
