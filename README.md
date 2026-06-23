@@ -1,6 +1,10 @@
-# 🏛️ SubastaHub - Consolidador de Subastas en España
+# 🏛️ CSUBA - Consolidador de Subastas
 
-Plataforma integral para buscar, consolidar y gestionar subastas en España con análisis automático de riesgos.
+**Versión actualizada**: CSUBA (antes SubastaHub)  
+**Enfoque**: BOE (Subastas Judiciales) SOLO  
+**Setup**: LOCAL ONLY - Sin credenciales en GitHub
+
+Plataforma integral para buscar, consolidar y gestionar subastas judiciales de España desde BOE con análisis automático de riesgos.
 
 ## 🎯 Características
 

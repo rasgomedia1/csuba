@@ -37,3 +37,18 @@ postgres_data/
 # Misc
 .cache/
 .env.production.local
+
+# CSUBA / BOE Scraper - Sensitive Files
+# NEVER commit credentials or local configuration
+scrapers/boe/.env
+scrapers/boe/credentials.txt
+scrapers/boe/email_credentials.txt
+scrapers/boe/subastas_following.txt
+scrapers/boe/subastas_output.xlsx
+scrapers/boe/*.json
+scrapers/boe/newbies.csv
+
+# BOE scraper temporary files
+scrapers/boe/selenium_driver/
+scrapers/boe/__pycache__/
+scrapers/boe/*.pyc
