@@ -6,8 +6,9 @@
     "dev": "tsx watch src/server.ts",
     "build": "tsc",
     "start": "node dist/server.js",
-    "migrate": "node src/db/migrate.js",
-    "seed": "tsx src/db/seed.ts"
+    "migrate": "tsx src/db/runMigrations.ts",
+    "seed": "tsx src/db/seed.ts",
+    "setup-db": "npm run migrate && npm run seed"
   },
   "dependencies": {
     "apify-client": "^2.23.4",

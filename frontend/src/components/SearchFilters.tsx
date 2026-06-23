@@ -8,7 +8,9 @@ export interface FilterState {
   auctionStatus?: string;
   occupancyStatus?: string;
   maxRiskScore?: number;
-  sortBy: 'price' | 'riskScore' | 'date';
+  investmentScore?: string;
+  search?: string;
+  sortBy: 'price' | 'riskScore' | 'date' | 'investmentScore';
 }
 
 interface SearchFiltersProps {
@@ -50,12 +52,22 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter }) => {
 
   return (
     <div className="bg-white rounded-lg shadow p-6 mb-6">
+      <div className="mb-4">
+        <input
+          type="text"
+          placeholder="🔍 Buscar por ubicación, dirección o descripción..."
+          value={filters.search || ''}
+          onChange={(e) => handleFilterChange('search', e.target.value || undefined)}
+          className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
+        />
+      </div>
+
       <button
         type="button"
         onClick={() => setExpandFilters(!expandFilters)}
         className="text-lg font-semibold text-gray-900 flex items-center gap-2 cursor-pointer w-full"
       >
-        <span>{expandFilters ? '▼' : '▶'} Filtros de Búsqueda</span>
+        <span>{expandFilters ? '▼' : '▶'} Más Filtros</span>
       </button>
 
       {expandFilters && (

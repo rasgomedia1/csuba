@@ -9,13 +9,22 @@ export interface SearchFilters {
   auctionStatus?: string;
   occupancyStatus?: string;
   maxRiskScore?: number;
-  sortBy?: 'price' | 'riskScore' | 'date';
+  investmentScore?: string;
+  search?: string; // Text search
+  sortBy?: 'price' | 'riskScore' | 'date' | 'investmentScore';
   limit?: number;
   offset?: number;
 }
 
 export async function searchAuctions(filters: SearchFilters) {
-  let sql = 'SELECT * FROM auctions WHERE 1=1';
+  let sql = `SELECT a.*,
+    ad.cadastre_ref, ad.cadastre_available, ad.cadastre_use,
+    ad.property_constructed_sqm, ad.property_land_sqm,
+    ad.property_year_catastro,
+    ad.cadastre_address, ad.gps_latitude, ad.gps_longitude
+  FROM auctions a
+  LEFT JOIN auction_details ad ON a.id = ad.auction_id
+  WHERE 1=1`;
   const params: any[] = [];
   let paramIndex = 1;
 
@@ -61,11 +70,24 @@ export async function searchAuctions(filters: SearchFilters) {
     paramIndex++;
   }
 
+  if (filters.investmentScore) {
+    sql += ` AND investment_score = $${paramIndex}`;
+    params.push(filters.investmentScore);
+    paramIndex++;
+  }
+
+  if (filters.search) {
+    sql += ` AND (a.title ILIKE $${paramIndex} OR a.description ILIKE $${paramIndex} OR ad.cadastre_address ILIKE $${paramIndex})`;
+    params.push(`%${filters.search}%`);
+    paramIndex++;
+  }
+
   // Sorting
-  const sortMap = {
-    price: 'price_initial ASC',
-    riskScore: 'risk_score_overall ASC',
-    date: 'auction_end ASC'
+  const sortMap: Record<string, string> = {
+    price: 'a.price_initial ASC',
+    riskScore: 'a.risk_score_overall ASC',
+    date: 'a.auction_end ASC',
+    investmentScore: 'a.investment_score DESC'
   };
 
   sql += ` ORDER BY ${sortMap[filters.sortBy || 'date']}`;
