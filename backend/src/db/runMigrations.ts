@@ -17,12 +17,20 @@ async function runMigrations() {
   try {
     console.log('🔄 Running migrations...');
 
-    // First, run the main schema
-    console.log('\n📝 Running schema.sql...');
+    // First, run the main schema (only if tables don't exist)
+    console.log('\n📝 Checking schema...');
     const schemaPath = path.join(__dirname, 'schema.sql');
     const schemaSql = await fs.readFile(schemaPath, 'utf-8');
-    await pool.query(schemaSql);
-    console.log('✅ schema.sql completed');
+    try {
+      await pool.query(schemaSql);
+      console.log('✅ schema.sql completed');
+    } catch (err: any) {
+      if (err.message.includes('already exists')) {
+        console.log('⏭️  Tables already exist, skipping schema.sql');
+      } else {
+        throw err;
+      }
+    }
 
     // Then run migration files
     const migrationsDir = path.join(__dirname, 'migrations');

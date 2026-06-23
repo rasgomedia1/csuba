@@ -69,86 +69,132 @@ async function persistSingleAuction(pool: Pool, auction: ApifyAuction, apifyRunI
       ? auction.antiguedad_ano
       : (auction.antiguedad_ano === 'No consta' || !auction.antiguedad_ano ? null : parseInt(auction.antiguedad_ano as string));
 
-    // Insert or update auction
-    const auctionResult = await client.query(
-      `INSERT INTO auctions (
-        external_id, source, title, description,
-        property_type, province, municipality,
-        price_initial, price_estimate,
-        auction_status, auction_end,
-        occupancy_status, investment_score, investment_score_description,
-        charges_detected, charges_description,
-        url, created_at, updated_at
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, NOW(), NOW()
-      )
-      ON CONFLICT (external_id) DO UPDATE SET
-        investment_score = $13,
-        investment_score_description = $14,
-        charges_detected = $15,
-        charges_description = $16,
-        updated_at = NOW()
-      RETURNING id`,
-      [
-        auction.subasta_id,
-        'boe', // source
-        auction.descripcion_boe.substring(0, 500),
-        auction.descripcion_boe,
-        'property',
-        auction.provincia_boe,
-        auction.municipio_boe,
-        auction.valor_tasacion_eur,
-        auction.valor_tasacion_eur,
-        auction.estado_subasta.toLowerCase(),
-        auction.fecha_cierre,
-        'unknown',
-        auction.score_inversion,
-        auction.score_descripcion,
-        auction.cargas_detectadas === 'Sí',
-        auction.descripcion_cargas,
-        auction.url_boe
-      ]
+    // Check if auction exists
+    const existingResult = await client.query(
+      'SELECT id FROM auctions WHERE external_id = $1',
+      [auction.subasta_id]
     );
 
-    const auctionId = auctionResult.rows[0].id;
+    let auctionId: string;
 
-    // Insert or update auction_details
-    await client.query(
-      `INSERT INTO auction_details (
-        auction_id, cadastre_ref,
-        cadastre_available, cadastre_use,
-        property_constructed_sqm, property_land_sqm,
-        property_year_catastro,
-        cadastre_address, gps_latitude, gps_longitude,
-        apify_run_id,
-        created_at, updated_at
-      ) VALUES (
-        $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW(), NOW()
-      )
-      ON CONFLICT (auction_id) DO UPDATE SET
-        cadastre_available = $3,
-        cadastre_use = $4,
-        property_constructed_sqm = $5,
-        property_land_sqm = $6,
-        property_year_catastro = $7,
-        gps_latitude = $9,
-        gps_longitude = $10,
-        apify_run_id = $11,
-        updated_at = NOW()`,
-      [
-        auctionId,
-        auction.referencia_catastral !== 'No consta' ? auction.referencia_catastral : null,
-        auction.catastro_disponible === 'Sí',
-        auction.uso_catastro,
-        surfaceConstructed,
-        surfaceLand,
-        yearBuilt,
-        auction.direccion_catastro !== 'No consta' ? auction.direccion_catastro : null,
-        lat,
-        lng,
-        apifyRunId
-      ]
+    if (existingResult.rows.length > 0) {
+      // Update existing
+      auctionId = existingResult.rows[0].id;
+      await client.query(
+        `UPDATE auctions SET
+          investment_score = $1,
+          investment_score_description = $2,
+          charges_detected = $3,
+          charges_description = $4,
+          updated_at = NOW()
+        WHERE id = $5`,
+        [
+          auction.score_inversion,
+          auction.score_descripcion,
+          auction.cargas_detectadas === 'Sí',
+          auction.descripcion_cargas,
+          auctionId
+        ]
+      );
+    } else {
+      // Insert new
+      const auctionResult = await client.query(
+        `INSERT INTO auctions (
+          external_id, source, title, description,
+          property_type, province, municipality,
+          price_initial, price_estimate,
+          auction_status, auction_end,
+          occupancy_status, investment_score, investment_score_description,
+          charges_detected, charges_description,
+          url, created_at, updated_at
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, NOW(), NOW()
+        )
+        RETURNING id`,
+        [
+          auction.subasta_id,
+          'boe', // source
+          auction.descripcion_boe.substring(0, 500),
+          auction.descripcion_boe,
+          'property',
+          auction.provincia_boe,
+          auction.municipio_boe,
+          auction.valor_tasacion_eur,
+          auction.valor_tasacion_eur,
+          auction.estado_subasta.toLowerCase(),
+          auction.fecha_cierre,
+          'unknown',
+          auction.score_inversion,
+          auction.score_descripcion,
+          auction.cargas_detectadas === 'Sí',
+          auction.descripcion_cargas,
+          auction.url_boe
+        ]
+      );
+      auctionId = auctionResult.rows[0].id;
+    }
+
+    // Check if details exist
+    const detailsResult = await client.query(
+      'SELECT id FROM auction_details WHERE auction_id = $1',
+      [auctionId]
     );
+
+    if (detailsResult.rows.length > 0) {
+      // Update existing
+      await client.query(
+        `UPDATE auction_details SET
+          cadastre_available = $1,
+          cadastre_use = $2,
+          property_constructed_sqm = $3,
+          property_land_sqm = $4,
+          property_year_catastro = $5,
+          gps_latitude = $6,
+          gps_longitude = $7,
+          apify_run_id = $8,
+          updated_at = NOW()
+        WHERE auction_id = $9`,
+        [
+          auction.catastro_disponible === 'Sí',
+          auction.uso_catastro,
+          surfaceConstructed,
+          surfaceLand,
+          yearBuilt,
+          lat,
+          lng,
+          apifyRunId,
+          auctionId
+        ]
+      );
+    } else {
+      // Insert new
+      await client.query(
+        `INSERT INTO auction_details (
+          auction_id, cadastre_ref,
+          cadastre_available, cadastre_use,
+          property_constructed_sqm, property_land_sqm,
+          property_year_catastro,
+          cadastre_address, gps_latitude, gps_longitude,
+          apify_run_id,
+          created_at, updated_at
+        ) VALUES (
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, NOW(), NOW()
+        )`,
+        [
+          auctionId,
+          auction.referencia_catastral !== 'No consta' ? auction.referencia_catastral : null,
+          auction.catastro_disponible === 'Sí',
+          auction.uso_catastro,
+          surfaceConstructed,
+          surfaceLand,
+          yearBuilt,
+          auction.direccion_catastro !== 'No consta' ? auction.direccion_catastro : null,
+          lat,
+          lng,
+          apifyRunId
+        ]
+      );
+    }
 
     await client.query('COMMIT');
   } catch (error) {
