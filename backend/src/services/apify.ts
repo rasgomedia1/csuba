@@ -46,6 +46,16 @@ export async function persistApifyAuctions(pool: Pool, auctions: ApifyAuction[],
   }
 }
 
+function mapPropertyType(uso: string): string {
+  if (!uso) return 'Otro';
+  const uso_lower = uso.toLowerCase();
+  if (uso_lower.includes('residencial') || uso_lower.includes('vivienda')) return 'Vivienda';
+  if (uso_lower.includes('comercial') || uso_lower.includes('local')) return 'Local';
+  if (uso_lower.includes('garaje') || uso_lower.includes('estacionamiento') || uso_lower.includes('aparcamiento')) return 'Garaje';
+  if (uso_lower.includes('terreno') || uso_lower.includes('suelo')) return 'Terreno';
+  return 'Otro';
+}
+
 async function persistSingleAuction(pool: Pool, auction: ApifyAuction, apifyRunId: string) {
   const client = await pool.connect();
   try {
@@ -116,7 +126,7 @@ async function persistSingleAuction(pool: Pool, auction: ApifyAuction, apifyRunI
           'boe', // source
           auction.descripcion_boe.substring(0, 500),
           auction.descripcion_boe,
-          'property',
+          mapPropertyType(auction.uso_catastro),
           auction.provincia_boe,
           auction.municipio_boe,
           auction.valor_tasacion_eur,

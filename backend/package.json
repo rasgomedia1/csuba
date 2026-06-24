@@ -8,6 +8,7 @@
     "start": "node dist/server.js",
     "migrate": "tsx src/db/runMigrations.ts",
     "seed": "tsx src/db/seed.ts",
+    "cleanup": "tsx src/db/cleanup.ts",
     "setup-db": "npm run migrate && npm run seed"
   },
   "dependencies": {
