@@ -160,7 +160,7 @@ export const AuctionDetail: React.FC = () => {
                   </div>
                   <div className="mt-4 flex gap-2">
                     <a
-                      href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},3a,75y,0h,0t`}
+                      href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},0a,75y`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 text-center"
@@ -168,7 +168,7 @@ export const AuctionDetail: React.FC = () => {
                       🗺️ Street View
                     </a>
                     <a
-                      href={`https://www.google.com/maps?q=${auction.details.gps_latitude},${auction.details.gps_longitude}`}
+                      href={`https://www.google.com/maps/place/@${auction.details.gps_latitude},${auction.details.gps_longitude},15z`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 px-3 py-2 bg-gray-400 text-white text-sm rounded hover:bg-gray-500 text-center"
