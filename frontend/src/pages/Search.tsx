@@ -3,7 +3,6 @@ import { SearchFilters, FilterState } from '../components/SearchFilters';
 import { AuctionCard } from '../components/AuctionCard';
 import { auctionsAPI } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
-import { useResetSectionNumbers } from '../hooks/useResetSectionNumbers';
 import { SectionNumber } from '../components/SectionNumber';
 
 interface Auction {
@@ -20,7 +19,6 @@ interface Auction {
 }
 
 export const Search: React.FC = () => {
-  useResetSectionNumbers();
   const [auctions, setAuctions] = useState<Auction[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -89,7 +87,7 @@ export const Search: React.FC = () => {
       <h1 className="text-3xl font-bold mb-8">🔍 Buscar Subastas</h1>
 
       <div className="relative mb-8">
-        <SectionNumber />
+        <SectionNumber number={1} />
         <SearchFilters onFilter={handleFilter} />
       </div>
 
@@ -116,7 +114,7 @@ export const Search: React.FC = () => {
 
       {!loading && auctions.length > 0 && (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
-          <SectionNumber />
+          <SectionNumber number={2} />
           {auctions.map((auction) => (
             <AuctionCard
               key={auction.id}

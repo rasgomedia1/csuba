@@ -54,7 +54,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
       <div className="flex flex-col">
         {/* Top section - Information */}
         <div className="p-6 relative">
-          <SectionNumber />
+          <SectionNumber number={1} />
           <Link
             to={`/auctions/${auction.id}`}
             className="text-lg font-semibold text-brand-600 hover:text-brand-700 block mb-4"
@@ -146,7 +146,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
         {/* Bottom section - Map Preview */}
         {auction.gps_latitude && auction.gps_longitude && (
           <div className="bg-gray-50 border-t relative">
-            <SectionNumber />
+            <SectionNumber number={2} />
             <div className="relative overflow-hidden bg-gray-200" style={{ aspectRatio: '16 / 9' }}>
               <iframe
                 style={{

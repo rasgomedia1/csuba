@@ -1,18 +1,14 @@
 import React from 'react';
-import { useSectionNumber } from '../context/SectionNumberContext';
 
 const SHOW_SECTION_NUMBERS = true; // Cambiar a false para ocultar
 
 interface SectionNumberProps {
+  number: number;
   className?: string;
 }
 
-export const SectionNumber: React.FC<SectionNumberProps> = ({ className = '' }) => {
-  const { nextNumber } = useSectionNumber();
-
+export const SectionNumber: React.FC<SectionNumberProps> = ({ number, className = '' }) => {
   if (!SHOW_SECTION_NUMBERS) return null;
-
-  const number = nextNumber();
 
   return (
     <div
