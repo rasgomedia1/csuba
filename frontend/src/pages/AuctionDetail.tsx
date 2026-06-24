@@ -147,17 +147,34 @@ export const AuctionDetail: React.FC = () => {
               <div className="mb-8 flex justify-center">
                 <div className="w-1/2">
                   <h2 className="text-xl font-semibold mb-4">📍 Ubicación</h2>
-                  <div className="aspect-video rounded-lg overflow-hidden shadow-md">
+                  <div style={{ paddingBottom: '56.25%', position: 'relative', height: 0 }} className="rounded-lg overflow-hidden shadow-md">
                     <iframe
-                      width="100%"
-                      height="100%"
-                      style={{ border: 'none' }}
-                      src={`https://www.google.com/maps/embed/v1/streetview?key=AIzaSyBMQXNJL5iRWnM6XiMhUzKBqPvSmD1Pk-s&location=${auction.details.gps_latitude},${auction.details.gps_longitude}&heading=0&pitch=0&fov=90`}
+                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
+                      src={`https://www.google.com/maps?q=${auction.details.gps_latitude},${auction.details.gps_longitude}&output=embed`}
                       allowFullScreen={true}
+                      loading="lazy"
                     ></iframe>
                   </div>
+                  <div className="mt-4 flex gap-2">
+                    <a
+                      href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},18z/data=!3m1!1e3`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 text-center"
+                    >
+                      🗺️ Street View
+                    </a>
+                    <a
+                      href={`https://www.google.com/maps?q=${auction.details.gps_latitude},${auction.details.gps_longitude}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 px-3 py-2 bg-gray-400 text-white text-sm rounded hover:bg-gray-500 text-center"
+                    >
+                      📍 Google Maps
+                    </a>
+                  </div>
                   {auction.details?.cadastre_address && (
-                    <p className="text-sm text-gray-600 mt-2">📮 {auction.details.cadastre_address}</p>
+                    <p className="text-sm text-gray-600 mt-3">📮 {auction.details.cadastre_address}</p>
                   )}
                 </div>
               </div>
