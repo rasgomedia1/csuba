@@ -35,7 +35,7 @@ const getStatusBadge = (status: string): string => {
 
 const formatPrice = (price: number): string => {
   const rounded = Math.round(price);
-  return 'EUR ' + rounded.toLocaleString('en-US', { style: 'decimal' })
+  return '€ ' + rounded.toLocaleString('en-US', { style: 'decimal' })
     .replace(/,/g, '.');
 };
 
@@ -50,96 +50,112 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
 
   return (
     <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
-      <div className="p-6">
-        <Link
-          to={`/auctions/${auction.id}`}
-          className="text-lg font-semibold text-brand-600 hover:text-brand-700 block mb-4"
-        >
-          {auction.title}
-        </Link>
-
-        <div className="mb-6">
-          <p className="text-3xl font-bold text-brand-600">
-            {formatPrice(auction.price_initial)}
-          </p>
-        </div>
-
-        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-          <div>
-            <span className="text-gray-600">Location</span>
-            {auction.gps_latitude && auction.gps_longitude ? (
-              <a
-                href={`https://www.google.com/maps/?q=${auction.gps_latitude},${auction.gps_longitude}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="font-semibold text-brand-600 hover:text-brand-700 underline"
-              >
-                {auction.province}
-              </a>
-            ) : (
-              <p className="font-semibold">{auction.province}</p>
-            )}
-          </div>
-          <div>
-            <span className="text-gray-600">Type</span>
-            <p className="font-semibold">{auction.property_type}</p>
-          </div>
-          {auction.property_constructed_sqm && (
-            <div>
-              <span className="text-gray-600">Area</span>
-              <p className="font-semibold">{auction.property_constructed_sqm} m2</p>
-            </div>
-          )}
-          {auction.property_constructed_sqm && pricePerM2 && (
-            <div>
-              <span className="text-gray-600">Price per m2</span>
-              <p className="font-semibold">{formatPrice(pricePerM2)}</p>
-            </div>
-          )}
-          {auction.property_year_catastro && (
-            <div>
-              <span className="text-gray-600">Built</span>
-              <p className="font-semibold">{auction.property_year_catastro}</p>
-            </div>
-          )}
-        </div>
-
-        <div className="flex gap-2 mb-4 flex-wrap text-xs">
-          <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded">
-            {getStatusBadge(auction.auction_status)}
-          </span>
-          {auction.investment_score && (
-            <span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded font-semibold">
-              Score: {auction.investment_score}
-            </span>
-          )}
-          {auction.auction_end && (
-            <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded">
-              {new Date(auction.auction_end).toLocaleDateString('en-US')}
-            </span>
-          )}
-        </div>
-
-        <div className="flex gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
+        {/* Left section - Information */}
+        <div className="md:col-span-2">
           <Link
             to={`/auctions/${auction.id}`}
-            className="flex-1 px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-700 text-center font-semibold text-sm"
+            className="text-lg font-semibold text-brand-600 hover:text-brand-700 block mb-4"
           >
-            View Details
+            {auction.title}
           </Link>
-          {onAddToWatchlist && (
-            <button
-              onClick={() => onAddToWatchlist(auction.id)}
-              className={`flex-1 px-4 py-2 rounded font-semibold text-sm ${
-                isInWatchlist
-                  ? 'bg-red-600 text-white hover:bg-red-700'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
+
+          <div className="mb-6">
+            <p className="text-3xl font-bold text-brand-600">
+              {formatPrice(auction.price_initial)}
+            </p>
+            {pricePerM2 && (
+              <p className="text-sm text-gray-600">Price m2 {formatPrice(pricePerM2)}</p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
+            <div>
+              <span className="text-gray-600">Location</span>
+              {auction.gps_latitude && auction.gps_longitude ? (
+                <a
+                  href={`https://www.google.com/maps/?q=${auction.gps_latitude},${auction.gps_longitude}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="font-semibold text-brand-600 hover:text-brand-700 underline"
+                >
+                  {auction.province}
+                </a>
+              ) : (
+                <p className="font-semibold">{auction.province}</p>
+              )}
+            </div>
+            <div>
+              <span className="text-gray-600">Type</span>
+              <p className="font-semibold">{auction.property_type}</p>
+            </div>
+            {auction.property_constructed_sqm && (
+              <div>
+                <span className="text-gray-600">Area</span>
+                <p className="font-semibold">{auction.property_constructed_sqm} m2</p>
+              </div>
+            )}
+            {auction.property_year_catastro && (
+              <div>
+                <span className="text-gray-600">Built</span>
+                <p className="font-semibold">{auction.property_year_catastro}</p>
+              </div>
+            )}
+          </div>
+
+          <div className="flex gap-2 mb-4 flex-wrap text-xs">
+            <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded">
+              {getStatusBadge(auction.auction_status)}
+            </span>
+            {auction.investment_score && (
+              <span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded font-semibold">
+                Score: {auction.investment_score}
+              </span>
+            )}
+            {auction.auction_end && (
+              <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded">
+                {new Date(auction.auction_end).toLocaleDateString('en-US')}
+              </span>
+            )}
+          </div>
+
+          <div className="flex gap-3">
+            <Link
+              to={`/auctions/${auction.id}`}
+              className="flex-1 px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-700 text-center font-semibold text-sm"
             >
-              {isInWatchlist ? 'Saved' : 'Save'}
-            </button>
-          )}
+              View Details
+            </Link>
+            {onAddToWatchlist && (
+              <button
+                onClick={() => onAddToWatchlist(auction.id)}
+                className={`flex-1 px-4 py-2 rounded font-semibold text-sm ${
+                  isInWatchlist
+                    ? 'bg-red-600 text-white hover:bg-red-700'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {isInWatchlist ? 'Saved' : 'Save'}
+              </button>
+            )}
+          </div>
         </div>
+
+        {/* Right section - Street View */}
+        {auction.gps_latitude && auction.gps_longitude ? (
+          <div className="md:col-span-1">
+            <div className="bg-gray-200 rounded-lg overflow-hidden h-48">
+              <img
+                src={`https://maps.googleapis.com/maps/api/streetview?size=400x300&location=${auction.gps_latitude},${auction.gps_longitude}&key=AIzaSyAj1O-2A-w4NTIStaMwJZdOSCEO-R6OA4E`}
+                alt="Street View"
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  (e.target as HTMLImageElement).style.display = 'none';
+                }}
+              />
+            </div>
+          </div>
+        ) : null}
       </div>
     </div>
   );

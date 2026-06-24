@@ -9,6 +9,7 @@ export interface SearchFilters {
   auctionStatus?: string;
   occupancyStatus?: string;
   investmentScore?: string;
+  minimumBidMax?: number;
   search?: string;
   sortBy?: 'price' | 'date' | 'investmentScore' | 'pricePerM2';
   limit?: number;
@@ -48,6 +49,12 @@ export async function searchAuctions(filters: SearchFilters) {
   if (filters.priceMax !== undefined) {
     sql += ` AND a.price_initial <= $${paramIndex}`;
     params.push(filters.priceMax);
+    paramIndex++;
+  }
+
+  if (filters.minimumBidMax !== undefined) {
+    sql += ` AND a.price_initial <= $${paramIndex}`;
+    params.push(filters.minimumBidMax);
     paramIndex++;
   }
 

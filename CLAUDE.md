@@ -128,23 +128,31 @@ PUT    /api/users/preferences      # [JWT required]
 
 ## 🎯 Cómo Ejecutar la Maqueta
 
-### Instalación Rápida (5 minutos)
+### Instalación Rápida (sin Docker)
+
+**La BD está en Neon Cloud (PostgreSQL remoto), no necesita Docker local.**
 
 ```bash
-# 1. Iniciar base de datos
-docker-compose up -d
+# 1. Backend
+cd backend && npm run dev
 
-# 2. Backend
-cd backend && npm install && npm run dev
+# 2. Frontend (en otra terminal)
+cd frontend && npm run dev
 
-# 3. Frontend (en otra terminal)
-cd frontend && npm install && npm run dev
-
-# 4. Acceder
-# Frontend: http://localhost:5173
-# Backend: http://localhost:3000/api
-# Swagger (opcional): http://localhost:3000/api-docs
+# 3. Acceder
+# Frontend: http://localhost:5174
+# Backend: http://localhost:3000
 ```
+
+### Filtros Disponibles
+- **Province**: Con tildes (Málaga, Córdoba, etc.) - matches con datos
+- **Property Type**: Español (Vivienda, Local, Garaje, Terreno, Otro)
+- **Investment Score**: Default "MUY ALTO" (BAJO, MEDIO, ALTO, MUY_ALTO)
+- **Max Minimum Bid**: Default 2000€ - filtra por puja inicial
+- **Max Price**: Precio máximo de la propiedad
+- **Min Area**: Área mínima en m²
+- **Auction Status**: activa, completada, desierta
+- **Occupancy**: empty, occupied, unknown
 
 ### Flujo de Testing
 
@@ -311,8 +319,31 @@ app.use('/api/new', newRoutes);
 
 ## 📞 Contacto / Cambios Frecuentes
 
-**Última actualización**: 2026-06-21  
+**Última actualización**: 2026-06-24  
 **Versión**: 0.1.0-MVP  
-**Estado**: Maqueta lista, listos para Phase 2 (Scrapers + Android)
+**Estado**: ✅ Maqueta corriendo (BD remota Neon Cloud)
 
-Commit todos los cambios en esta rama `main`. Tag para releases.
+### Estado Actual (2026-06-24 11:25)
+- ✅ Backend: http://localhost:3000 (conectado a Neon Cloud PostgreSQL)
+- ✅ Frontend: http://localhost:5174 (Vite dev server)
+- ✅ Base de datos remota funcional con ~20+ subastas de prueba
+- ✅ Todos los endpoints API respondiendo
+- ✅ Autenticación JWT, búsqueda con filtros, watchlist, detalles de subasta
+
+### Cambios Recientes (2026-06-24)
+1. ✅ **Investment Score filter**: Default ahora es "MUY ALTO"
+2. ✅ **Property Type en español**: Vivienda, Local, Garaje, Terreno, Otro (sin tildes en las opciones, pero con tildes en provincias para match correcto)
+3. ✅ **Provincias con tildes**: Málaga, Córdoba, Ávila, etc. - ahora coincide con datos de BD
+4. ✅ **Nuevo filtro**: Maximum Minimum Bid con default 2000€ (filtra por price_initial)
+5. ✅ **AuctionCard redesigned**: 
+   - Cambio EUR → € en precios
+   - Añadido Street View (Google Maps Streetview API)
+   - Layout responsivo: info izquierda, foto derecha
+
+### Próximos Pasos
+- [ ] Scrapers de BOE (Phase 2)
+- [ ] Integración Hacienda/SS
+- [ ] React Native Android
+- [ ] Alertas por email
+
+Commit todos los cambios en rama `master` (no en `main`). Tag para releases.

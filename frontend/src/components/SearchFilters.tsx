@@ -8,6 +8,7 @@ export interface FilterState {
   auctionStatus?: string;
   occupancyStatus?: string;
   investmentScore?: string;
+  minimumBidMax?: number;
   search?: string;
   sortBy: 'price' | 'date' | 'investmentScore' | 'pricePerM2';
 }
@@ -18,24 +19,26 @@ interface SearchFiltersProps {
 
 const provinces = [
   'Madrid', 'Barcelona',
-  'Albacete', 'Alicante', 'Almeria', 'Avila', 'Badajoz', 'Baleares', 'Bilbao',
-  'Burgos', 'Caceres', 'Cadiz', 'Cantabria', 'Castellon', 'Ceuta', 'Ciudad Real',
-  'Cordoba', 'A Coruna', 'Cuenca', 'Girona', 'Granada', 'Guadalajara', 'Guipuzcoa',
-  'Huelva', 'Huesca', 'Jaen', 'Leon', 'Lleida', 'Lugo', 'Malaga', 'Melilla', 'Murcia',
+  'Albacete', 'Alicante', 'Almería', 'Ávila', 'Badajoz', 'Baleares', 'Bilbao',
+  'Burgos', 'Cáceres', 'Cádiz', 'Cantabria', 'Castellón', 'Ceuta', 'Ciudad Real',
+  'Córdoba', 'A Coruña', 'Cuenca', 'Girona', 'Granada', 'Guadalajara', 'Guipúzcoa',
+  'Huelva', 'Huesca', 'Jaén', 'León', 'Lleida', 'Lugo', 'Málaga', 'Melilla', 'Murcia',
   'Navarra', 'Ourense', 'Palencia', 'Palma', 'Pontevedra', 'La Rioja', 'Salamanca',
   'Segovia', 'Sevilla', 'Soria', 'Tarragona', 'Teruel', 'Toledo', 'Valencia',
   'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
 ];
 
-const propertyTypes = ['House', 'Commercial', 'Garage', 'Land', 'Other'];
+const propertyTypes = ['Vivienda', 'Local', 'Garaje', 'Terreno', 'Otro'];
 const auctionStatuses = ['active', 'completed', 'deserted'];
 const occupancyStatuses = ['empty', 'occupied', 'unknown'];
 const investmentScores = ['BAJO', 'MEDIO', 'ALTO', 'MUY_ALTO'];
 
 export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter }) => {
   const [filters, setFilters] = useState<FilterState>({
-    province: 'Castellon',
+    province: 'Castellón',
     areaMin: 8,
+    investmentScore: 'MUY_ALTO',
+    minimumBidMax: 2000,
     sortBy: 'date'
   });
 
@@ -50,8 +53,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter }) => {
   };
 
   const handleReset = () => {
-    setFilters({ province: 'Castellon', areaMin: 8, sortBy: 'date' });
-    onFilter({ province: 'Castellon', areaMin: 8, sortBy: 'date' });
+    const defaultFilters = { province: 'Castellón', areaMin: 8, investmentScore: 'MUY_ALTO', minimumBidMax: 2000, sortBy: 'date' };
+    setFilters(defaultFilters);
+    onFilter(defaultFilters);
   };
 
   return (
@@ -77,13 +81,27 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter }) => {
           {/* Max Price */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Max Price (EUR)
+              Max Price (€)
             </label>
             <input
               type="number"
               placeholder="Ex: 500000"
               value={filters.priceMax || ''}
               onChange={(e) => handleFilterChange('priceMax', e.target.value ? Number(e.target.value) : undefined)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+
+          {/* Maximum Minimum Bid */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Max Minimum Bid (€)
+            </label>
+            <input
+              type="number"
+              placeholder="Ex: 2000"
+              value={filters.minimumBidMax || ''}
+              onChange={(e) => handleFilterChange('minimumBidMax', e.target.value ? Number(e.target.value) : undefined)}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
             />
           </div>
