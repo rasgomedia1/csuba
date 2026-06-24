@@ -18,7 +18,11 @@ interface AuctionDetail {
   auction_start: string;
   auction_end: string;
   url: string;
-  details?: any;
+  details?: {
+    gps_latitude?: number;
+    gps_longitude?: number;
+    cadastre_address?: string;
+  };
   priceHistory?: any[];
 }
 
@@ -135,6 +139,27 @@ export const AuctionDetail: React.FC = () => {
               <div className="mb-8">
                 <h2 className="text-xl font-semibold mb-4">📝 Descripción</h2>
                 <p className="text-gray-700 whitespace-pre-wrap">{auction.description}</p>
+              </div>
+            )}
+
+            {/* Street View Section */}
+            {auction.details?.gps_latitude && auction.details?.gps_longitude && (
+              <div className="mb-8 flex justify-center">
+                <div className="w-1/2">
+                  <h2 className="text-xl font-semibold mb-4">📍 Ubicación</h2>
+                  <div className="aspect-video rounded-lg overflow-hidden shadow-md">
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      style={{ border: 'none' }}
+                      src={`https://www.google.com/maps/embed/v1/streetview?key=AIzaSyBMQXNJL5iRWnM6XiMhUzKBqPvSmD1Pk-s&location=${auction.details.gps_latitude},${auction.details.gps_longitude}&heading=0&pitch=0&fov=90`}
+                      allowFullScreen={true}
+                    ></iframe>
+                  </div>
+                  {auction.details?.cadastre_address && (
+                    <p className="text-sm text-gray-600 mt-2">📮 {auction.details.cadastre_address}</p>
+                  )}
+                </div>
               </div>
             )}
 
