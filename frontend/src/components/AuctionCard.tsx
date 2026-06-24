@@ -5,6 +5,7 @@ import { SectionNumber } from './SectionNumber';
 interface Auction {
   id: string;
   title: string;
+  description?: string;
   price_initial: number;
   price_estimate?: number;
   province: string;
@@ -130,6 +131,13 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
                 {new Date(auction.auction_end).toLocaleDateString('en-US')}
               </span>
             )}
+          </div>
+
+          {/* Description Box - Fixed Height */}
+          <div className="bg-gray-50 border border-gray-200 rounded p-3 mb-4 h-32 overflow-y-auto text-sm text-gray-700">
+            <p className="whitespace-pre-wrap leading-relaxed">
+              {auction.description || 'No description available'}
+            </p>
           </div>
 
           <Link
