@@ -53,7 +53,7 @@ export async function searchAuctions(filters: SearchFilters) {
   }
 
   if (filters.minimumBidMax !== undefined) {
-    sql += ` AND a.price_initial <= $${paramIndex}`;
+    sql += ` AND a.minimum_bid_eur <= $${paramIndex}`;
     params.push(filters.minimumBidMax);
     paramIndex++;
   }

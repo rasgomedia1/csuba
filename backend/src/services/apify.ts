@@ -112,13 +112,13 @@ async function persistSingleAuction(pool: Pool, auction: ApifyAuction, apifyRunI
         `INSERT INTO auctions (
           external_id, source, title, description,
           property_type, province, municipality,
-          price_initial, price_estimate,
+          price_initial, price_estimate, minimum_bid_eur,
           auction_status, auction_end,
           occupancy_status, investment_score, investment_score_description,
           charges_detected, charges_description,
           url, created_at, updated_at
         ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, NOW(), NOW()
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, NOW(), NOW()
         )
         RETURNING id`,
         [
@@ -131,6 +131,7 @@ async function persistSingleAuction(pool: Pool, auction: ApifyAuction, apifyRunI
           auction.municipio_boe,
           auction.valor_tasacion_eur,
           auction.valor_tasacion_eur,
+          auction.puja_minima_eur,
           auction.estado_subasta.toLowerCase(),
           auction.fecha_cierre,
           'unknown',
