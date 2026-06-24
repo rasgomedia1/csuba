@@ -156,16 +156,16 @@ export async function getUserWatchlist(userId: string, limit: number = 50, offse
 }
 
 export async function addToWatchlist(userId: string, auctionId: string, notes?: string) {
-  const result = await query(
+  await query(
     `INSERT INTO user_tracking (id, user_id, auction_id, status, personal_notes)
      VALUES ($1, $2, $3, 'watchlist', $4)
      ON CONFLICT (user_id, auction_id) DO UPDATE
-     SET status = 'watchlist', personal_notes = COALESCE($4, personal_notes), updated_at = NOW()
-     RETURNING *`,
+     SET status = 'watchlist', personal_notes = COALESCE($4, personal_notes), updated_at = NOW()`,
     [uuidv4(), userId, auctionId, notes || null]
   );
 
-  return result.rows[0];
+  // Return success confirmation
+  return { success: true, auction_id: auctionId, user_id: userId };
 }
 
 export async function removeFromWatchlist(userId: string, auctionId: string) {
