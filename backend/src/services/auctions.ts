@@ -143,7 +143,10 @@ export async function getAuctionById(auctionId: string) {
 
 export async function getUserWatchlist(userId: string, limit: number = 50, offset: number = 0) {
   const result = await query(
-    `SELECT a.*, ut.status, ut.personal_notes, ut.created_at as added_to_watchlist
+    `SELECT a.id, a.external_id, a.title, a.description, a.property_type, a.province,
+            a.municipality, a.price_initial, a.price_estimate, a.price_final,
+            a.auction_status, a.auction_end, a.occupancy_status, a.risk_score_overall,
+            a.url, ut.status, ut.personal_notes, ut.created_at as added_to_watchlist
      FROM auctions a
      INNER JOIN user_tracking ut ON a.id = ut.auction_id
      WHERE ut.user_id = $1 AND ut.status = 'watchlist'

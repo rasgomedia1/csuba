@@ -1,4 +1,4 @@
-# SubastaHub - Instrucciones del Proyecto
+# CSUBA (Consolidador de Subastas) - Instrucciones del Proyecto
 
 ## 📌 Resumen Ejecutivo
 
