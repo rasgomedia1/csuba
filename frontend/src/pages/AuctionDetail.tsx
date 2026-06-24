@@ -122,24 +122,27 @@ export const AuctionDetail: React.FC = () => {
         {/* Main content */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow p-8 relative">
-            <div className="flex justify-between items-start mb-6 relative">
+            <div className="relative">
               <SectionNumber number={1} />
-              <div className="flex-1">
-                <p className="text-sm text-gray-600 mb-2">ID: <span className="font-mono font-semibold">{auction.external_id || id}</span></p>
+              <div className="flex justify-between items-start mb-6">
+                <div className="flex-1">
+                  <h1 className="text-2xl font-bold mb-4">{auction.external_id || id}</h1>
+                  {auction.description && (
+                    <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{auction.description}</p>
+                  )}
+                </div>
+                <button
+                  onClick={handleWatchlist}
+                  className={`px-4 py-2 rounded font-semibold ml-4 ${
+                    inWatchlist
+                      ? 'bg-red-600 text-white'
+                      : 'bg-gray-200 text-gray-700'
+                  }`}
+                >
+                  {inWatchlist ? '❤️ Guardada' : '🤍 Guardar'}
+                </button>
               </div>
-              <button
-                onClick={handleWatchlist}
-                className={`px-4 py-2 rounded font-semibold ${
-                  inWatchlist
-                    ? 'bg-red-600 text-white'
-                    : 'bg-gray-200 text-gray-700'
-                }`}
-              >
-                {inWatchlist ? '❤️ Guardada' : '🤍 Guardar'}
-              </button>
             </div>
-
-            {/* Description - Removed to simplify sec1 */}
 
             {/* Street View Section */}
             {auction.details?.gps_latitude && auction.details?.gps_longitude && (
