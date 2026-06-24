@@ -167,7 +167,7 @@ export const AuctionDetail: React.FC = () => {
                       🗺️ Map
                     </a>
                     <a
-                      href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},16s`}
+                      href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},16z/data=!5m1!1e3`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 px-3 py-2 bg-gray-400 text-white text-sm rounded hover:bg-gray-500 text-center"
