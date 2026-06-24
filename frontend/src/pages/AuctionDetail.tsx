@@ -157,6 +157,7 @@ export const AuctionDetail: React.FC = () => {
                     />
                   </div>
                   <div className="mt-4 flex gap-2">
+                    <p className="text-xs text-gray-500 mb-2">GPS: {auction.details.gps_latitude}, {auction.details.gps_longitude}</p>
                     <a
                       href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},16z`}
                       target="_blank"
