@@ -17,11 +17,6 @@ interface AuctionDetail {
   occupancy_status: string;
   auction_start: string;
   auction_end: string;
-  risk_score_overall: number;
-  risk_score_legal: number;
-  risk_score_occupancy: number;
-  risk_score_market: number;
-  risk_factors: string[];
   url: string;
   details?: any;
   priceHistory?: any[];
@@ -108,13 +103,6 @@ export const AuctionDetail: React.FC = () => {
     );
   }
 
-  const getRiskColor = (score: number) => {
-    if (score < 20) return 'bg-green-100 text-green-800';
-    if (score < 50) return 'bg-yellow-100 text-yellow-800';
-    if (score < 75) return 'bg-orange-100 text-orange-800';
-    return 'bg-red-100 text-red-800';
-  };
-
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
       <button
@@ -149,42 +137,6 @@ export const AuctionDetail: React.FC = () => {
                 <p className="text-gray-700 whitespace-pre-wrap">{auction.description}</p>
               </div>
             )}
-
-            {/* Risk Scores */}
-            <div className="mb-8">
-              <h2 className="text-xl font-semibold mb-4">⚠️ Análisis de Riesgo</h2>
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div className={`p-4 rounded text-center ${getRiskColor(auction.risk_score_overall)}`}>
-                  <div className="text-3xl font-bold">{auction.risk_score_overall}</div>
-                  <p className="text-sm">Riesgo General</p>
-                </div>
-                <div className={`p-4 rounded text-center ${getRiskColor(auction.risk_score_legal)}`}>
-                  <div className="text-3xl font-bold">{auction.risk_score_legal}</div>
-                  <p className="text-sm">Legal</p>
-                </div>
-                <div className={`p-4 rounded text-center ${getRiskColor(auction.risk_score_occupancy)}`}>
-                  <div className="text-3xl font-bold">{auction.risk_score_occupancy}</div>
-                  <p className="text-sm">Ocupación</p>
-                </div>
-                <div className={`p-4 rounded text-center ${getRiskColor(auction.risk_score_market)}`}>
-                  <div className="text-3xl font-bold">{auction.risk_score_market}</div>
-                  <p className="text-sm">Mercado</p>
-                </div>
-              </div>
-
-              {auction.risk_factors && auction.risk_factors.length > 0 && (
-                <div className="mt-6">
-                  <h3 className="font-semibold mb-3">Factores de Riesgo:</h3>
-                  <ul className="space-y-2">
-                    {auction.risk_factors.map((factor, idx) => (
-                      <li key={idx} className="flex gap-2 text-gray-700">
-                        <span>•</span> {factor}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              )}
-            </div>
 
             {/* Details Grid */}
             <div className="grid grid-cols-2 md:grid-cols-3 gap-6">

@@ -9,7 +9,7 @@ export interface FilterState {
   occupancyStatus?: string;
   investmentScore?: string;
   search?: string;
-  sortBy: 'price' | 'riskScore' | 'date' | 'investmentScore';
+  sortBy: 'price' | 'date' | 'investmentScore' | 'pricePerM2';
 }
 
 interface SearchFiltersProps {
@@ -204,6 +204,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter }) => {
             >
               <option value="date">Date</option>
               <option value="price">Price</option>
+              <option value="pricePerM2">Price per m2</option>
               <option value="investmentScore">Score</option>
             </select>
           </div>

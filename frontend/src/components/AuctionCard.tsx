@@ -67,7 +67,18 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
         <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
           <div>
             <span className="text-gray-600">Location</span>
-            <p className="font-semibold">{auction.province}</p>
+            {auction.gps_latitude && auction.gps_longitude ? (
+              <a
+                href={`https://www.google.com/maps/?q=${auction.gps_latitude},${auction.gps_longitude}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-semibold text-brand-600 hover:text-brand-700 underline"
+              >
+                {auction.province}
+              </a>
+            ) : (
+              <p className="font-semibold">{auction.province}</p>
+            )}
           </div>
           <div>
             <span className="text-gray-600">Type</span>

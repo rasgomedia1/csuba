@@ -10,7 +10,7 @@ export interface SearchFilters {
   occupancyStatus?: string;
   investmentScore?: string;
   search?: string;
-  sortBy?: 'price' | 'riskScore' | 'date' | 'investmentScore';
+  sortBy?: 'price' | 'date' | 'investmentScore' | 'pricePerM2';
   limit?: number;
   offset?: number;
 }
@@ -90,9 +90,9 @@ export async function searchAuctions(filters: SearchFilters) {
   // Sorting
   const sortMap: Record<string, string> = {
     price: 'a.price_initial ASC',
-    riskScore: 'a.risk_score_overall ASC',
     date: 'a.auction_end ASC',
-    investmentScore: 'a.investment_score DESC'
+    investmentScore: 'a.investment_score DESC',
+    pricePerM2: '(a.price_initial / ad.property_constructed_sqm) ASC'
   };
 
   sql += ` ORDER BY ${sortMap[filters.sortBy || 'date']}`;
