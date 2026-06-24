@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { SectionNumberProvider } from './context/SectionNumberContext';
 import { Header } from './components/Header';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
@@ -13,9 +14,10 @@ import './index.css';
 
 function App() {
   return (
-    <BrowserRouter>
-      <AuthProvider>
-        <div className="min-h-screen flex flex-col bg-gray-50">
+    <SectionNumberProvider>
+      <BrowserRouter>
+        <AuthProvider>
+          <div className="min-h-screen flex flex-col bg-gray-50">
           <Header />
           <main className="flex-1">
             <Routes>
@@ -30,8 +32,9 @@ function App() {
             </Routes>
           </main>
         </div>
-      </AuthProvider>
-    </BrowserRouter>
+        </AuthProvider>
+      </BrowserRouter>
+    </SectionNumberProvider>
   );
 }
 

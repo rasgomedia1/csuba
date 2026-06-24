@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { SectionNumber } from './SectionNumber';
 
 interface Auction {
   id: string;
@@ -52,7 +53,8 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
     <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
       <div className="flex flex-col">
         {/* Top section - Information */}
-        <div className="p-6">
+        <div className="p-6 relative">
+          <SectionNumber />
           <Link
             to={`/auctions/${auction.id}`}
             className="text-lg font-semibold text-brand-600 hover:text-brand-700 block mb-4"
@@ -143,7 +145,8 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
 
         {/* Bottom section - Map Preview */}
         {auction.gps_latitude && auction.gps_longitude && (
-          <div className="bg-gray-50 border-t">
+          <div className="bg-gray-50 border-t relative">
+            <SectionNumber />
             <div className="relative overflow-hidden bg-gray-200" style={{ aspectRatio: '16 / 9' }}>
               <iframe
                 style={{
