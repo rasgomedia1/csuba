@@ -51,7 +51,18 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
 
   return (
     <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
-      <div className="flex flex-col">
+      <div className="flex flex-col relative">
+        {/* Heart/Favorite Button */}
+        {onAddToWatchlist && (
+          <button
+            onClick={() => onAddToWatchlist(auction.id)}
+            className="absolute top-3 right-3 text-2xl z-10 hover:scale-110 transition-transform"
+            title={isInWatchlist ? 'Remove from favorites' : 'Add to favorites'}
+          >
+            {isInWatchlist ? '❤️' : '🤍'}
+          </button>
+        )}
+
         {/* Top section - Information */}
         <div className="p-6 relative">
           <SectionNumber number={1} />
@@ -121,26 +132,12 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
             )}
           </div>
 
-          <div className="flex gap-3">
-            <Link
-              to={`/auctions/${auction.id}`}
-              className="flex-1 px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-700 text-center font-semibold text-sm"
-            >
-              View Details
-            </Link>
-            {onAddToWatchlist && (
-              <button
-                onClick={() => onAddToWatchlist(auction.id)}
-                className={`flex-1 px-4 py-2 rounded font-semibold text-sm ${
-                  isInWatchlist
-                    ? 'bg-red-600 text-white hover:bg-red-700'
-                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-              >
-                {isInWatchlist ? 'Saved' : 'Save'}
-              </button>
-            )}
-          </div>
+          <Link
+            to={`/auctions/${auction.id}`}
+            className="px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-700 text-center font-semibold text-sm block"
+          >
+            View Details
+          </Link>
         </div>
 
         {/* Bottom section - Map Preview */}

@@ -23,11 +23,12 @@ export const Header: React.FC = () => {
             Search
           </Link>
 
+          <Link to="/watchlist" className="text-gray-700 hover:text-brand-600 text-lg" title="Favorites">
+            ❤️ Favorites
+          </Link>
+
           {user ? (
             <>
-              <Link to="/watchlist" className="text-gray-700 hover:text-brand-600">
-                Saved ({user.email})
-              </Link>
               <Link to="/profile" className="text-gray-700 hover:text-brand-600">
                 Profile
               </Link>
