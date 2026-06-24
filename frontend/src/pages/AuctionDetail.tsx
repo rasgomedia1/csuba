@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { auctionsAPI } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
+import { SectionNumber } from '../components/SectionNumber';
 
 interface AuctionDetail {
   id: string;
@@ -119,8 +120,9 @@ export const AuctionDetail: React.FC = () => {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main content */}
         <div className="lg:col-span-2">
-          <div className="bg-white rounded-lg shadow p-8">
+          <div className="bg-white rounded-lg shadow p-8 relative">
             <div className="flex justify-between items-start mb-6">
+              <SectionNumber number={1} />
               <h1 className="text-3xl font-bold">{auction.title}</h1>
               <button
                 onClick={handleWatchlist}
@@ -136,7 +138,8 @@ export const AuctionDetail: React.FC = () => {
 
             {/* Description */}
             {auction.description && (
-              <div className="mb-8">
+              <div className="mb-8 relative">
+                <SectionNumber number={2} />
                 <h2 className="text-xl font-semibold mb-4">📝 Descripción</h2>
                 <p className="text-gray-700 whitespace-pre-wrap">{auction.description}</p>
               </div>
@@ -144,7 +147,8 @@ export const AuctionDetail: React.FC = () => {
 
             {/* Street View Section */}
             {auction.details?.gps_latitude && auction.details?.gps_longitude && (
-              <div className="mb-8 flex justify-center">
+              <div className="mb-8 flex justify-center relative">
+                <SectionNumber number={3} />
                 <div className="w-1/2">
                   <h2 className="text-xl font-semibold mb-4">📍 Ubicación</h2>
                   <div style={{ paddingBottom: '56.25%', position: 'relative', height: 0 }} className="rounded-lg overflow-hidden shadow-md">
@@ -181,7 +185,8 @@ export const AuctionDetail: React.FC = () => {
             )}
 
             {/* Details Grid */}
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 gap-6 relative">
+              <SectionNumber number={4} />
               <div>
                 <p className="text-gray-600 text-sm">📍 Provincia</p>
                 <p className="text-lg font-semibold">{auction.province}</p>
@@ -221,7 +226,8 @@ export const AuctionDetail: React.FC = () => {
         {/* Sidebar */}
         <div className="space-y-6">
           {/* Status Card */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6 relative">
+            <SectionNumber number={5} />
             <h3 className="font-semibold mb-4">Estado de la Subasta</h3>
             <div className="space-y-3">
               <div>
@@ -244,7 +250,8 @@ export const AuctionDetail: React.FC = () => {
           </div>
 
           {/* Dates Card */}
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="bg-white rounded-lg shadow p-6 relative">
+            <SectionNumber number={6} />
             <h3 className="font-semibold mb-4">📅 Fechas</h3>
             <div className="space-y-3">
               <div>
@@ -264,7 +271,9 @@ export const AuctionDetail: React.FC = () => {
 
           {/* External Link */}
           {auction.url && (
-            <a
+            <div className="relative">
+              <SectionNumber number={7} />
+              <a
               href={auction.url}
               target="_blank"
               rel="noopener noreferrer"
@@ -272,6 +281,7 @@ export const AuctionDetail: React.FC = () => {
             >
               🔗 Ver en BOE
             </a>
+            </div>
           )}
         </div>
       </div>

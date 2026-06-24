@@ -3,6 +3,7 @@ import { SearchFilters, FilterState } from '../components/SearchFilters';
 import { AuctionCard } from '../components/AuctionCard';
 import { auctionsAPI } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
+import { SectionNumber } from '../components/SectionNumber';
 
 interface Auction {
   id: string;
@@ -85,7 +86,10 @@ export const Search: React.FC = () => {
     <div className="max-w-7xl mx-auto px-4 py-8">
       <h1 className="text-3xl font-bold mb-8">🔍 Buscar Subastas</h1>
 
-      <SearchFilters onFilter={handleFilter} />
+      <div className="relative mb-8">
+        <SectionNumber number={1} />
+        <SearchFilters onFilter={handleFilter} />
+      </div>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
@@ -109,7 +113,8 @@ export const Search: React.FC = () => {
       )}
 
       {!loading && auctions.length > 0 && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 relative">
+          <SectionNumber number={2} />
           {auctions.map((auction) => (
             <AuctionCard
               key={auction.id}
