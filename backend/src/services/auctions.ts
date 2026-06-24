@@ -53,7 +53,9 @@ export async function searchAuctions(filters: SearchFilters) {
   }
 
   if (filters.minimumBidMax !== undefined) {
-    sql += ` AND a.minimum_bid_eur <= $${paramIndex}`;
+    // TODO: Use minimum_bid_eur when migration is confirmed on production DB
+    // Temporarily using price_initial until minimum_bid_eur column is verified
+    sql += ` AND COALESCE(a.minimum_bid_eur, a.price_initial) <= $${paramIndex}`;
     params.push(filters.minimumBidMax);
     paramIndex++;
   }
