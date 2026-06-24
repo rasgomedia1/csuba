@@ -122,9 +122,11 @@ export const AuctionDetail: React.FC = () => {
         {/* Main content */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow p-8 relative">
-            <div className="flex justify-between items-start mb-6">
+            <div className="flex justify-between items-start mb-6 relative">
               <SectionNumber number={1} />
-              <h1 className="text-3xl font-bold">{auction.title}</h1>
+              <div className="flex-1">
+                <p className="text-sm text-gray-600 mb-2">ID: <span className="font-mono font-semibold">{auction.external_id || id}</span></p>
+              </div>
               <button
                 onClick={handleWatchlist}
                 className={`px-4 py-2 rounded font-semibold ${
@@ -137,11 +139,7 @@ export const AuctionDetail: React.FC = () => {
               </button>
             </div>
 
-            {/* Description */}
-            {auction.description && (
-              <div className="mb-8 relative">
-                <SectionNumber number={2} />
-                <h2 className="text-xl font-semibold mb-4">📝 Descripción</h2>
+            {/* Description - Removed to simplify sec1 */}
                 <p className="text-gray-700 whitespace-pre-wrap">{auction.description}</p>
               </div>
             )}
@@ -160,20 +158,20 @@ export const AuctionDetail: React.FC = () => {
                   </div>
                   <div className="mt-4 flex gap-2">
                     <a
-                      href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},0a,75y`}
+                      href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},35z`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 text-center"
                     >
-                      🗺️ Street View
+                      🗺️ Map
                     </a>
                     <a
-                      href={`https://www.google.com/maps/place/@${auction.details.gps_latitude},${auction.details.gps_longitude},15z`}
+                      href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},35z&layer=s`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 px-3 py-2 bg-gray-400 text-white text-sm rounded hover:bg-gray-500 text-center"
                     >
-                      📍 Google Maps
+                      🛰️ Satellite
                     </a>
                   </div>
                   {auction.details?.cadastre_address && (
