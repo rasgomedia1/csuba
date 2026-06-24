@@ -158,7 +158,7 @@ export const AuctionDetail: React.FC = () => {
                   </div>
                   <div className="mt-4 flex gap-2">
                     <a
-                      href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},45z`}
+                      href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},16z`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="flex-1 px-3 py-2 bg-blue-600 text-white text-sm rounded hover:bg-blue-700 text-center"
