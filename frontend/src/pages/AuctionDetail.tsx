@@ -122,25 +122,22 @@ export const AuctionDetail: React.FC = () => {
         {/* Main content */}
         <div className="lg:col-span-2">
           <div className="bg-white rounded-lg shadow p-8 relative">
+            {/* Heart/Favorite Button */}
+            <button
+              onClick={handleWatchlist}
+              className="absolute top-4 right-4 text-3xl z-10 hover:scale-110 transition-transform"
+              title={inWatchlist ? 'Remove from favorites' : 'Add to favorites'}
+            >
+              {inWatchlist ? '❤️' : '🤍'}
+            </button>
+
             <div className="relative">
               <SectionNumber number={1} />
-              <div className="flex justify-between items-start mb-6">
-                <div className="flex-1">
-                  <h1 className="text-2xl font-bold mb-4">{auction.external_id || id}</h1>
-                  {auction.description && (
-                    <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{auction.description}</p>
-                  )}
-                </div>
-                <button
-                  onClick={handleWatchlist}
-                  className={`px-4 py-2 rounded font-semibold ml-4 ${
-                    inWatchlist
-                      ? 'bg-red-600 text-white'
-                      : 'bg-gray-200 text-gray-700'
-                  }`}
-                >
-                  {inWatchlist ? '❤️ Guardada' : '🤍 Guardar'}
-                </button>
+              <div className="mb-6">
+                <h1 className="text-2xl font-bold mb-4">{auction.external_id || id}</h1>
+                {auction.description && (
+                  <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{auction.description}</p>
+                )}
               </div>
             </div>
 
