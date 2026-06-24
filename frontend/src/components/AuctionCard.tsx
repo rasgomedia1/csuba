@@ -10,11 +10,9 @@ interface Auction {
   property_type: string;
   auction_status: string;
   occupancy_status: string;
-  risk_score_overall: number;
   investment_score?: string;
   auction_end: string;
   url?: string;
-  // Catastro fields
   property_constructed_sqm?: number;
   property_year_catastro?: number;
   gps_latitude?: number;
@@ -27,31 +25,26 @@ interface AuctionCardProps {
   isInWatchlist?: boolean;
 }
 
-const getRiskColor = (score: number): string => {
-  if (score < 20) return 'bg-green-100 text-green-800';
-  if (score < 50) return 'bg-yellow-100 text-yellow-800';
-  if (score < 75) return 'bg-orange-100 text-orange-800';
-  return 'bg-red-100 text-red-800';
-};
-
-const getRiskLabel = (score: number): string => {
-  if (score < 20) return '✓ Bajo';
-  if (score < 50) return '⚠️ Moderado';
-  if (score < 75) return '⚠️⚠️ Alto';
-  return '❌ Muy Alto';
-};
-
 const getStatusBadge = (status: string): string => {
   switch (status) {
+    case 'ACTIVA':
     case 'active':
-      return '🔴 Activa';
+      return 'Active';
+    case 'COMPLETADA':
     case 'completed':
-      return '✅ Completada';
+      return 'Completed';
+    case 'DESIERTA':
     case 'deserted':
-      return '❌ Desierta';
+      return 'Deserted';
     default:
       return status;
   }
+};
+
+const formatPrice = (price: number): string => {
+  return price.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })
+    .replace(/\s/g, '')
+    .replace(',', '.');
 };
 
 export const AuctionCard: React.FC<AuctionCardProps> = ({
@@ -59,58 +52,67 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
   onAddToWatchlist,
   isInWatchlist
 }) => {
+  const pricePerM2 = auction.property_constructed_sqm
+    ? Math.round(auction.price_initial / auction.property_constructed_sqm)
+    : null;
+
   return (
     <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
       <div className="p-6">
-        <div className="flex justify-between items-start mb-3">
-          <Link
-            to={`/auctions/${auction.id}`}
-            className="text-lg font-semibold text-brand-600 hover:text-brand-700 flex-1"
-          >
-            {auction.title}
-          </Link>
-          <span className={`px-3 py-1 rounded text-sm font-semibold ${getRiskColor(auction.risk_score_overall || 0)}`}>
-            {getRiskLabel(auction.risk_score_overall || 0)}
-          </span>
+        <Link
+          to={`/auctions/${auction.id}`}
+          className="text-lg font-semibold text-brand-600 hover:text-brand-700 block mb-4"
+        >
+          {auction.title}
+        </Link>
+
+        <div className="mb-6">
+          <p className="text-4xl font-bold text-brand-600">
+            {formatPrice(auction.price_initial)}
+          </p>
         </div>
 
-        <div className="grid grid-cols-2 gap-3 mb-4 text-sm">
+        <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
           <div>
-            <span className="text-gray-600">💰 Precio</span>
-            <p className="font-semibold text-brand-600">
-              €{auction.price_initial?.toLocaleString('es-ES') || 'N/A'}
-            </p>
+            <span className="text-gray-600">Location</span>
+            <p className="font-semibold">{auction.province}</p>
           </div>
           <div>
-            <span className="text-gray-600">📍 {auction.province}</span>
+            <span className="text-gray-600">Type</span>
             <p className="font-semibold">{auction.property_type}</p>
           </div>
           {auction.property_constructed_sqm && (
             <div>
-              <span className="text-gray-600">📐 Superficie</span>
-              <p className="font-semibold">{auction.property_constructed_sqm} m²</p>
+              <span className="text-gray-600">Area</span>
+              <p className="font-semibold">{auction.property_constructed_sqm} m2</p>
+            </div>
+          )}
+          {auction.property_constructed_sqm && pricePerM2 && (
+            <div>
+              <span className="text-gray-600">Price per m2</span>
+              <p className="font-semibold">{formatPrice(pricePerM2)}</p>
             </div>
           )}
           {auction.property_year_catastro && (
             <div>
-              <span className="text-gray-600">🏗️ Año Construcción</span>
+              <span className="text-gray-600">Built</span>
               <p className="font-semibold">{auction.property_year_catastro}</p>
             </div>
           )}
         </div>
 
-        <div className="flex gap-2 mb-4 flex-wrap">
-          <span className="px-2 py-1 bg-gray-100 text-gray-700 text-xs rounded">
+        <div className="flex gap-2 mb-4 flex-wrap text-xs">
+          <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded">
             {getStatusBadge(auction.auction_status)}
           </span>
           {auction.investment_score && (
-            <span className="px-2 py-1 bg-indigo-100 text-indigo-700 text-xs rounded font-semibold">
-              💎 {auction.investment_score}
+            <span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded font-semibold">
+              Score: {auction.investment_score}
             </span>
           )}
           {auction.auction_end && (
-            <span className="px-2 py-1 bg-purple-100 text-purple-700 text-xs rounded">
-              📅 {new Date(auction.auction_end).toLocaleDateString('es-ES')}
+            <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded">
+              {new Date(auction.auction_end).toLocaleDateString('en-US')}
             </span>
           )}
         </div>
@@ -118,20 +120,20 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
         <div className="flex gap-3">
           <Link
             to={`/auctions/${auction.id}`}
-            className="flex-1 px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-700 text-center font-semibold"
+            className="flex-1 px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-700 text-center font-semibold text-sm"
           >
-            Ver Detalles
+            View Details
           </Link>
           {onAddToWatchlist && (
             <button
               onClick={() => onAddToWatchlist(auction.id)}
-              className={`flex-1 px-4 py-2 rounded font-semibold ${
+              className={`flex-1 px-4 py-2 rounded font-semibold text-sm ${
                 isInWatchlist
                   ? 'bg-red-600 text-white hover:bg-red-700'
                   : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
               }`}
             >
-              {isInWatchlist ? '❤️ Guardada' : '🤍 Guardar'}
+              {isInWatchlist ? 'Saved' : 'Save'}
             </button>
           )}
         </div>

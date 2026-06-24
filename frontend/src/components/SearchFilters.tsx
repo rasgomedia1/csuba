@@ -3,11 +3,10 @@ import React, { useState } from 'react';
 export interface FilterState {
   province?: string;
   propertyType?: string;
-  priceMin?: number;
   priceMax?: number;
+  areaMin?: number;
   auctionStatus?: string;
   occupancyStatus?: string;
-  maxRiskScore?: number;
   investmentScore?: string;
   search?: string;
   sortBy: 'price' | 'riskScore' | 'date' | 'investmentScore';
@@ -18,23 +17,27 @@ interface SearchFiltersProps {
 }
 
 const provinces = [
-  'Madrid', 'Barcelona', 'Valencia', 'Sevilla', 'Bilbao',
-  'Alicante', 'Córdoba', 'Málaga', 'Murcia', 'Palma',
-  'Granada', 'Almería', 'Badajoz', 'Salamanca', 'Valladolid',
-  'Zaragoza', 'Santander', 'A Coruña', 'León', 'Vigo',
-  'Castellón', 'Tarragona', 'Albacete'
+  'Madrid', 'Barcelona',
+  'Albacete', 'Alicante', 'Almeria', 'Avila', 'Badajoz', 'Baleares', 'Bilbao',
+  'Burgos', 'Caceres', 'Cadiz', 'Cantabria', 'Castellon', 'Ceuta', 'Ciudad Real',
+  'Cordoba', 'A Coruna', 'Cuenca', 'Girona', 'Granada', 'Guadalajara', 'Guipuzcoa',
+  'Huelva', 'Huesca', 'Jaen', 'Leon', 'Lleida', 'Lugo', 'Malaga', 'Melilla', 'Murcia',
+  'Navarra', 'Ourense', 'Palencia', 'Palma', 'Pontevedra', 'La Rioja', 'Salamanca',
+  'Segovia', 'Sevilla', 'Soria', 'Tarragona', 'Teruel', 'Toledo', 'Valencia',
+  'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
 ];
 
-const propertyTypes = ['Vivienda', 'Local', 'Garaje', 'Terreno', 'Otro'];
+const propertyTypes = ['House', 'Commercial', 'Garage', 'Land', 'Other'];
 const auctionStatuses = ['active', 'completed', 'deserted'];
 const occupancyStatuses = ['empty', 'occupied', 'unknown'];
+const investmentScores = ['BAJO', 'MEDIO', 'ALTO', 'MUY_ALTO'];
 
 export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter }) => {
   const [filters, setFilters] = useState<FilterState>({
+    province: 'Castellon',
+    areaMin: 8,
     sortBy: 'date'
   });
-
-  const [expandFilters, setExpandFilters] = useState(false);
 
   const handleFilterChange = (key: keyof FilterState, value: any) => {
     const newFilters = { ...filters, [key]: value };
@@ -47,8 +50,8 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter }) => {
   };
 
   const handleReset = () => {
-    setFilters({ sortBy: 'date' });
-    onFilter({ sortBy: 'date' });
+    setFilters({ province: 'Castellon', areaMin: 8, sortBy: 'date' });
+    onFilter({ province: 'Castellon', areaMin: 8, sortBy: 'date' });
   };
 
   return (
@@ -56,182 +59,166 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter }) => {
       <div className="mb-4">
         <input
           type="text"
-          placeholder="🔍 Buscar por ubicación, dirección o descripción..."
+          placeholder="Search by location, address or description..."
           value={filters.search || ''}
           onChange={(e) => handleFilterChange('search', e.target.value || undefined)}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
 
-      <button
-        type="button"
-        onClick={() => setExpandFilters(!expandFilters)}
-        className="text-lg font-semibold text-gray-900 flex items-center gap-2 cursor-pointer w-full"
-      >
-        <span>{expandFilters ? '▼' : '▶'} Más Filtros</span>
-      </button>
-
-      {expandFilters && (
-        <form onSubmit={handleSubmit} className="mt-6 space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            {/* Precio máximo */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                💰 Precio Máximo
-              </label>
-              <input
-                type="number"
-                placeholder="Ej: 500000"
-                value={filters.priceMax || ''}
-                onChange={(e) => handleFilterChange('priceMax', e.target.value ? Number(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-              />
-            </div>
-
-            {/* Provincia */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                📍 Provincia
-              </label>
-              <select
-                value={filters.province || ''}
-                onChange={(e) => handleFilterChange('province', e.target.value || undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-              >
-                <option value="">Cualquier provincia</option>
-                {provinces.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Tipo de propiedad */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                🏠 Tipo de Bien
-              </label>
-              <select
-                value={filters.propertyType || ''}
-                onChange={(e) => handleFilterChange('propertyType', e.target.value || undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-              >
-                <option value="">Cualquier tipo</option>
-                {propertyTypes.map((p) => (
-                  <option key={p} value={p}>
-                    {p}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            {/* Estado de subasta */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                📋 Estado
-              </label>
-              <select
-                value={filters.auctionStatus || ''}
-                onChange={(e) => handleFilterChange('auctionStatus', e.target.value || undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-              >
-                <option value="">Cualquier estado</option>
-                <option value="active">Activa</option>
-                <option value="completed">Completada</option>
-                <option value="deserted">Desierta</option>
-              </select>
-            </div>
-
-            {/* Ocupación */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                👥 Ocupación
-              </label>
-              <select
-                value={filters.occupancyStatus || ''}
-                onChange={(e) => handleFilterChange('occupancyStatus', e.target.value || undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-              >
-                <option value="">Cualquier estado</option>
-                <option value="empty">Vacía</option>
-                <option value="occupied">Ocupada</option>
-                <option value="unknown">Desconocido</option>
-              </select>
-            </div>
-
-            {/* Riesgo máximo */}
-            <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">
-                ⚠️ Riesgo Máximo
-              </label>
-              <select
-                value={filters.maxRiskScore || ''}
-                onChange={(e) => handleFilterChange('maxRiskScore', e.target.value ? Number(e.target.value) : undefined)}
-                className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-              >
-                <option value="">Sin límite</option>
-                <option value="20">Bajo (0-20)</option>
-                <option value="40">Moderado (0-40)</option>
-                <option value="60">Medio (0-60)</option>
-                <option value="100">Alto (0-100)</option>
-              </select>
-            </div>
-          </div>
-
-          {/* Ordenar */}
-          <div className="mt-4">
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          {/* Max Price */}
+          <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              🔀 Ordenar por
+              Max Price (EUR)
             </label>
-            <div className="flex gap-4">
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  value="date"
-                  checked={filters.sortBy === 'date'}
-                  onChange={(e) => handleFilterChange('sortBy', e.target.value as any)}
-                />
-                Fecha
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  value="price"
-                  checked={filters.sortBy === 'price'}
-                  onChange={(e) => handleFilterChange('sortBy', e.target.value as any)}
-                />
-                Precio
-              </label>
-              <label className="flex items-center gap-2">
-                <input
-                  type="radio"
-                  value="riskScore"
-                  checked={filters.sortBy === 'riskScore'}
-                  onChange={(e) => handleFilterChange('sortBy', e.target.value as any)}
-                />
-                Riesgo
-              </label>
-            </div>
+            <input
+              type="number"
+              placeholder="Ex: 500000"
+              value={filters.priceMax || ''}
+              onChange={(e) => handleFilterChange('priceMax', e.target.value ? Number(e.target.value) : undefined)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
           </div>
 
-          <div className="flex gap-3 pt-4">
-            <button
-              type="submit"
-              className="flex-1 px-4 py-3 bg-brand-600 text-white rounded font-semibold hover:bg-brand-700"
-            >
-              🔍 Buscar
-            </button>
-            <button
-              type="button"
-              onClick={handleReset}
-              className="px-4 py-3 border border-gray-300 rounded hover:bg-gray-50"
-            >
-              Limpiar
-            </button>
+          {/* Min Area */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Min Area (m2)
+            </label>
+            <input
+              type="number"
+              value={filters.areaMin || ''}
+              onChange={(e) => handleFilterChange('areaMin', e.target.value ? parseInt(e.target.value) : undefined)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
           </div>
-        </form>
-      )}
+
+          {/* Province */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Province
+            </label>
+            <select
+              value={filters.province || ''}
+              onChange={(e) => handleFilterChange('province', e.target.value || undefined)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+            >
+              <option value="">All Provinces</option>
+              {provinces.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Property Type */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Property Type
+            </label>
+            <select
+              value={filters.propertyType || ''}
+              onChange={(e) => handleFilterChange('propertyType', e.target.value || undefined)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+            >
+              <option value="">All Types</option>
+              {propertyTypes.map((p) => (
+                <option key={p} value={p}>
+                  {p}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Auction Status */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Status
+            </label>
+            <select
+              value={filters.auctionStatus || ''}
+              onChange={(e) => handleFilterChange('auctionStatus', e.target.value || undefined)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+            >
+              <option value="">All Status</option>
+              <option value="ACTIVA">Active</option>
+              <option value="COMPLETADA">Completed</option>
+              <option value="DESIERTA">Deserted</option>
+            </select>
+          </div>
+
+          {/* Occupancy */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Occupancy
+            </label>
+            <select
+              value={filters.occupancyStatus || ''}
+              onChange={(e) => handleFilterChange('occupancyStatus', e.target.value || undefined)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+            >
+              <option value="">All</option>
+              <option value="empty">Empty</option>
+              <option value="occupied">Occupied</option>
+              <option value="unknown">Unknown</option>
+            </select>
+          </div>
+
+          {/* Investment Score */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Investment Score
+            </label>
+            <select
+              value={filters.investmentScore || ''}
+              onChange={(e) => handleFilterChange('investmentScore', e.target.value || undefined)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+            >
+              <option value="">All Scores</option>
+              {investmentScores.map((s) => (
+                <option key={s} value={s}>
+                  {s}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sort By */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Sort By
+            </label>
+            <select
+              value={filters.sortBy}
+              onChange={(e) => handleFilterChange('sortBy', e.target.value)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+            >
+              <option value="date">Date</option>
+              <option value="price">Price</option>
+              <option value="investmentScore">Score</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="flex gap-3 pt-4">
+          <button
+            type="submit"
+            className="flex-1 px-6 py-3 bg-brand-600 text-white rounded font-semibold hover:bg-brand-700"
+          >
+            Apply Filters
+          </button>
+          <button
+            type="button"
+            onClick={handleReset}
+            className="px-6 py-3 bg-gray-200 text-gray-700 rounded font-semibold hover:bg-gray-300"
+          >
+            Reset
+          </button>
+        </div>
+      </form>
     </div>
   );
 };

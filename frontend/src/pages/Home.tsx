@@ -11,10 +11,10 @@ export const Home: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            🏛️ CSUBA
+            CSUBA
           </h1>
           <p className="text-xl text-gray-700 mb-8">
-            La plataforma integral para descubrir y gestionar subastas en España
+            The complete platform to discover and manage auctions in Spain
           </p>
 
           {!user ? (
@@ -23,13 +23,13 @@ export const Home: React.FC = () => {
                 to="/login"
                 className="px-8 py-4 bg-brand-600 text-white rounded-lg font-semibold hover:bg-brand-700 text-lg"
               >
-                Iniciar Sesión
+                Sign In
               </Link>
               <Link
                 to="/register"
                 className="px-8 py-4 border-2 border-brand-600 text-brand-600 rounded-lg font-semibold hover:bg-brand-50 text-lg"
               >
-                Crear Cuenta
+                Create Account
               </Link>
             </div>
           ) : (
@@ -37,7 +37,7 @@ export const Home: React.FC = () => {
               to="/search"
               className="inline-block px-8 py-4 bg-brand-600 text-white rounded-lg font-semibold hover:bg-brand-700 text-lg"
             >
-              🔍 Comenzar a Buscar
+              Search Auctions
             </Link>
           )}
         </div>
@@ -45,26 +45,26 @@ export const Home: React.FC = () => {
         {/* Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
           <div className="bg-white p-8 rounded-lg shadow hover:shadow-lg transition">
-            <div className="text-4xl mb-4">🔍</div>
-            <h3 className="text-xl font-bold mb-2">Búsqueda Avanzada</h3>
+            <div className="text-4xl mb-4">Search</div>
+            <h3 className="text-xl font-bold mb-2">Advanced Search</h3>
             <p className="text-gray-600">
-              Filtra por precio, provincia, tipo de bien y condiciones. Encuentra exactamente lo que buscas.
+              Filter by price, location, property type and conditions. Find exactly what you need.
             </p>
           </div>
 
           <div className="bg-white p-8 rounded-lg shadow hover:shadow-lg transition">
-            <div className="text-4xl mb-4">⚠️</div>
-            <h3 className="text-xl font-bold mb-2">Evaluación de Riesgo</h3>
+            <div className="text-4xl mb-4">Score</div>
+            <h3 className="text-xl font-bold mb-2">Investment Score</h3>
             <p className="text-gray-600">
-              Análisis automático de ocupación, cargas legales y factores de mercado en cada propiedad.
+              Automatic analysis of occupancy, legal charges and market factors for each property.
             </p>
           </div>
 
           <div className="bg-white p-8 rounded-lg shadow hover:shadow-lg transition">
-            <div className="text-4xl mb-4">❤️</div>
-            <h3 className="text-xl font-bold mb-2">Seguimiento Personal</h3>
+            <div className="text-4xl mb-4">Heart</div>
+            <h3 className="text-xl font-bold mb-2">Personal Tracking</h3>
             <p className="text-gray-600">
-              Guarda tus propiedades favoritas y recibe alertas de cambios importantes en tiempo real.
+              Save your favorite properties and get alerts on important changes in real time.
             </p>
           </div>
         </div>
@@ -74,19 +74,19 @@ export const Home: React.FC = () => {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
             <div>
               <div className="text-4xl font-bold text-brand-600">+50K</div>
-              <p className="text-gray-600">Subastas Disponibles</p>
+              <p className="text-gray-600">Auctions Available</p>
             </div>
             <div>
-              <div className="text-4xl font-bold text-brand-600">+15</div>
-              <p className="text-gray-600">Provincias</p>
+              <div className="text-4xl font-bold text-brand-600">+50</div>
+              <p className="text-gray-600">Provinces</p>
             </div>
             <div>
               <div className="text-4xl font-bold text-brand-600">24/7</div>
-              <p className="text-gray-600">Monitoreo Activo</p>
+              <p className="text-gray-600">Active Monitoring</p>
             </div>
             <div>
               <div className="text-4xl font-bold text-brand-600">100%</div>
-              <p className="text-gray-600">Gratis</p>
+              <p className="text-gray-600">Free</p>
             </div>
           </div>
         </div>
