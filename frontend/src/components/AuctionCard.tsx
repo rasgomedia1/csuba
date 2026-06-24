@@ -50,8 +50,8 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
 
   return (
     <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
-        {/* Left section - Information */}
+      <div className="flex flex-col">
+        {/* Top section - Information */}
         <div className="p-6">
           <Link
             to={`/auctions/${auction.id}`}
@@ -141,24 +141,26 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
           </div>
         </div>
 
-        {/* Right section - Map Preview */}
-        {auction.gps_latitude && auction.gps_longitude ? (
-          <div className="relative overflow-hidden bg-gray-200" style={{ aspectRatio: '16 / 9' }}>
-            <iframe
-              style={{
-                position: 'absolute',
-                top: 0,
-                left: 0,
-                width: '100%',
-                height: '100%',
-                border: 'none'
-              }}
-              src={`https://www.google.com/maps?q=${auction.gps_latitude},${auction.gps_longitude}&output=embed&z=15`}
-              allowFullScreen={true}
-              loading="lazy"
-            ></iframe>
+        {/* Bottom section - Map Preview */}
+        {auction.gps_latitude && auction.gps_longitude && (
+          <div className="bg-gray-50 border-t">
+            <div className="relative overflow-hidden bg-gray-200" style={{ aspectRatio: '16 / 9' }}>
+              <iframe
+                style={{
+                  position: 'absolute',
+                  top: 0,
+                  left: 0,
+                  width: '100%',
+                  height: '100%',
+                  border: 'none'
+                }}
+                src={`https://www.google.com/maps?q=${auction.gps_latitude},${auction.gps_longitude}&output=embed&z=15`}
+                allowFullScreen={true}
+                loading="lazy"
+              ></iframe>
+            </div>
           </div>
-        ) : null}
+        )}
       </div>
     </div>
   );
