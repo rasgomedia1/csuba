@@ -143,27 +143,21 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
 
         {/* Right section - Map Preview */}
         {auction.gps_latitude && auction.gps_longitude ? (
-          <a
-            href={`https://www.google.com/maps/?q=${auction.gps_latitude},${auction.gps_longitude}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="bg-gradient-to-br from-blue-400 to-blue-600 flex flex-col items-center justify-center hover:from-blue-500 hover:to-blue-700 transition-all cursor-pointer"
-          >
-            <div className="text-white text-center">
-              <div className="text-5xl mb-3">📍</div>
-              <p className="text-lg font-semibold mb-2">{auction.province}</p>
-              <p className="text-sm opacity-90 mb-1">
-                {parseFloat(String(auction.gps_latitude)).toFixed(4)}°
-              </p>
-              <p className="text-sm opacity-90 mb-4">
-                {parseFloat(String(auction.gps_longitude)).toFixed(4)}°
-              </p>
-              <div className="border-t border-white pt-3 mt-3">
-                <p className="text-xs font-semibold opacity-75">Click to view on</p>
-                <p className="text-sm font-bold">Google Maps</p>
-              </div>
-            </div>
-          </a>
+          <div className="relative overflow-hidden bg-gray-200" style={{ aspectRatio: '16 / 9' }}>
+            <iframe
+              style={{
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                width: '100%',
+                height: '100%',
+                border: 'none'
+              }}
+              src={`https://www.google.com/maps?q=${auction.gps_latitude},${auction.gps_longitude}&output=embed&z=15`}
+              allowFullScreen={true}
+              loading="lazy"
+            ></iframe>
+          </div>
         ) : null}
       </div>
     </div>
