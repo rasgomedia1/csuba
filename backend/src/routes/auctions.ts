@@ -10,11 +10,12 @@ router.get('/search', async (req: Request, res: Response) => {
     const filters = {
       province: req.query.province as string,
       propertyType: req.query.propertyType as string,
-      priceMin: req.query.priceMin ? Number(req.query.priceMin) : undefined,
       priceMax: req.query.priceMax ? Number(req.query.priceMax) : undefined,
+      areaMin: req.query.areaMin ? Number(req.query.areaMin) : undefined,
       auctionStatus: req.query.auctionStatus as string,
       occupancyStatus: req.query.occupancyStatus as string,
-      maxRiskScore: req.query.maxRiskScore ? Number(req.query.maxRiskScore) : undefined,
+      investmentScore: req.query.investmentScore as string,
+      search: req.query.search as string,
       sortBy: (req.query.sortBy as any) || 'date',
       limit: req.query.limit ? Number(req.query.limit) : 20,
       offset: req.query.offset ? Number(req.query.offset) : 0
@@ -38,16 +39,6 @@ router.get('/:id', async (req: Request, res: Response) => {
     res.json(auction);
   } catch (error: any) {
     res.status(404).json({ error: error.message });
-  }
-});
-
-// Recalculate risk score
-router.post('/:id/risk-score', async (req: Request, res: Response) => {
-  try {
-    const riskScore = await auctionService.calculateRiskScore(req.params.id);
-    res.json(riskScore);
-  } catch (error: any) {
-    res.status(500).json({ error: error.message });
   }
 });
 

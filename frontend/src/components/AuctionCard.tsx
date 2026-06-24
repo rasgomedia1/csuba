@@ -34,9 +34,9 @@ const getStatusBadge = (status: string): string => {
 };
 
 const formatPrice = (price: number): string => {
-  return price.toLocaleString('es-ES', { style: 'currency', currency: 'EUR' })
-    .replace(/\s/g, '')
-    .replace(',', '.');
+  const rounded = Math.round(price);
+  return 'EUR ' + rounded.toLocaleString('en-US', { style: 'decimal' })
+    .replace(/,/g, '.');
 };
 
 export const AuctionCard: React.FC<AuctionCardProps> = ({
@@ -59,7 +59,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
         </Link>
 
         <div className="mb-6">
-          <p className="text-4xl font-bold text-brand-600">
+          <p className="text-3xl font-bold text-brand-600">
             {formatPrice(auction.price_initial)}
           </p>
         </div>

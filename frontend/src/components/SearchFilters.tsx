@@ -56,12 +56,18 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter }) => {
 
   return (
     <div className="bg-white rounded-lg shadow p-6 mb-6">
-      <div className="mb-4">
+      <div className="mb-6">
+        <label className="block text-sm font-semibold text-gray-700 mb-2">
+          Search
+        </label>
         <input
           type="text"
           placeholder="Search by location, address or description..."
           value={filters.search || ''}
-          onChange={(e) => handleFilterChange('search', e.target.value || undefined)}
+          onChange={(e) => {
+            handleFilterChange('search', e.target.value || undefined);
+            onFilter({ ...filters, search: e.target.value || undefined });
+          }}
           className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500"
         />
       </div>
