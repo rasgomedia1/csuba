@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { auctionsAPI } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
 import { SectionNumber } from '../components/SectionNumber';
+import { StreetView } from '../components/StreetView';
 
 interface AuctionDetail {
   id: string;
@@ -151,13 +152,11 @@ export const AuctionDetail: React.FC = () => {
                 <SectionNumber number={3} />
                 <div className="w-1/2">
                   <h2 className="text-xl font-semibold mb-4">📍 Ubicación</h2>
-                  <div style={{ paddingBottom: '56.25%', position: 'relative', height: 0 }} className="rounded-lg overflow-hidden shadow-md">
-                    <iframe
-                      style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', border: 'none' }}
-                      src={`https://www.google.com/maps?q=${auction.details.gps_latitude},${auction.details.gps_longitude}&output=embed`}
-                      allowFullScreen={true}
-                      loading="lazy"
-                    ></iframe>
+                  <div className="rounded-lg overflow-hidden shadow-md">
+                    <StreetView
+                      latitude={auction.details.gps_latitude}
+                      longitude={auction.details.gps_longitude}
+                    />
                   </div>
                   <div className="mt-4 flex gap-2">
                     <a
