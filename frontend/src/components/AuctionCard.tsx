@@ -26,19 +26,11 @@ interface AuctionCardProps {
 }
 
 const getStatusBadge = (status: string): string => {
-  switch (status) {
-    case 'ACTIVA':
-    case 'active':
-      return 'Active';
-    case 'COMPLETADA':
-    case 'completed':
-      return 'Completed';
-    case 'DESIERTA':
-    case 'deserted':
-      return 'Deserted';
-    default:
-      return status;
-  }
+  const status_lower = status.toLowerCase();
+  if (status_lower === 'activa') return 'Active';
+  if (status_lower === 'completada') return 'Completed';
+  if (status_lower === 'desierta') return 'Deserted';
+  return status;
 };
 
 const formatPrice = (price: number): string => {

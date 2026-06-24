@@ -4,13 +4,12 @@ import { v4 as uuidv4 } from 'uuid';
 export interface SearchFilters {
   province?: string;
   propertyType?: string;
-  priceMin?: number;
   priceMax?: number;
+  areaMin?: number;
   auctionStatus?: string;
   occupancyStatus?: string;
-  maxRiskScore?: number;
   investmentScore?: string;
-  search?: string; // Text search
+  search?: string;
   sortBy?: 'price' | 'riskScore' | 'date' | 'investmentScore';
   limit?: number;
   offset?: number;
@@ -47,13 +46,19 @@ export async function searchAuctions(filters: SearchFilters) {
   }
 
   if (filters.priceMax !== undefined) {
-    sql += ` AND price_initial <= $${paramIndex}`;
+    sql += ` AND a.price_initial <= $${paramIndex}`;
     params.push(filters.priceMax);
     paramIndex++;
   }
 
+  if (filters.areaMin !== undefined) {
+    sql += ` AND ad.property_constructed_sqm >= $${paramIndex}`;
+    params.push(filters.areaMin);
+    paramIndex++;
+  }
+
   if (filters.auctionStatus) {
-    sql += ` AND auction_status = $${paramIndex}`;
+    sql += ` AND a.auction_status = $${paramIndex}`;
     params.push(filters.auctionStatus);
     paramIndex++;
   }

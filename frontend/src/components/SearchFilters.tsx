@@ -144,9 +144,9 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter }) => {
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
               <option value="">All Status</option>
-              <option value="ACTIVA">Active</option>
-              <option value="COMPLETADA">Completed</option>
-              <option value="DESIERTA">Deserted</option>
+              <option value="activa">Active</option>
+              <option value="completada">Completed</option>
+              <option value="desierta">Deserted</option>
             </select>
           </div>
 
