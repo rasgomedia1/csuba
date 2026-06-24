@@ -7,16 +7,22 @@ interface StreetViewProps {
 }
 
 export const StreetView: React.FC<StreetViewProps> = ({ latitude, longitude, className = '' }) => {
-  // Static Maps image - no API key required for basic usage
-  const mapsImageUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=16&size=800x450&markers=color:red%7C${latitude},${longitude}&style=feature:all|element:labels|visibility:off`;
+  // Street View Static image from Google Maps API
+  const apiKey = 'AIzaSyAumR7yrs4BLDT-qJuO1JLtX36_zvTC6Tw';
+  const streetViewUrl = `https://maps.googleapis.com/maps/api/streetview?size=800x450&location=${latitude},${longitude}&heading=0&pitch=0&fov=90&key=${apiKey}`;
 
   return (
     <div className={`w-full ${className}`} style={{ aspectRatio: '16 / 9' }}>
       <img
-        src={mapsImageUrl}
-        alt="Ubicación en mapa"
+        src={streetViewUrl}
+        alt="Street View"
         className="w-full h-full object-cover rounded-lg"
-        loading="lazy"
+        onError={(e) => {
+          console.error('Street View error:', e);
+          // Fallback a Static Maps
+          const fallbackUrl = `https://maps.googleapis.com/maps/api/staticmap?center=${latitude},${longitude}&zoom=16&size=800x450&markers=color:red%7C${latitude},${longitude}&key=${apiKey}`;
+          e.currentTarget.src = fallbackUrl;
+        }}
       />
     </div>
   );
