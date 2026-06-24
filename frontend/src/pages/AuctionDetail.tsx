@@ -140,9 +140,6 @@ export const AuctionDetail: React.FC = () => {
             </div>
 
             {/* Description - Removed to simplify sec1 */}
-                <p className="text-gray-700 whitespace-pre-wrap">{auction.description}</p>
-              </div>
-            )}
 
             {/* Street View Section */}
             {auction.details?.gps_latitude && auction.details?.gps_longitude && (
