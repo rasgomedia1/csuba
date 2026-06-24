@@ -11,6 +11,7 @@ router.get('/search', async (req: Request, res: Response) => {
       province: req.query.province as string,
       propertyType: req.query.propertyType as string,
       priceMax: req.query.priceMax ? Number(req.query.priceMax) : undefined,
+      minimumBidMax: req.query.minimumBidMax ? Number(req.query.minimumBidMax) : undefined,
       areaMin: req.query.areaMin ? Number(req.query.areaMin) : undefined,
       auctionStatus: req.query.auctionStatus as string,
       occupancyStatus: req.query.occupancyStatus as string,
