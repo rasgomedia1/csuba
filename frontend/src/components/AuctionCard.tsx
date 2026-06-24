@@ -50,9 +50,9 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
 
   return (
     <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 p-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-0">
         {/* Left section - Information */}
-        <div className="md:col-span-2">
+        <div className="p-6">
           <Link
             to={`/auctions/${auction.id}`}
             className="text-lg font-semibold text-brand-600 hover:text-brand-700 block mb-4"
@@ -71,7 +71,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
 
           <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
             <div>
-              <span className="text-gray-600">Location</span>
+              <span className="text-gray-600">Location &nbsp;</span>
               {auction.gps_latitude && auction.gps_longitude ? (
                 <a
                   href={`https://www.google.com/maps/?q=${auction.gps_latitude},${auction.gps_longitude}`}
@@ -141,20 +141,29 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
           </div>
         </div>
 
-        {/* Right section - Street View */}
+        {/* Right section - Map Preview */}
         {auction.gps_latitude && auction.gps_longitude ? (
-          <div className="md:col-span-1">
-            <div className="bg-gray-200 rounded-lg overflow-hidden h-48">
-              <img
-                src={`https://maps.googleapis.com/maps/api/streetview?size=400x300&location=${auction.gps_latitude},${auction.gps_longitude}&key=AIzaSyAj1O-2A-w4NTIStaMwJZdOSCEO-R6OA4E`}
-                alt="Street View"
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  (e.target as HTMLImageElement).style.display = 'none';
-                }}
-              />
+          <a
+            href={`https://www.google.com/maps/?q=${auction.gps_latitude},${auction.gps_longitude}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="bg-gradient-to-br from-blue-400 to-blue-600 flex flex-col items-center justify-center hover:from-blue-500 hover:to-blue-700 transition-all cursor-pointer"
+          >
+            <div className="text-white text-center">
+              <div className="text-5xl mb-3">📍</div>
+              <p className="text-lg font-semibold mb-2">{auction.province}</p>
+              <p className="text-sm opacity-90 mb-1">
+                {parseFloat(String(auction.gps_latitude)).toFixed(4)}°
+              </p>
+              <p className="text-sm opacity-90 mb-4">
+                {parseFloat(String(auction.gps_longitude)).toFixed(4)}°
+              </p>
+              <div className="border-t border-white pt-3 mt-3">
+                <p className="text-xs font-semibold opacity-75">Click to view on</p>
+                <p className="text-sm font-bold">Google Maps</p>
+              </div>
             </div>
-          </div>
+          </a>
         ) : null}
       </div>
     </div>
