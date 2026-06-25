@@ -40,7 +40,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter, initialF
     areaMin: 8,
     investmentScore: 'MUY_ALTO',
     minimumBidMax: 2000,
-    sortBy: 'date'
+    sortBy: 'pricePerM2'
   };
 
   const [filters, setFilters] = useState<FilterState>(initialFilters || defaultFilters);
