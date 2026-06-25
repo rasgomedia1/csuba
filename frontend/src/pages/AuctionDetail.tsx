@@ -20,6 +20,9 @@ interface AuctionDetail {
   auction_start: string;
   auction_end: string;
   url: string;
+  investment_score?: string;
+  investment_score_description?: string;
+  external_id?: string;
   details?: {
     gps_latitude?: number;
     gps_longitude?: number;
@@ -215,6 +218,26 @@ export const AuctionDetail: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Investment Score Section */}
+            {(auction.investment_score || auction.investment_score_description) && (
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <div className="space-y-3">
+                  {auction.investment_score && (
+                    <div>
+                      <p className="text-gray-600 text-sm">📊 Score de Inversión</p>
+                      <p className="text-lg font-bold text-gray-900">{auction.investment_score}</p>
+                    </div>
+                  )}
+                  {auction.investment_score_description && (
+                    <div>
+                      <p className="text-gray-600 text-sm">📝 Descripción</p>
+                      <p className="text-base font-semibold text-gray-900">{auction.investment_score_description}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
