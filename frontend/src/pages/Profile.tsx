@@ -163,14 +163,6 @@ export const Profile: React.FC = () => {
           )}
         </div>
 
-        {/* About Section */}
-        <div className="border-t pt-8">
-          <h2 className="text-2xl font-semibold mb-4">ℹ️ Sobre SubastaHub</h2>
-          <p className="text-gray-700">
-            Versión 0.1.0 - Maqueta de Desarrollo<br/>
-            Plataforma integral para consolidar información de subastas en España
-          </p>
-        </div>
       </div>
     </div>
   );
