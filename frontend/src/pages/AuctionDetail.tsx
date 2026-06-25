@@ -22,6 +22,7 @@ interface AuctionDetail {
   url: string;
   investment_score?: string;
   investment_score_description?: string;
+  legal_charges_description?: string;
   external_id?: string;
   details?: {
     gps_latitude?: number;
@@ -235,6 +236,16 @@ export const AuctionDetail: React.FC = () => {
                       <p className="text-base font-semibold text-gray-900">{auction.investment_score_description}</p>
                     </div>
                   )}
+                </div>
+              </div>
+            )}
+
+            {/* Legal Charges Section */}
+            {auction.legal_charges_description && (
+              <div className="mt-8 pt-6 border-t border-gray-200">
+                <div>
+                  <p className="text-gray-600 text-sm">⚠️ Cargas Legales</p>
+                  <p className="text-base font-semibold text-gray-900 mt-2">{auction.legal_charges_description}</p>
                 </div>
               </div>
             )}

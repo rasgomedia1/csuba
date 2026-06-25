@@ -9,6 +9,7 @@ interface Auction {
   price_initial: number;
   price_estimate?: number;
   minimum_bid_eur?: number;
+  valor_tasacion_eur?: number;
   province: string;
   property_type: string;
   auction_status: string;
@@ -79,10 +80,20 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
             {pricePerM2 && (
               <p className="text-sm text-gray-600">Price m2 {formatPrice(pricePerM2)}</p>
             )}
-            {auction.minimum_bid_eur && (
-              <p className="text-sm text-gray-600">Min Bid 🏷️ {formatPrice(auction.minimum_bid_eur)}</p>
-            )}
           </div>
+
+          {/* Minimum Bid Section - Main */}
+          {auction.minimum_bid_eur && (
+            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
+              <p className="text-sm text-gray-600 mb-1">🏷️ Puja Mínima</p>
+              <p className="text-2xl font-bold text-brand-600">{formatPrice(auction.minimum_bid_eur)}</p>
+              {auction.valor_tasacion_eur && (
+                <p className="text-base text-gray-700 mt-2">
+                  💎 Tasación: <span className="font-semibold">{formatPrice(auction.valor_tasacion_eur)}</span>
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
             <div>
