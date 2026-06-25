@@ -23,6 +23,7 @@ export const Search: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [watchlist, setWatchlist] = useState<Set<string>>(new Set());
+  const [initialFilters, setInitialFilters] = useState<FilterState | undefined>(undefined);
   const { user } = useAuth();
 
   const loadWatchlist = async () => {
@@ -38,9 +39,22 @@ export const Search: React.FC = () => {
 
   useEffect(() => {
     loadWatchlist();
+
+    // Load saved filters from localStorage
+    const saved = localStorage.getItem('lastSearchFilters');
+    if (saved) {
+      try {
+        setInitialFilters(JSON.parse(saved));
+      } catch {
+        // Ignore if parsing fails
+      }
+    }
   }, [user]);
 
   const handleFilter = async (filters: FilterState) => {
+    // Save filters to localStorage
+    localStorage.setItem('lastSearchFilters', JSON.stringify(filters));
+
     setLoading(true);
     setError(null);
 
@@ -88,7 +102,7 @@ export const Search: React.FC = () => {
 
       <div className="relative mb-8">
         <SectionNumber number={1} />
-        <SearchFilters onFilter={handleFilter} />
+        <SearchFilters onFilter={handleFilter} initialFilters={initialFilters} />
       </div>
 
       {error && (

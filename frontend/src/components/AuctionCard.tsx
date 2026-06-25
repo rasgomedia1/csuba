@@ -67,12 +67,9 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
         {/* Top section - Information */}
         <div className="p-6 relative">
           <SectionNumber number={1} />
-          <Link
-            to={`/auctions/${auction.id}`}
-            className="text-lg font-semibold text-brand-600 hover:text-brand-700 block mb-4"
-          >
-            {auction.title}
-          </Link>
+          <p className="text-sm text-gray-600 mb-4">
+            ID: <span className="font-mono font-semibold text-brand-600">{auction.id.substring(0, 8)}...</span>
+          </p>
 
           <div className="mb-6">
             <p className="text-3xl font-bold text-brand-600">

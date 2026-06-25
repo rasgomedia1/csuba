@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export interface FilterState {
   province?: string;
@@ -15,6 +15,7 @@ export interface FilterState {
 
 interface SearchFiltersProps {
   onFilter: (filters: FilterState) => void;
+  initialFilters?: FilterState;
 }
 
 const provinces = [
@@ -33,14 +34,22 @@ const auctionStatuses = ['active', 'completed', 'deserted'];
 const occupancyStatuses = ['empty', 'occupied', 'unknown'];
 const investmentScores = ['BAJO', 'MEDIO', 'ALTO', 'MUY_ALTO'];
 
-export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter }) => {
-  const [filters, setFilters] = useState<FilterState>({
+export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter, initialFilters }) => {
+  const defaultFilters: FilterState = {
     province: 'Castellón',
     areaMin: 8,
     investmentScore: 'MUY_ALTO',
     minimumBidMax: 2000,
     sortBy: 'date'
-  });
+  };
+
+  const [filters, setFilters] = useState<FilterState>(initialFilters || defaultFilters);
+
+  useEffect(() => {
+    if (initialFilters) {
+      setFilters(initialFilters);
+    }
+  }, [initialFilters]);
 
   const handleFilterChange = (key: keyof FilterState, value: any) => {
     const newFilters = { ...filters, [key]: value };

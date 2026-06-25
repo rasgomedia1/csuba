@@ -12,18 +12,8 @@ export default defineConfig({
     trace: 'on-first-retry',
   },
 
-  webServer: [
-    {
-      command: 'cd backend && npm run dev',
-      url: 'http://localhost:3000',
-      reuseExistingServer: !process.env.CI,
-    },
-    {
-      command: 'cd frontend && npm run dev',
-      url: 'http://localhost:5174',
-      reuseExistingServer: !process.env.CI,
-    },
-  ],
+  // webServer disabled - start servers manually before running tests
+  // webServer: [...],
 
   projects: [
     {

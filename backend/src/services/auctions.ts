@@ -163,11 +163,10 @@ export async function addToWatchlist(userId: string, auctionId: string, notes?: 
     `INSERT INTO user_tracking (id, user_id, auction_id, status, personal_notes)
      VALUES ($1, $2, $3, 'watchlist', $4)
      ON CONFLICT (user_id, auction_id) DO UPDATE
-     SET status = 'watchlist', personal_notes = COALESCE($4, personal_notes), updated_at = NOW()`,
+     SET status = 'watchlist', personal_notes = COALESCE($4, EXCLUDED.personal_notes), updated_at = NOW()`,
     [uuidv4(), userId, auctionId, notes || null]
   );
 
-  // Return success confirmation
   return { success: true, auction_id: auctionId, user_id: userId };
 }
 
