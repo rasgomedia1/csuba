@@ -68,7 +68,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
         <div className="p-6 relative">
           <SectionNumber number={1} />
           <p className="text-sm text-gray-600 mb-4">
-            ID: <span className="font-mono font-semibold text-brand-600">{auction.id.substring(0, 8)}...</span>
+            ID: <span className="font-mono font-semibold text-brand-600">{auction.external_id || auction.id.substring(0, 8)}</span>
           </p>
 
           <div className="mb-6">
@@ -131,7 +131,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
           </div>
 
           {/* Description Box - Fixed Height */}
-          <div className="bg-gray-50 border border-gray-200 rounded p-3 mb-4 h-32 overflow-y-auto text-sm text-gray-700">
+          <div className="bg-gray-50 border border-gray-200 rounded p-3 mb-4 h-32 overflow-y-auto text-sm text-gray-900">
             <p className="whitespace-pre-wrap leading-relaxed">
               {auction.description || 'No description available'}
             </p>
