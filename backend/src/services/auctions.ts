@@ -99,10 +99,10 @@ export async function searchAuctions(filters: SearchFilters) {
     price: 'a.price_initial ASC',
     date: 'a.auction_end ASC',
     investmentScore: 'a.investment_score DESC',
-    pricePerM2: '(a.price_initial / ad.property_constructed_sqm) ASC'
+    pricePerM2: 'CASE WHEN ad.property_constructed_sqm > 0 THEN (a.price_initial / ad.property_constructed_sqm) ELSE a.price_initial END ASC'
   };
 
-  sql += ` ORDER BY ${sortMap[filters.sortBy || 'date']}`;
+  sql += ` ORDER BY ${sortMap[filters.sortBy || 'date'] || sortMap['date']}`;
 
   // Pagination
   sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
