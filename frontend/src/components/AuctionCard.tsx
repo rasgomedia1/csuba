@@ -10,6 +10,7 @@ interface Auction {
   price_estimate?: number;
   minimum_bid_eur?: number;
   valor_tasacion_eur?: number;
+  importe_deposito_eur?: number;
   province: string;
   property_type: string;
   auction_status: string;
@@ -90,6 +91,11 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
               {auction.valor_tasacion_eur && (
                 <p className="text-base text-gray-700 mt-2">
                   💎 Tasación: <span className="font-semibold">{formatPrice(auction.valor_tasacion_eur)}</span>
+                </p>
+              )}
+              {auction.importe_deposito_eur && (
+                <p className="text-base text-gray-700 mt-1">
+                  🏦 Depósito: <span className="font-semibold">{formatPrice(auction.importe_deposito_eur)}</span>
                 </p>
               )}
             </div>

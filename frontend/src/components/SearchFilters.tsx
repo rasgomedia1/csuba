@@ -11,7 +11,7 @@ export interface FilterState {
   minimumBidMax?: number;
   minimumBidMin?: number;
   search?: string;
-  sortBy: 'price' | 'date' | 'investmentScore' | 'pricePerM2' | 'auctionEnd' | 'minimumBid';
+  sortBy: 'price' | 'date' | 'investmentScore' | 'pricePerM2' | 'auctionEnd' | 'minimumBid' | 'depositAmount';
 }
 
 interface SearchFiltersProps {
@@ -218,6 +218,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter, initialF
               <option value="price">Price</option>
               <option value="auctionEnd">Auction End (Fecha Cierre)</option>
               <option value="minimumBid">Minimum Bid (Puja Mínima)</option>
+              <option value="depositAmount">Deposit Amount (Importe Depósito)</option>
               <option value="investmentScore">Score</option>
             </select>
           </div>

@@ -12,7 +12,7 @@ export interface SearchFilters {
   minimumBidMax?: number;
   minimumBidMin?: number;
   search?: string;
-  sortBy?: 'price' | 'date' | 'investmentScore' | 'pricePerM2' | 'auctionEnd' | 'minimumBid';
+  sortBy?: 'price' | 'date' | 'investmentScore' | 'pricePerM2' | 'auctionEnd' | 'minimumBid' | 'depositAmount';
   limit?: number;
   offset?: number;
 }
@@ -107,6 +107,7 @@ export async function searchAuctions(filters: SearchFilters) {
     date: 'a.auction_end ASC',
     auctionEnd: 'a.auction_end ASC',
     minimumBid: 'a.minimum_bid_eur ASC',
+    depositAmount: 'a.importe_deposito_eur ASC',
     investmentScore: 'a.investment_score DESC',
     pricePerM2: 'CASE WHEN ad.property_constructed_sqm > 0 THEN (a.price_initial / ad.property_constructed_sqm) ELSE a.price_initial END ASC'
   };

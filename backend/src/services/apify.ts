@@ -112,13 +112,12 @@ async function persistSingleAuction(pool: Pool, auction: ApifyAuction, apifyRunI
         `INSERT INTO auctions (
           external_id, source, title, description,
           property_type, province, municipality,
-          price_initial, price_estimate, minimum_bid_eur,
+          price_initial, price_estimate, minimum_bid_eur, valor_tasacion_eur, importe_deposito_eur,
           auction_status, auction_end,
-          occupancy_status, investment_score, investment_score_description,
-          charges_detected, charges_description,
+          occupancy_status, investment_score, legal_charges_description,
           url, created_at, updated_at
         ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, NOW(), NOW()
+          $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, NOW(), NOW()
         )
         RETURNING id`,
         [
@@ -129,15 +128,15 @@ async function persistSingleAuction(pool: Pool, auction: ApifyAuction, apifyRunI
           mapPropertyType(auction.uso_catastro),
           auction.provincia_boe,
           auction.municipio_boe,
-          auction.valor_tasacion_eur,
+          auction.puja_minima_eur,
           auction.valor_tasacion_eur,
           auction.puja_minima_eur,
+          auction.valor_tasacion_eur,
+          auction.importe_deposito_eur,
           auction.estado_subasta.toLowerCase(),
           auction.fecha_cierre,
           'unknown',
           auction.score_inversion,
-          auction.score_descripcion,
-          auction.cargas_detectadas === 'Sí',
           auction.descripcion_cargas,
           auction.url_boe
         ]
