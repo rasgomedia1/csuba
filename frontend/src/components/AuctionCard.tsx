@@ -124,9 +124,12 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
               </span>
             )}
             {auction.auction_end && (
-              <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded">
-                {new Date(auction.auction_end).toLocaleDateString('en-US')}
-              </span>
+              <div className="text-xs space-y-1">
+                <p className="text-gray-600">📅 Fecha Cierre</p>
+                <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-sm">
+                  {new Date(auction.auction_end).toLocaleDateString('es-ES')}
+                </span>
+              </div>
             )}
           </div>
 

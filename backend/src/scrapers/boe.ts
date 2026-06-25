@@ -37,11 +37,14 @@ const apifyClient = new ApifyClient({
 
 export async function runBoeScraperProcess(): Promise<BoeAuction[]> {
   const actorId = process.env.APIFY_ACTOR_ID || 'olican/spain-subastas-boe-catastro';
+  const maxResultados = 50;
 
-  console.log(`[CSUBA-BOE] Starting Apify actor: ${actorId}`);
+  console.log(`[CSUBA-BOE] Starting Apify actor: ${actorId} (maxResultados: ${maxResultados})`);
 
   try {
-    const run = await apifyClient.actor(actorId).call();
+    const run = await apifyClient.actor(actorId).call({
+      maxResults: maxResultados
+    });
 
     console.log(`[CSUBA-BOE] Actor run completed. Run ID: ${run.id}`);
 

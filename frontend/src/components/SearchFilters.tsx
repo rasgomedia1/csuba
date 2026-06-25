@@ -101,20 +101,6 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter, initialF
             />
           </div>
 
-          {/* Maximum Minimum Bid */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Max Minimum Bid (€)
-            </label>
-            <input
-              type="number"
-              placeholder="Ex: 2000"
-              value={filters.minimumBidMax || ''}
-              onChange={(e) => handleFilterChange('minimumBidMax', e.target.value ? Number(e.target.value) : undefined)}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-            />
-          </div>
-
           {/* Min Area */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -163,23 +149,6 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter, initialF
                   {p}
                 </option>
               ))}
-            </select>
-          </div>
-
-          {/* Auction Status */}
-          <div>
-            <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Status
-            </label>
-            <select
-              value={filters.auctionStatus || ''}
-              onChange={(e) => handleFilterChange('auctionStatus', e.target.value || undefined)}
-              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-            >
-              <option value="">All Status</option>
-              <option value="activa">Active</option>
-              <option value="completada">Completed</option>
-              <option value="desierta">Deserted</option>
             </select>
           </div>
 
