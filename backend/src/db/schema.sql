@@ -29,6 +29,10 @@ CREATE TABLE IF NOT EXISTS auctions (
   price_initial DECIMAL(15,2),
   price_estimate DECIMAL(15,2),
   price_final DECIMAL(15,2),
+  minimum_bid_eur DECIMAL(15,2),
+  valor_tasacion_eur DECIMAL(15,2),
+  investment_score VARCHAR(20),
+  legal_charges_description TEXT,
   auction_status VARCHAR(50), -- 'active', 'completed', 'deserted', 'cancelled'
   auction_start DATE,
   auction_end DATE,
