@@ -9,8 +9,9 @@ export interface FilterState {
   occupancyStatus?: string;
   investmentScore?: string;
   minimumBidMax?: number;
+  minimumBidMin?: number;
   search?: string;
-  sortBy: 'price' | 'date' | 'investmentScore' | 'pricePerM2';
+  sortBy: 'price' | 'date' | 'investmentScore' | 'pricePerM2' | 'auctionEnd' | 'minimumBid';
 }
 
 interface SearchFiltersProps {
@@ -114,6 +115,20 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter, initialF
             />
           </div>
 
+          {/* Minimum Bid (Puja Mínima) */}
+          <div>
+            <label className="block text-sm font-semibold text-gray-700 mb-2">
+              Min Bid - Puja Mínima (€)
+            </label>
+            <input
+              type="number"
+              placeholder="Min bid amount"
+              value={filters.minimumBidMin || ''}
+              onChange={(e) => handleFilterChange('minimumBidMin', e.target.value ? Number(e.target.value) : undefined)}
+              className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+            />
+          </div>
+
           {/* Province */}
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -198,9 +213,11 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({ onFilter, initialF
               onChange={(e) => handleFilterChange('sortBy', e.target.value)}
               className="w-full px-3 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
             >
+              <option value="pricePerM2">Price per m2</option>
               <option value="date">Date</option>
               <option value="price">Price</option>
-              <option value="pricePerM2">Price per m2</option>
+              <option value="auctionEnd">Auction End (Fecha Cierre)</option>
+              <option value="minimumBid">Minimum Bid (Puja Mínima)</option>
               <option value="investmentScore">Score</option>
             </select>
           </div>

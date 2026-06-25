@@ -10,8 +10,9 @@ export interface SearchFilters {
   occupancyStatus?: string;
   investmentScore?: string;
   minimumBidMax?: number;
+  minimumBidMin?: number;
   search?: string;
-  sortBy?: 'price' | 'date' | 'investmentScore' | 'pricePerM2';
+  sortBy?: 'price' | 'date' | 'investmentScore' | 'pricePerM2' | 'auctionEnd' | 'minimumBid';
   limit?: number;
   offset?: number;
 }
@@ -58,6 +59,12 @@ export async function searchAuctions(filters: SearchFilters) {
     paramIndex++;
   }
 
+  if (filters.minimumBidMin !== undefined) {
+    sql += ` AND a.minimum_bid_eur >= $${paramIndex}`;
+    params.push(filters.minimumBidMin);
+    paramIndex++;
+  }
+
   if (filters.areaMin !== undefined) {
     sql += ` AND ad.property_constructed_sqm >= $${paramIndex}`;
     params.push(filters.areaMin);
@@ -98,6 +105,8 @@ export async function searchAuctions(filters: SearchFilters) {
   const sortMap: Record<string, string> = {
     price: 'a.price_initial ASC',
     date: 'a.auction_end ASC',
+    auctionEnd: 'a.auction_end ASC',
+    minimumBid: 'a.minimum_bid_eur ASC',
     investmentScore: 'a.investment_score DESC',
     pricePerM2: 'CASE WHEN ad.property_constructed_sqm > 0 THEN (a.price_initial / ad.property_constructed_sqm) ELSE a.price_initial END ASC'
   };

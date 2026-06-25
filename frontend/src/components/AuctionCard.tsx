@@ -8,6 +8,7 @@ interface Auction {
   description?: string;
   price_initial: number;
   price_estimate?: number;
+  minimum_bid_eur?: number;
   province: string;
   property_type: string;
   auction_status: string;
@@ -77,6 +78,9 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
             </p>
             {pricePerM2 && (
               <p className="text-sm text-gray-600">Price m2 {formatPrice(pricePerM2)}</p>
+            )}
+            {auction.minimum_bid_eur && (
+              <p className="text-sm text-gray-600">Min Bid 🏷️ {formatPrice(auction.minimum_bid_eur)}</p>
             )}
           </div>
 
