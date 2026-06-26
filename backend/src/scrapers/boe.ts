@@ -42,16 +42,23 @@ export async function runBoeScraperProcess(): Promise<BoeAuction[]> {
   console.log(`[CSUBA-BOE] Starting Apify actor: ${actorId} (maxResultados: ${maxResultados})`);
 
   try {
+    console.log(`[CSUBA-BOE] Calling Apify with input: { maxResults: ${maxResultados} }`);
+
     const run = await apifyClient.actor(actorId).call({
       maxResults: maxResultados
     });
 
-    console.log(`[CSUBA-BOE] Actor run completed. Run ID: ${run.id}`);
+    console.log(`[CSUBA-BOE] Actor run completed. Run ID: ${run.id}, Status: ${run.status}`);
 
     const { items } = await apifyClient.dataset(run.defaultDatasetId).listItems();
 
     const auctions: BoeAuction[] = items as BoeAuction[];
-    console.log(`[CSUBA-BOE] Successfully scraped ${auctions.length} auctions`);
+    console.log(`[CSUBA-BOE] ✅ Scraped ${auctions.length} auctions from Apify`);
+
+    if (auctions.length === 0) {
+      console.warn(`[CSUBA-BOE] ⚠️ WARNING: Apify returned 0 auctions`);
+      console.log(`[CSUBA-BOE] Dataset ID: ${run.defaultDatasetId}`);
+    }
 
     return auctions;
   } catch (error) {

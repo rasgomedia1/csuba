@@ -7,25 +7,9 @@ import { db } from '../db/index.js';
 
 const router = express.Router();
 
-// Public search with auto-sync from Apify
+// Public search with non-blocking auto-sync from Apify
 router.get('/search', async (req: Request, res: Response) => {
   try {
-    // Auto-sync fresh data from Apify before searching
-    console.log('[SEARCH] Starting auto-sync from Apify...');
-    try {
-      const auctions = await runBoeScraperProcess();
-      if (auctions && auctions.length > 0) {
-        const apifyRunId = `run_${Date.now()}`;
-        const persistResult = await persistApifyAuctions(db.pool!, auctions as any, apifyRunId);
-        console.log(`[SEARCH] ✅ Synced ${persistResult.count} auctions from Apify`);
-      } else {
-        console.log('[SEARCH] ⚠️ Apify returned no auctions');
-      }
-    } catch (syncError: any) {
-      console.warn(`[SEARCH] ⚠️ Apify sync warning (continuing with existing data): ${syncError.message}`);
-      // Continue with search anyway - don't fail if Apify fails
-    }
-
     const filters = {
       province: req.query.province as string,
       propertyType: req.query.propertyType as string,
@@ -42,17 +26,41 @@ router.get('/search', async (req: Request, res: Response) => {
       offset: req.query.offset ? Number(req.query.offset) : 0
     };
 
+    // Get cached results immediately
     const auctions = await auctionService.searchAuctions(filters);
+
+    // Trigger Apify sync in background (non-blocking)
+    syncApifyInBackground()
+      .catch(err => console.warn('[SEARCH-SYNC] Background sync error:', err.message));
 
     res.json({
       count: auctions.length,
       auctions,
+      syncStatus: 'searching-in-background',
       syncTimestamp: new Date().toISOString()
     });
   } catch (error: any) {
     res.status(500).json({ error: error.message });
   }
 });
+
+// Background sync function (non-blocking)
+async function syncApifyInBackground() {
+  try {
+    console.log('[SEARCH-SYNC] Starting background sync from Apify...');
+    const auctions = await runBoeScraperProcess();
+
+    if (auctions && auctions.length > 0) {
+      const apifyRunId = `run_${Date.now()}`;
+      const persistResult = await persistApifyAuctions(db.pool!, auctions as any, apifyRunId);
+      console.log(`[SEARCH-SYNC] ✅ Synced ${persistResult.count} auctions from Apify`);
+    } else {
+      console.log('[SEARCH-SYNC] ⚠️ Apify returned 0 results');
+    }
+  } catch (syncError: any) {
+    console.warn(`[SEARCH-SYNC] ⚠️ Error: ${syncError.message}`);
+  }
+}
 
 // Get auction details
 router.get('/:id', async (req: Request, res: Response) => {
