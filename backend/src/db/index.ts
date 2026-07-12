@@ -20,8 +20,13 @@ if (USE_MOCK_DB) {
   pool = mockDb.getMockPool();
 } else {
   console.log('📊 Connecting to real PostgreSQL database...');
+  // On serverless (Vercel) each instance keeps a tiny pool and relies on Neon's
+  // pooled endpoint (the `-pooler` host) to multiplex connections; a large pool
+  // per instance would exhaust Postgres. Locally/VPS a normal pool is fine.
+  const isServerless = !!process.env.VERCEL;
   pool = new Pool({
     connectionString: process.env.DATABASE_URL,
+    max: isServerless ? 1 : 10,
   });
 
   pool.on('error', (err: Error) => {

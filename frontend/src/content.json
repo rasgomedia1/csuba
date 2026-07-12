@@ -1,0 +1,201 @@
+{
+  "app": {
+    "name": "CSUBA",
+    "iconAlt": "CSUBA"
+  },
+  "header": {
+    "search": "Search",
+    "favorites": "❤️ Favorites",
+    "profile": "Profile",
+    "signOut": "Sign Out",
+    "signIn": "Sign In",
+    "createAccount": "Create Account"
+  },
+  "home": {
+    "title": "CSUBA",
+    "subtitle": "Discover and manage auctions in Spain",
+    "signIn": "Sign In",
+    "createAccount": "Create Account",
+    "searchAuctions": "Search Auctions",
+    "features": {
+      "search": {
+        "title": "Advanced Search",
+        "description": "Filter by price, location, property type and conditions. Find exactly what you need."
+      },
+      "score": {
+        "title": "Investment Score",
+        "description": "Automatic analysis of occupancy, legal charges and market factors for each property."
+      },
+      "tracking": {
+        "title": "Personal Tracking",
+        "description": "Save your favorite properties and get alerts."
+      }
+    }
+  },
+  "login": {
+    "title": "Iniciar Sesión",
+    "sessionExpired": "Vuelve a iniciar sesión para continuar.",
+    "errorFallback": "Error al iniciar sesión",
+    "emailLabel": "Email",
+    "emailPlaceholder": "tu@email.com",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "••••••••",
+    "submit": "Iniciar Sesión",
+    "submitting": "⏳ Iniciando sesión...",
+    "noAccount": "¿No tienes cuenta?",
+    "registerLink": "Regístrate"
+  },
+  "register": {
+    "title": "Crear Cuenta",
+    "errorFallback": "Error al registrarse",
+    "emailLabel": "Email",
+    "emailPlaceholder": "tu@email.com",
+    "usernameLabel": "Usuario",
+    "usernamePlaceholder": "tu_usuario",
+    "passwordLabel": "Contraseña",
+    "passwordPlaceholder": "••••••••",
+    "investmentRange": "💰 Rango de inversión (opcional):",
+    "investmentMinPlaceholder": "Mín (€)",
+    "investmentMaxPlaceholder": "Máx (€)",
+    "submit": "Crear Cuenta",
+    "submitting": "⏳ Registrando...",
+    "haveAccount": "¿Ya tienes cuenta?",
+    "loginLink": "Inicia sesión"
+  },
+  "profile": {
+    "loadError": "Error al cargar perfil",
+    "saveSuccess": "✅ Preferencias guardadas correctamente",
+    "saveError": "Error al guardar preferencias",
+    "loading": "Cargando perfil...",
+    "title": "👤 Mi Perfil",
+    "accountInfo": "📧 Información de Cuenta",
+    "emailLabel": "Email",
+    "usernameLabel": "Usuario",
+    "investmentRange": "💰 Rango de Inversión",
+    "edit": "Editar",
+    "cancel": "Cancelar",
+    "investmentMinLabel": "Inversión Mínima (€)",
+    "investmentMinPlaceholder": "0",
+    "investmentMaxLabel": "Inversión Máxima (€)",
+    "investmentMaxPlaceholder": "Ilimitado",
+    "saveChanges": "💾 Guardar Cambios",
+    "minLabel": "Mínimo:",
+    "maxLabel": "Máximo:",
+    "notSet": "No especificado",
+    "unlimited": "Ilimitado"
+  },
+  "search": {
+    "title": "🔍 Buscar Subastas en el BOE",
+    "loading": "Buscando subastas...",
+    "empty": "👀 No se encontraron subastas. Intenta ajustar tus filtros.",
+    "resultsCount": "Se encontraron {count} subastas",
+    "errorFallback": "Error al buscar subastas",
+    "loginRequired": "Debes iniciar sesión para guardar subastas",
+    "watchlistError": "Error al actualizar lista de guardados"
+  },
+  "filters": {
+    "level1": {
+      "tipoBien": "Tipo de Bien",
+      "provincia": "Provincia",
+      "pujaMinHasta": "Puja Min hasta (€)",
+      "pujaMinHastaPlaceholder": "Puja mínima máxima",
+      "scoreMinimo": "Score Mínimo",
+      "maxResultados": "Máx. Resultados",
+      "buscar": "Buscar",
+      "reset": "Reset"
+    },
+    "level2": {
+      "buscar": "Buscar",
+      "buscarPlaceholder": "Buscar por ubicación, dirección o descripción...",
+      "tipoPropiedad": "Tipo de Propiedad",
+      "tasacionMaxima": "Tasación Máxima (€)",
+      "tasacionMaximaPlaceholder": "Ex: 500000",
+      "ordenarPor": "Ordenar Por",
+      "areaMinima": "Área Mínima (m2)",
+      "pujaMinimaDesde": "Puja Mínima desde (€)",
+      "resetFiltros": "Reset Filtros"
+    },
+    "allProvinces": "Todas",
+    "allScores": "Todos",
+    "allTypes": "Todos los Tipos",
+    "tipoBienLabels": {
+      "inmueble": "Inmueble",
+      "vehiculo": "Vehículo",
+      "bien_mueble": "Bien Mueble",
+      "todos": "Todos"
+    },
+    "sortLabels": {
+      "tasacion": "Tasación",
+      "date": "Fecha",
+      "pricePerM2": "Precio por m2",
+      "auctionEnd": "Fecha Cierre",
+      "minimumBid": "Puja Mínima",
+      "depositAmount": "Importe Depósito",
+      "investmentScore": "Score"
+    }
+  },
+  "auctionCard": {
+    "idLabel": "ID:",
+    "tasacion": "💎 Tasación",
+    "priceM2": "Price m2",
+    "pujaMinima": "🏷️ Puja Mínima:",
+    "deposito": "🏦 Depósito:",
+    "location": "Location",
+    "type": "Type",
+    "area": "Area",
+    "built": "Built",
+    "fechaCierre": "📅 Fecha Cierre",
+    "scorePrefix": "Score:",
+    "noDescription": "No description available",
+    "viewDetails": "View Details"
+  },
+  "auctionDetail": {
+    "back": "← Volver a búsqueda",
+    "loadError": "Error al cargar la subasta",
+    "notFound": "No se encontró la subasta",
+    "backButton": "Volver a búsqueda",
+    "loading": "Cargando detalles de la subasta...",
+    "location": "📍 Ubicación",
+    "gps": "GPS:",
+    "map": "🗺️ Map",
+    "satellite": "🛰️ Satellite",
+    "provincia": "📍 Provincia",
+    "municipio": "🏙️ Municipio",
+    "tipo": "🏠 Tipo",
+    "precioInicial": "💰 Precio Inicial",
+    "estimado": "💎 Estimado",
+    "precioFinal": "✅ Precio Final",
+    "scoreInversion": "📊 Score de Inversión",
+    "descripcion": "📝 Descripción",
+    "cargasLegales": "⚠️ Cargas Legales",
+    "estadoSubasta": "Estado de la Subasta",
+    "estado": "Estado",
+    "statusActive": "🔴 Activa",
+    "statusCompleted": "✅ Completada",
+    "statusDeserted": "❌ Desierta",
+    "ocupacion": "Ocupación",
+    "occupied": "👥 Ocupada",
+    "empty": "🏚️ Vacía",
+    "unknown": "❓ Desconocido",
+    "fechas": "📅 Fechas",
+    "inicio": "Inicio",
+    "finalizacion": "Finalización",
+    "verEnBoe": "🔗 Ver en BOE"
+  },
+  "common": {
+    "favoritesTitle": "Favorites",
+    "addFavorite": "Add to favorites",
+    "removeFavorite": "Remove from favorites",
+    "watchlistError": "Error al actualizar lista de guardados"
+  },
+  "watchlist": {
+    "loadError": "Error al cargar lista de guardados",
+    "removeError": "Error al remover de lista de guardados",
+    "loading": "Cargando lista de guardados...",
+    "title": "❤️ Mi Lista de Subastas",
+    "empty": "🤍 No tienes subastas guardadas",
+    "goToSearch": "🔍 Ir a Buscar",
+    "countOne": "{count} subasta guardada",
+    "countOther": "{count} subastas guardadas"
+  }
+}

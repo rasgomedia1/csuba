@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auctionsAPI } from '../services/api';
 import { AuctionCard } from '../components/AuctionCard';
+import content from '../content.json';
 
 interface Auction {
   id: string;
@@ -31,7 +32,7 @@ export const Watchlist: React.FC = () => {
       const response = await auctionsAPI.getWatchlist();
       setWatchlist(response.data.watchlist || []);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Error al cargar lista de guardados');
+      setError(err.response?.data?.error || content.watchlist.loadError);
     } finally {
       setLoading(false);
     }
@@ -44,7 +45,7 @@ export const Watchlist: React.FC = () => {
     } catch (err: any) {
       // 401 is handled globally by the API interceptor (session expired → redirect).
       if (err.response?.status !== 401) {
-        alert('Error al remover de lista de guardados');
+        alert(content.watchlist.removeError);
       }
     }
   };
@@ -54,7 +55,7 @@ export const Watchlist: React.FC = () => {
       <div className="max-w-7xl mx-auto px-4 py-8">
         <div className="text-center">
           <div className="inline-block animate-spin text-2xl">⏳</div>
-          <p className="mt-4 text-gray-600">Cargando lista de guardados...</p>
+          <p className="mt-4 text-gray-600">{content.watchlist.loading}</p>
         </div>
       </div>
     );
@@ -62,7 +63,7 @@ export const Watchlist: React.FC = () => {
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">❤️ Mi Lista de Subastas</h1>
+      <h1 className="text-3xl font-bold mb-8">{content.watchlist.title}</h1>
 
       {error && (
         <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
@@ -73,13 +74,13 @@ export const Watchlist: React.FC = () => {
       {watchlist.length === 0 ? (
         <div className="text-center py-12 bg-gray-50 rounded-lg">
           <p className="text-gray-600 text-lg mb-4">
-            🤍 No tienes subastas guardadas
+            {content.watchlist.empty}
           </p>
           <button
             onClick={() => navigate('/search')}
             className="px-6 py-3 bg-brand-600 text-white rounded font-semibold hover:bg-brand-700"
           >
-            🔍 Ir a Buscar
+            {content.watchlist.goToSearch}
           </button>
         </div>
       ) : (
@@ -96,7 +97,7 @@ export const Watchlist: React.FC = () => {
       )}
 
       <div className="mt-8 text-center text-gray-600">
-        <p>{watchlist.length} subasta{watchlist.length !== 1 ? 's' : ''} guardada{watchlist.length !== 1 ? 's' : ''}</p>
+        <p>{(watchlist.length === 1 ? content.watchlist.countOne : content.watchlist.countOther).replace('{count}', String(watchlist.length))}</p>
       </div>
     </div>
   );

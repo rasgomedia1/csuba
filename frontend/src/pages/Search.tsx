@@ -3,6 +3,7 @@ import { SearchFilters, ApifyFilterState, LocalFilterState } from '../components
 import { AuctionCard } from '../components/AuctionCard';
 import { auctionsAPI } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
+import content from '../content.json';
 
 interface Auction {
   id: string;
@@ -103,7 +104,7 @@ export const Search: React.FC = () => {
       const response = await auctionsAPI.search(filters);
       setRawAuctions(response.data.auctions || []);
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Error al buscar subastas');
+      setError(err.response?.data?.error || content.search.errorFallback);
       setRawAuctions([]);
     } finally {
       setLoading(false);
@@ -136,7 +137,7 @@ export const Search: React.FC = () => {
 
   const handleAddToWatchlist = async (auctionId: string) => {
     if (!user) {
-      alert('Debes iniciar sesión para guardar subastas');
+      alert(content.search.loginRequired);
       return;
     }
 
@@ -155,14 +156,14 @@ export const Search: React.FC = () => {
     } catch (err: any) {
       // 401 is handled globally by the API interceptor (session expired → redirect).
       if (err.response?.status !== 401) {
-        alert('Error al actualizar lista de guardados');
+        alert(content.search.watchlistError);
       }
     }
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-4">
-      <h1 className="text-xl font-bold mb-3">🔍 Buscar Subastas en el BOE</h1>
+      <h1 className="text-xl font-bold mb-3">{content.search.title}</h1>
 
       <div className="mb-4">
         <SearchFilters
@@ -182,14 +183,14 @@ export const Search: React.FC = () => {
       {loading && (
         <div className="text-center py-8">
           <div className="inline-block animate-spin">⏳</div>
-          <p className="mt-2 text-gray-600">Buscando subastas...</p>
+          <p className="mt-2 text-gray-600">{content.search.loading}</p>
         </div>
       )}
 
       {!loading && auctions.length === 0 && !error && (
         <div className="text-center py-8 bg-gray-50 rounded-lg">
           <p className="text-gray-600">
-            👀 No se encontraron subastas. Intenta ajustar tus filtros.
+            {content.search.empty}
           </p>
         </div>
       )}
@@ -209,7 +210,7 @@ export const Search: React.FC = () => {
 
       {!loading && auctions.length > 0 && (
         <div className="mt-4 text-center text-sm text-gray-600">
-          <p>Se encontraron {auctions.length} subastas</p>
+          <p>{content.search.resultsCount.replace('{count}', String(auctions.length))}</p>
         </div>
       )}
     </div>

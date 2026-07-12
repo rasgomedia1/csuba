@@ -1,45 +1,10 @@
-import express from 'express';
-import cors from 'cors';
-import dotenv from 'dotenv';
+import app from './app.js';
 import { initializeDatabase } from './db/index.js';
-import authRoutes from './routes/auth.js';
-import auctionRoutes from './routes/auctions.js';
-import userRoutes from './routes/users.js';
-import scraperRoutes from './routes/scrapers.js';
-import { authMiddleware } from './middleware/auth.js';
 
-dotenv.config();
-
-const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Middleware
-app.use(cors());
-app.use(express.json());
-
-// Health check
-app.get('/health', (req, res) => {
-  res.json({ status: 'ok', timestamp: new Date().toISOString() });
-});
-
-// Public routes
-app.use('/api/auth', authRoutes);
-app.use('/api/scrapers', scraperRoutes);
-
-// Protected routes
-app.use('/api/auctions', auctionRoutes);
-app.use('/api/users', authMiddleware, userRoutes);
-
-// Error handling
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error(err);
-  res.status(err.status || 500).json({
-    error: err.message || 'Internal Server Error',
-    timestamp: new Date().toISOString()
-  });
-});
-
-// Start server
+// Long-lived server entry for local development and VPS/self-hosted deploys.
+// On Vercel the app is imported directly by api/index.ts (no listen()).
 async function start() {
   try {
     await initializeDatabase();

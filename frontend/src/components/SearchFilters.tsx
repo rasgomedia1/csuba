@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import content from '../content.json';
 
 // Level 1 — only the parameters the Apify actor's Input Schema accepts.
 // Submitting this section triggers a new backend query + real Apify sync.
@@ -39,11 +40,12 @@ const provinces = [
   'Valladolid', 'Vizcaya', 'Zamora', 'Zaragoza'
 ];
 
+// Enum values must match the backend; display labels come from content.json.
 const tiposBien: { value: ApifyFilterState['tipoBien']; label: string }[] = [
-  { value: 'inmueble', label: 'Inmueble' },
-  { value: 'vehiculo', label: 'Vehículo' },
-  { value: 'bien_mueble', label: 'Bien Mueble' },
-  { value: 'todos', label: 'Todos' }
+  { value: 'inmueble', label: content.filters.tipoBienLabels.inmueble },
+  { value: 'vehiculo', label: content.filters.tipoBienLabels.vehiculo },
+  { value: 'bien_mueble', label: content.filters.tipoBienLabels.bien_mueble },
+  { value: 'todos', label: content.filters.tipoBienLabels.todos }
 ];
 
 const propertyTypes = ['Vivienda', 'Local', 'Garaje', 'Terreno', 'Otro'];
@@ -117,7 +119,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
         <form onSubmit={handleApifySubmit} className="space-y-3">
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
             <div>
-              <label className={labelCls}>Tipo de Bien</label>
+              <label className={labelCls}>{content.filters.level1.tipoBien}</label>
               <select
                 value={apifyFilters.tipoBien || 'inmueble'}
                 onChange={(e) => handleApifyChange('tipoBien', e.target.value || undefined)}
@@ -130,13 +132,13 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             </div>
 
             <div>
-              <label className={labelCls}>Provincia</label>
+              <label className={labelCls}>{content.filters.level1.provincia}</label>
               <select
                 value={apifyFilters.province || ''}
                 onChange={(e) => handleApifyChange('province', e.target.value || undefined)}
                 className={`${selectCls} w-full`}
               >
-                <option value="">Todas</option>
+                <option value="">{content.filters.allProvinces}</option>
                 {provinces.map((p) => (
                   <option key={p} value={p}>{p}</option>
                 ))}
@@ -144,10 +146,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             </div>
 
             <div>
-              <label className={labelCls}>Puja Min hasta (€)</label>
+              <label className={labelCls}>{content.filters.level1.pujaMinHasta}</label>
               <input
                 type="number"
-                placeholder="Puja mínima máxima"
+                placeholder={content.filters.level1.pujaMinHastaPlaceholder}
                 value={apifyFilters.minimumBidMax ?? ''}
                 onChange={(e) => handleApifyChange('minimumBidMax', e.target.value ? Number(e.target.value) : undefined)}
                 className={`${selectCls} w-full`}
@@ -155,13 +157,13 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             </div>
 
             <div>
-              <label className={labelCls}>Score Mínimo</label>
+              <label className={labelCls}>{content.filters.level1.scoreMinimo}</label>
               <select
                 value={apifyFilters.investmentScore || ''}
                 onChange={(e) => handleApifyChange('investmentScore', e.target.value || undefined)}
                 className={`${selectCls} w-full`}
               >
-                <option value="">Todos</option>
+                <option value="">{content.filters.allScores}</option>
                 {investmentScores.map((s) => (
                   <option key={s} value={s}>{s}</option>
                 ))}
@@ -169,7 +171,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             </div>
 
             <div>
-              <label className={labelCls}>Máx. Resultados</label>
+              <label className={labelCls}>{content.filters.level1.maxResultados}</label>
               <input
                 type="number"
                 min={1}
@@ -186,14 +188,14 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
               type="submit"
               className="flex-1 px-4 py-2 bg-brand-600 text-white rounded font-semibold text-sm hover:bg-brand-700"
             >
-              Buscar
+              {content.filters.level1.buscar}
             </button>
             <button
               type="button"
               onClick={handleApifyReset}
               className="px-4 py-2 bg-gray-200 text-gray-700 rounded text-sm font-semibold hover:bg-gray-300"
             >
-              Reset
+              {content.filters.level1.reset}
             </button>
           </div>
         </form>
@@ -202,10 +204,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
       {/* Level 2 — filters only the results already fetched, client-side */}
       <div className="bg-white rounded-lg shadow p-3 space-y-3">
         <div>
-          <label className={labelCls}>Buscar</label>
+          <label className={labelCls}>{content.filters.level2.buscar}</label>
           <input
             type="text"
-            placeholder="Buscar por ubicación, dirección o descripción..."
+            placeholder={content.filters.level2.buscarPlaceholder}
             value={localFilters.search || ''}
             onChange={(e) => handleLocalChange('search', e.target.value || undefined)}
             className={`${selectCls} w-full`}
@@ -214,13 +216,13 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
 
         <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
           <div>
-            <label className={labelCls}>Tipo de Propiedad</label>
+            <label className={labelCls}>{content.filters.level2.tipoPropiedad}</label>
             <select
               value={localFilters.propertyType || ''}
               onChange={(e) => handleLocalChange('propertyType', e.target.value || undefined)}
               className={`${selectCls} w-full`}
             >
-              <option value="">Todos los Tipos</option>
+              <option value="">{content.filters.allTypes}</option>
               {propertyTypes.map((p) => (
                 <option key={p} value={p}>{p}</option>
               ))}
@@ -228,10 +230,10 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
           </div>
 
           <div>
-            <label className={labelCls}>Tasación Máxima (€)</label>
+            <label className={labelCls}>{content.filters.level2.tasacionMaxima}</label>
             <input
               type="number"
-              placeholder="Ex: 500000"
+              placeholder={content.filters.level2.tasacionMaximaPlaceholder}
               value={localFilters.maxTasacion ?? ''}
               onChange={(e) => handleLocalChange('maxTasacion', e.target.value ? Number(e.target.value) : undefined)}
               className={`${selectCls} w-full`}
@@ -239,24 +241,24 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
           </div>
 
           <div>
-            <label className={labelCls}>Ordenar Por</label>
+            <label className={labelCls}>{content.filters.level2.ordenarPor}</label>
             <select
               value={localFilters.sortBy}
               onChange={(e) => handleLocalChange('sortBy', e.target.value)}
               className={`${selectCls} w-full`}
             >
-              <option value="tasacion">Tasación</option>
-              <option value="date">Fecha</option>
-              <option value="pricePerM2">Precio por m2</option>
-              <option value="auctionEnd">Fecha Cierre</option>
-              <option value="minimumBid">Puja Mínima</option>
-              <option value="depositAmount">Importe Depósito</option>
-              <option value="investmentScore">Score</option>
+              <option value="tasacion">{content.filters.sortLabels.tasacion}</option>
+              <option value="date">{content.filters.sortLabels.date}</option>
+              <option value="pricePerM2">{content.filters.sortLabels.pricePerM2}</option>
+              <option value="auctionEnd">{content.filters.sortLabels.auctionEnd}</option>
+              <option value="minimumBid">{content.filters.sortLabels.minimumBid}</option>
+              <option value="depositAmount">{content.filters.sortLabels.depositAmount}</option>
+              <option value="investmentScore">{content.filters.sortLabels.investmentScore}</option>
             </select>
           </div>
 
           <div>
-            <label className={labelCls}>Área Mínima (m2)</label>
+            <label className={labelCls}>{content.filters.level2.areaMinima}</label>
             <input
               type="number"
               value={localFilters.areaMin ?? ''}
@@ -266,7 +268,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
           </div>
 
           <div>
-            <label className={labelCls}>Puja Mínima desde (€)</label>
+            <label className={labelCls}>{content.filters.level2.pujaMinimaDesde}</label>
             <input
               type="number"
               value={localFilters.minimumBidMin ?? ''}
@@ -282,7 +284,7 @@ export const SearchFilters: React.FC<SearchFiltersProps> = ({
             onClick={handleLocalReset}
             className="px-4 py-2 bg-gray-200 text-gray-700 rounded text-sm font-semibold hover:bg-gray-300"
           >
-            Reset Filtros
+            {content.filters.level2.resetFiltros}
           </button>
         </div>
       </div>

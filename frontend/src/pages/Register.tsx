@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
+import content from '../content.json';
 
 export const Register: React.FC = () => {
   const [email, setEmail] = useState('');
@@ -33,7 +34,7 @@ export const Register: React.FC = () => {
       login(loginResponse.data.token, loginResponse.data.user);
       navigate('/search');
     } catch (err: any) {
-      setError(err.response?.data?.error || 'Error al registrarse');
+      setError(err.response?.data?.error || content.register.errorFallback);
     } finally {
       setLoading(false);
     }
@@ -42,7 +43,7 @@ export const Register: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-brand-50 to-blue-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
-        <h1 className="text-3xl font-bold text-center mb-8">Crear Cuenta</h1>
+        <h1 className="text-3xl font-bold text-center mb-8">{content.register.title}</h1>
 
         {error && (
           <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
@@ -53,7 +54,7 @@ export const Register: React.FC = () => {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Email
+              {content.register.emailLabel}
             </label>
             <input
               type="email"
@@ -61,13 +62,13 @@ export const Register: React.FC = () => {
               onChange={(e) => setEmail(e.target.value)}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-              placeholder="tu@email.com"
+              placeholder={content.register.emailPlaceholder}
             />
           </div>
 
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Usuario
+              {content.register.usernameLabel}
             </label>
             <input
               type="text"
@@ -75,13 +76,13 @@ export const Register: React.FC = () => {
               onChange={(e) => setUsername(e.target.value)}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-              placeholder="tu_usuario"
+              placeholder={content.register.usernamePlaceholder}
             />
           </div>
 
           <div>
             <label className="block text-sm font-semibold text-gray-700 mb-2">
-              Contraseña
+              {content.register.passwordLabel}
             </label>
             <input
               type="password"
@@ -89,26 +90,26 @@ export const Register: React.FC = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-              placeholder="••••••••"
+              placeholder={content.register.passwordPlaceholder}
             />
           </div>
 
           <div className="border-t pt-4">
-            <p className="text-sm text-gray-600 mb-3">💰 Rango de inversión (opcional):</p>
+            <p className="text-sm text-gray-600 mb-3">{content.register.investmentRange}</p>
             <div className="flex gap-2">
               <input
                 type="number"
                 value={investmentMin}
                 onChange={(e) => setInvestmentMin(e.target.value)}
                 className="flex-1 px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-                placeholder="Mín (€)"
+                placeholder={content.register.investmentMinPlaceholder}
               />
               <input
                 type="number"
                 value={investmentMax}
                 onChange={(e) => setInvestmentMax(e.target.value)}
                 className="flex-1 px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-                placeholder="Máx (€)"
+                placeholder={content.register.investmentMaxPlaceholder}
               />
             </div>
           </div>
@@ -118,14 +119,14 @@ export const Register: React.FC = () => {
             disabled={loading}
             className="w-full px-4 py-3 bg-brand-600 text-white rounded font-semibold hover:bg-brand-700 disabled:bg-gray-400"
           >
-            {loading ? '⏳ Registrando...' : 'Crear Cuenta'}
+            {loading ? content.register.submitting : content.register.submit}
           </button>
         </form>
 
         <p className="text-center mt-6 text-gray-700">
-          ¿Ya tienes cuenta?{' '}
+          {content.register.haveAccount}{' '}
           <Link to="/login" className="text-brand-600 font-semibold hover:text-brand-700">
-            Inicia sesión
+            {content.register.loginLink}
           </Link>
         </p>
       </div>

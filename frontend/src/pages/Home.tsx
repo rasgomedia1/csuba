@@ -1,6 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import content from '../content.json';
 
 export const Home: React.FC = () => {
   const { user } = useAuth();
@@ -10,11 +11,14 @@ export const Home: React.FC = () => {
       {/* Hero Section */}
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
-          <h1 className="text-5xl font-bold text-gray-900 mb-4">
-            CSUBA
-          </h1>
+          <div className="flex items-center justify-center gap-4 mb-4">
+            <img src="/favicon.png" alt={content.app.iconAlt} className="w-20 h-20 md:w-24 md:h-24 rounded-2xl shadow-md" />
+            <h1 className="text-5xl font-bold text-gray-900">
+              {content.home.title}
+            </h1>
+          </div>
           <p className="text-xl text-gray-700 mb-8">
-            The complete platform to discover and manage auctions in Spain
+            {content.home.subtitle}
           </p>
 
           {!user ? (
@@ -23,13 +27,13 @@ export const Home: React.FC = () => {
                 to="/login"
                 className="px-8 py-4 bg-brand-600 text-white rounded-lg font-semibold hover:bg-brand-700 text-lg"
               >
-                Sign In
+                {content.home.signIn}
               </Link>
               <Link
                 to="/register"
                 className="px-8 py-4 border-2 border-brand-600 text-brand-600 rounded-lg font-semibold hover:bg-brand-50 text-lg"
               >
-                Create Account
+                {content.home.createAccount}
               </Link>
             </div>
           ) : (
@@ -37,7 +41,7 @@ export const Home: React.FC = () => {
               to="/search"
               className="inline-block px-8 py-4 bg-brand-600 text-white rounded-lg font-semibold hover:bg-brand-700 text-lg"
             >
-              Search Auctions
+              {content.home.searchAuctions}
             </Link>
           )}
         </div>
@@ -45,49 +49,24 @@ export const Home: React.FC = () => {
         {/* Features */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
           <div className="bg-white p-8 rounded-lg shadow hover:shadow-lg transition">
-            <div className="text-4xl mb-4">Search</div>
-            <h3 className="text-xl font-bold mb-2">Advanced Search</h3>
+            <h3 className="text-xl font-bold mb-2">{content.home.features.search.title}</h3>
             <p className="text-gray-600">
-              Filter by price, location, property type and conditions. Find exactly what you need.
+              {content.home.features.search.description}
             </p>
           </div>
 
           <div className="bg-white p-8 rounded-lg shadow hover:shadow-lg transition">
-            <div className="text-4xl mb-4">Score</div>
-            <h3 className="text-xl font-bold mb-2">Investment Score</h3>
+            <h3 className="text-xl font-bold mb-2">{content.home.features.score.title}</h3>
             <p className="text-gray-600">
-              Automatic analysis of occupancy, legal charges and market factors for each property.
+              {content.home.features.score.description}
             </p>
           </div>
 
           <div className="bg-white p-8 rounded-lg shadow hover:shadow-lg transition">
-            <div className="text-4xl mb-4">Heart</div>
-            <h3 className="text-xl font-bold mb-2">Personal Tracking</h3>
+            <h3 className="text-xl font-bold mb-2">{content.home.features.tracking.title}</h3>
             <p className="text-gray-600">
-              Save your favorite properties and get alerts on important changes in real time.
+              {content.home.features.tracking.description}
             </p>
-          </div>
-        </div>
-
-        {/* Stats */}
-        <div className="mt-16 bg-white rounded-lg shadow p-12">
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center">
-            <div>
-              <div className="text-4xl font-bold text-brand-600">+50K</div>
-              <p className="text-gray-600">Auctions Available</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-brand-600">+50</div>
-              <p className="text-gray-600">Provinces</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-brand-600">24/7</div>
-              <p className="text-gray-600">Active Monitoring</p>
-            </div>
-            <div>
-              <div className="text-4xl font-bold text-brand-600">100%</div>
-              <p className="text-gray-600">Free</p>
-            </div>
           </div>
         </div>
       </div>

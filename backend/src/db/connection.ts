@@ -1,7 +1,16 @@
 import { Pool } from 'pg';
+import dotenv from 'dotenv';
+
+// Load env here so the pool gets DATABASE_URL regardless of module import order
+// (this module can be loaded before the app entry runs dotenv). On Vercel env
+// vars come from the platform and dotenv.config() is a harmless no-op.
+dotenv.config();
 
 const pool = new Pool({
   connectionString: process.env.DATABASE_URL,
+  // Keep the pool tiny on serverless (Vercel) and rely on Neon's pooled
+  // endpoint; a larger pool per instance would exhaust Postgres.
+  max: process.env.VERCEL ? 1 : 10,
 });
 
 pool.on('error', (err) => {

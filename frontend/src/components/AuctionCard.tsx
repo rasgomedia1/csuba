@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import content from '../content.json';
 
 interface Auction {
   id: string;
@@ -61,41 +62,41 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
           <button
             onClick={() => onAddToWatchlist(auction.id)}
             className="absolute top-2 right-2 text-xl z-10 hover:scale-110 transition-transform"
-            title={isInWatchlist ? 'Remove from favorites' : 'Add to favorites'}
+            title={isInWatchlist ? content.common.removeFavorite : content.common.addFavorite}
           >
             {isInWatchlist ? '❤️' : '🤍'}
           </button>
         )}
 
         <div className="p-3 leading-tight">
-          <Field label="ID:">
+          <Field label={content.auctionCard.idLabel}>
             <span className="font-mono text-brand-600">{auction.external_id || auction.id.substring(0, 8)}</span>
           </Field>
 
           {/* Tasación — main figure */}
           {auction.valor_tasacion_eur ? (
             <div className="mt-2 mb-2 p-2 bg-blue-50 border border-blue-200 rounded leading-tight">
-              <p className="text-xs text-gray-600">💎 Tasación</p>
+              <p className="text-xs text-gray-600">{content.auctionCard.tasacion}</p>
               <p className="text-2xl font-bold text-brand-600">{formatPrice(auction.valor_tasacion_eur)}</p>
               {pricePerM2 && (
-                <Field label="Price m2">{formatPrice(pricePerM2)}</Field>
+                <Field label={content.auctionCard.priceM2}>{formatPrice(pricePerM2)}</Field>
               )}
               {auction.minimum_bid_eur !== undefined && (
-                <Field label="🏷️ Puja Mínima:">{formatPrice(auction.minimum_bid_eur)}</Field>
+                <Field label={content.auctionCard.pujaMinima}>{formatPrice(auction.minimum_bid_eur)}</Field>
               )}
               {auction.importe_deposito_eur !== undefined && (
-                <Field label="🏦 Depósito:">{formatPrice(auction.importe_deposito_eur)}</Field>
+                <Field label={content.auctionCard.deposito}>{formatPrice(auction.importe_deposito_eur)}</Field>
               )}
             </div>
           ) : (
             <div className="mt-2 mb-2 leading-tight">
               <p className="text-2xl font-bold text-brand-600">{formatPrice(auction.price_initial)}</p>
-              {pricePerM2 && <Field label="Price m2">{formatPrice(pricePerM2)}</Field>}
+              {pricePerM2 && <Field label={content.auctionCard.priceM2}>{formatPrice(pricePerM2)}</Field>}
             </div>
           )}
 
           <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-sm mb-2">
-            <Field label="Location">
+            <Field label={content.auctionCard.location}>
               {auction.gps_latitude && auction.gps_longitude ? (
                 <a
                   href={`https://www.google.com/maps/?q=${auction.gps_latitude},${auction.gps_longitude}`}
@@ -109,16 +110,16 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
                 auction.province
               )}
             </Field>
-            <Field label="Type">{auction.property_type}</Field>
+            <Field label={content.auctionCard.type}>{auction.property_type}</Field>
             {auction.property_constructed_sqm && (
-              <Field label="Area">{auction.property_constructed_sqm} m2</Field>
+              <Field label={content.auctionCard.area}>{auction.property_constructed_sqm} m2</Field>
             )}
             {auction.property_year_catastro && (
-              <Field label="Built">{auction.property_year_catastro}</Field>
+              <Field label={content.auctionCard.built}>{auction.property_year_catastro}</Field>
             )}
             {auction.auction_end && (
               <div className="leading-tight">
-                <span className="text-gray-600">📅 Fecha Cierre </span>
+                <span className="text-gray-600">{content.auctionCard.fechaCierre} </span>
                 <span className="px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-semibold">
                   {new Date(auction.auction_end).toLocaleDateString('es-ES')}
                 </span>
@@ -129,14 +130,14 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
           {auction.investment_score && (
             <div className="mb-2">
               <span className="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs font-semibold">
-                Score: {auction.investment_score}
+                {content.auctionCard.scorePrefix} {auction.investment_score}
               </span>
             </div>
           )}
 
           <div className="bg-gray-50 border border-gray-200 rounded p-2 mb-2 h-20 overflow-y-auto text-xs text-gray-900">
             <p className="whitespace-pre-wrap leading-snug">
-              {auction.description || 'No description available'}
+              {auction.description || content.auctionCard.noDescription}
             </p>
           </div>
 
@@ -144,7 +145,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
             to={`/auctions/${auction.id}`}
             className="px-3 py-1.5 bg-brand-600 text-white rounded hover:bg-brand-700 text-center font-semibold text-sm block"
           >
-            View Details
+            {content.auctionCard.viewDetails}
           </Link>
         </div>
 
