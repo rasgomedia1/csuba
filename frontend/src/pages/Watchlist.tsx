@@ -41,8 +41,11 @@ export const Watchlist: React.FC = () => {
     try {
       await auctionsAPI.removeFromWatchlist(auctionId);
       setWatchlist((prev) => prev.filter((a) => a.id !== auctionId));
-    } catch {
-      alert('Error al remover de lista de guardados');
+    } catch (err: any) {
+      // 401 is handled globally by the API interceptor (session expired → redirect).
+      if (err.response?.status !== 401) {
+        alert('Error al remover de lista de guardados');
+      }
     }
   };
 

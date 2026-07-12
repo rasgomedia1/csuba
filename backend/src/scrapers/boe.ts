@@ -35,18 +35,58 @@ const apifyClient = new ApifyClient({
   token: process.env.APIFY_API_KEY,
 });
 
-export async function runBoeScraperProcess(): Promise<BoeAuction[]> {
-  const actorId = process.env.APIFY_ACTOR_ID || 'olican/spain-subastas-boe-catastro';
-  const maxResultados = 50;
+// INE province codes expected by the Apify actor's `provincia` input field
+const PROVINCE_CODES: Record<string, string> = {
+  'Álava': '01', 'Albacete': '02', 'Alicante': '03', 'Almería': '04', 'Ávila': '05',
+  'Badajoz': '06', 'Baleares': '07', 'Illes Balears': '07', 'Palma': '07',
+  'Barcelona': '08', 'Burgos': '09', 'Cáceres': '10', 'Cádiz': '11', 'Castellón': '12',
+  'Ciudad Real': '13', 'Córdoba': '14', 'A Coruña': '15', 'Cuenca': '16', 'Girona': '17',
+  'Granada': '18', 'Guadalajara': '19', 'Guipúzcoa': '20', 'Gipuzkoa': '20', 'Huelva': '21',
+  'Huesca': '22', 'Jaén': '23', 'León': '24', 'Lleida': '25', 'La Rioja': '26', 'Lugo': '27',
+  'Madrid': '28', 'Málaga': '29', 'Murcia': '30', 'Navarra': '31', 'Ourense': '32',
+  'Asturias': '33', 'Palencia': '34', 'Las Palmas': '35', 'Pontevedra': '36', 'Salamanca': '37',
+  'Santa Cruz de Tenerife': '38', 'Cantabria': '39', 'Segovia': '40', 'Sevilla': '41',
+  'Soria': '42', 'Tarragona': '43', 'Teruel': '44', 'Toledo': '45', 'Valencia': '46',
+  'Valladolid': '47', 'Vizcaya': '48', 'Bizkaia': '48', 'Bilbao': '48', 'Zamora': '49',
+  'Zaragoza': '50', 'Ceuta': '51', 'Melilla': '52',
+};
 
-  console.log(`[CSUBA-BOE] Starting Apify actor: ${actorId} (maxResultados: ${maxResultados})`);
+export interface BoeSyncFilters {
+  tipoBien?: 'inmueble' | 'vehiculo' | 'bien_mueble' | 'todos';
+  province?: string;
+  minimumBidMax?: number;
+  investmentScore?: string;
+  maxResultados?: number;
+}
+
+export async function runBoeScraperProcess(filters: BoeSyncFilters = {}): Promise<BoeAuction[]> {
+  const actorId = process.env.APIFY_ACTOR_ID || 'olican/spain-subastas-boe-catastro';
+
+  const input: Record<string, any> = {
+    maxResultados: Math.min(filters.maxResultados ?? 50, 50),
+  };
+
+  if (filters.tipoBien) {
+    input.tipoBien = filters.tipoBien;
+  }
+
+  if (filters.province) {
+    const provinciaCode = PROVINCE_CODES[filters.province];
+    if (provinciaCode) input.provincia = provinciaCode;
+  }
+
+  if (filters.minimumBidMax !== undefined) {
+    input.precioMaximo = filters.minimumBidMax;
+  }
+
+  if (filters.investmentScore) {
+    input.scoreMinimo = filters.investmentScore;
+  }
+
+  console.log(`[CSUBA-BOE] Starting Apify actor: ${actorId} with input:`, input);
 
   try {
-    console.log(`[CSUBA-BOE] Calling Apify with input: { maxResults: ${maxResultados} }`);
-
-    const run = await apifyClient.actor(actorId).call({
-      maxResults: maxResultados
-    });
+    const run = await apifyClient.actor(actorId).call(input);
 
     console.log(`[CSUBA-BOE] Actor run completed. Run ID: ${run.id}, Status: ${run.status}`);
 
@@ -67,11 +107,11 @@ export async function runBoeScraperProcess(): Promise<BoeAuction[]> {
   }
 }
 
-export async function syncBoeAuctions(): Promise<{ count: number; auctions: BoeAuction[] }> {
+export async function syncBoeAuctions(filters: BoeSyncFilters = {}): Promise<{ count: number; auctions: BoeAuction[] }> {
   try {
     console.log('[CSUBA-BOE] Starting BOE auction sync...');
 
-    const auctions = await runBoeScraperProcess();
+    const auctions = await runBoeScraperProcess(filters);
 
     if (!auctions || auctions.length === 0) {
       console.warn('[CSUBA-BOE] No auctions scraped');

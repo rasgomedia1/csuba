@@ -4,11 +4,13 @@ import { v4 as uuidv4 } from 'uuid';
 export interface SearchFilters {
   province?: string;
   propertyType?: string;
+  priceMin?: number;
   priceMax?: number;
   areaMin?: number;
   auctionStatus?: string;
   occupancyStatus?: string;
   investmentScore?: string;
+  maxRiskScore?: number;
   minimumBidMax?: number;
   minimumBidMin?: number;
   search?: string;
@@ -153,12 +155,13 @@ export async function getAuctionById(auctionId: string) {
 
 export async function getUserWatchlist(userId: string, limit: number = 50, offset: number = 0) {
   const result = await query(
-    `SELECT a.id, a.external_id, a.title, a.description, a.property_type, a.province,
-            a.municipality, a.price_initial, a.price_estimate, a.price_final,
-            a.auction_status, a.auction_end, a.occupancy_status, a.risk_score_overall,
-            a.url, ut.status, ut.personal_notes, ut.created_at as added_to_watchlist
+    `SELECT a.*,
+            ad.property_constructed_sqm, ad.property_land_sqm, ad.property_year_catastro,
+            ad.cadastre_address, ad.gps_latitude, ad.gps_longitude,
+            ut.status, ut.personal_notes, ut.created_at as added_to_watchlist
      FROM auctions a
      INNER JOIN user_tracking ut ON a.id = ut.auction_id
+     LEFT JOIN auction_details ad ON a.id = ad.auction_id
      WHERE ut.user_id = $1 AND ut.status = 'watchlist'
      ORDER BY ut.created_at DESC
      LIMIT $2 OFFSET $3`,

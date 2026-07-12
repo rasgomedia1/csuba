@@ -44,7 +44,7 @@ Plataforma integral para buscar, consolidar y gestionar subastas judiciales de E
 
 ```bash
 # Clonar/navegar al directorio
-cd subasta-app
+cd csuba
 
 # Crear archivo .env en backend
 cp backend/.env.example backend/.env
@@ -93,7 +93,7 @@ npm run dev
 ## 📖 Estructura del Proyecto
 
 ```
-subasta-app/
+csuba/
 ├── backend/
 │   ├── src/
 │   │   ├── server.ts           # Punto de entrada
@@ -115,11 +115,38 @@ subasta-app/
 │   │   ├── context/            # Context API
 │   │   ├── App.tsx             # Componente raíz
 │   │   └── main.tsx            # Entry point
+│   ├── android/              # Proyecto Android (Capacitor)
+│   ├── capacitor.config.ts
 │   ├── index.html
 │   ├── vite.config.ts
 │   └── tailwind.config.js
 └── docker-compose.yml
 ```
+
+## 📱 App Android (Capacitor)
+
+La web se empaqueta como app Android con Capacitor.
+
+```bash
+cd frontend
+# 1. Compilar web. Para el emulador, apuntar al backend del host (10.0.2.2):
+VITE_API_URL=http://10.0.2.2:3000/api npm run build
+npx cap sync android
+# 2. Generar APK debug (requiere JAVA_HOME apuntando al JBR de Android Studio)
+cd android && ./gradlew.bat assembleDebug
+# APK generado en: android/app/build/outputs/apk/debug/app-debug.apk
+```
+
+Emular (con un AVD ya creado, p.ej. `Pixel_6_API35`):
+
+```bash
+adb install -r android/app/build/outputs/apk/debug/app-debug.apk
+adb shell monkey -p com.csuba.app -c android.intent.category.LAUNCHER 1
+```
+
+- `appId`: `com.csuba.app`
+- El WebView usa esquema `http` + `usesCleartextTraffic` para poder llamar al backend por HTTP desde el emulador (`10.0.2.2`).
+- Los assets web copiados a `android/app/src/main/assets/public/` están gitignored: se regeneran con `npx cap sync` tras `npm run build`.
 
 ## 📡 API Endpoints
 
@@ -151,6 +178,12 @@ REDIS_URL=redis://localhost:6379
 JWT_SECRET=tu_secreto_super_seguro_aqui
 PORT=3000
 NODE_ENV=development
+
+# Apify (scraping BOE)
+APIFY_API_KEY=your_apify_api_key_here
+APIFY_ACTOR_ID=olican/spain-subastas-boe-catastro
+# Auto-sync en cada búsqueda. false por defecto (evita gastar créditos Apify).
+APIFY_SYNC_ENABLED=false
 ```
 
 ## 🧪 Testing
@@ -166,12 +199,11 @@ cd frontend
 npm run type-check
 ```
 
-## 📱 Versión Android (Próxima Fase)
+## 📱 Versión Android
 
-La versión Android se construirá usando **React Native** reutilizando:
-- ~60% del código de la interfaz
-- 100% de la lógica de servicios API
-- TailwindCSS compilado a StyleSheet nativo
+Empaquetada con **Capacitor** (ver sección "App Android" arriba). Reutiliza el
+100% de la web React/Vite dentro de un WebView nativo. APK debug verificado en
+emulador `Pixel_6_API35`.
 
 ## 🗺️ Roadmap
 

@@ -18,6 +18,27 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
+// Handle expired/invalid sessions globally. A 401 on an authenticated call
+// (e.g. adding to favorites) means the stored JWT expired — clear the stale
+// session and send the user to log in again instead of surfacing a generic
+// "error updating favorites" message.
+api.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const status = error.response?.status;
+    const hadToken = !!localStorage.getItem('token');
+    if (status === 401 && hadToken) {
+      localStorage.removeItem('token');
+      localStorage.removeItem('user');
+      const path = window.location.pathname;
+      if (path !== '/login' && path !== '/register') {
+        window.location.assign('/login?expired=1');
+      }
+    }
+    return Promise.reject(error);
+  }
+);
+
 // Auth
 export const authAPI = {
   register: (email: string, username: string, password: string, investmentMin?: number, investmentMax?: number) =>

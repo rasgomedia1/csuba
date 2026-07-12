@@ -1,7 +1,7 @@
 import express, { Request, Response } from 'express';
 import * as auctionService from '../services/auctions.js';
 import { authMiddleware } from '../middleware/auth.js';
-import { runBoeScraperProcess } from '../scrapers/boe.js';
+import { runBoeScraperProcess, BoeSyncFilters } from '../scrapers/boe.js';
 import { persistApifyAuctions } from '../services/apify.js';
 import { db } from '../db/index.js';
 
@@ -22,21 +22,34 @@ router.get('/search', async (req: Request, res: Response) => {
       investmentScore: req.query.investmentScore as string,
       search: req.query.search as string,
       sortBy: (req.query.sortBy as any) || 'pricePerM2',
-      limit: req.query.limit ? Number(req.query.limit) : 50,
+      limit: req.query.maxResultados ? Number(req.query.maxResultados) : (req.query.limit ? Number(req.query.limit) : 50),
       offset: req.query.offset ? Number(req.query.offset) : 0
     };
+
+    const tipoBien = req.query.tipoBien as BoeSyncFilters['tipoBien'];
 
     // Get cached results immediately
     const auctions = await auctionService.searchAuctions(filters);
 
-    // Trigger Apify sync in background (non-blocking)
-    syncApifyInBackground()
-      .catch(err => console.warn('[SEARCH-SYNC] Background sync error:', err.message));
+    // The Apify background sync is opt-in via APIFY_SYNC_ENABLED. It is disabled
+    // by default because the Apify account has no remaining credits, so every
+    // actor call would only fail (and slow responses down) without refreshing data.
+    const syncEnabled = process.env.APIFY_SYNC_ENABLED === 'true';
+    if (syncEnabled) {
+      // Non-blocking, scoped to the same filters the actor accepts
+      syncApifyInBackground({
+        tipoBien,
+        province: filters.province,
+        minimumBidMax: filters.minimumBidMax,
+        investmentScore: filters.investmentScore,
+        maxResultados: filters.limit
+      }).catch(err => console.warn('[SEARCH-SYNC] Background sync error:', err.message));
+    }
 
     res.json({
       count: auctions.length,
       auctions,
-      syncStatus: 'searching-in-background',
+      syncStatus: syncEnabled ? 'searching-in-background' : 'sync-disabled',
       syncTimestamp: new Date().toISOString()
     });
   } catch (error: any) {
@@ -45,10 +58,10 @@ router.get('/search', async (req: Request, res: Response) => {
 });
 
 // Background sync function (non-blocking)
-async function syncApifyInBackground() {
+async function syncApifyInBackground(filters: BoeSyncFilters) {
   try {
-    console.log('[SEARCH-SYNC] Starting background sync from Apify...');
-    const auctions = await runBoeScraperProcess();
+    console.log('[SEARCH-SYNC] Starting background sync from Apify with filters:', filters);
+    const auctions = await runBoeScraperProcess(filters);
 
     if (auctions && auctions.length > 0) {
       const apifyRunId = `run_${Date.now()}`;

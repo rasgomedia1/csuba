@@ -319,31 +319,52 @@ app.use('/api/new', newRoutes);
 
 ## 📞 Contacto / Cambios Frecuentes
 
-**Última actualización**: 2026-06-24  
+**Última actualización**: 2026-07-12  
 **Versión**: 0.1.0-MVP  
-**Estado**: ✅ Maqueta corriendo (BD remota Neon Cloud)
+**Estado**: ✅ Maqueta corriendo (BD remota Neon Cloud) + build Android (Capacitor) verificado en emulador
 
-### Estado Actual (2026-06-24 11:25)
+### Estado Actual (2026-07-12)
 - ✅ Backend: http://localhost:3000 (conectado a Neon Cloud PostgreSQL)
 - ✅ Frontend: http://localhost:5174 (Vite dev server)
-- ✅ Base de datos remota funcional con ~20+ subastas de prueba
+- ✅ Base de datos remota funcional con datos reales del BOE (vía Apify) + prueba
 - ✅ Todos los endpoints API respondiendo
 - ✅ Autenticación JWT, búsqueda con filtros, watchlist, detalles de subasta
+- ✅ **App Android** empaquetada con Capacitor (`frontend/android/`), APK debug ~4 MB, verificada en AVD `Pixel_6_API35`
 
-### Cambios Recientes (2026-06-24)
-1. ✅ **Investment Score filter**: Default ahora es "MUY ALTO"
-2. ✅ **Property Type en español**: Vivienda, Local, Garaje, Terreno, Otro (sin tildes en las opciones, pero con tildes en provincias para match correcto)
-3. ✅ **Provincias con tildes**: Málaga, Córdoba, Ávila, etc. - ahora coincide con datos de BD
-4. ✅ **Nuevo filtro**: Maximum Minimum Bid con default 2000€ (filtra por price_initial)
-5. ✅ **AuctionCard redesigned**: 
-   - Cambio EUR → € en precios
-   - Añadido Street View (Google Maps Streetview API)
-   - Layout responsivo: info izquierda, foto derecha
+### Integración Apify (BOE)
+- El Actor `olican/spain-subastas-boe-catastro` acepta 5 parámetros: `tipoBien`, `provincia` (código INE 2 dígitos), `precioMaximo` (puja mínima máx.), `scoreMinimo`, `maxResultados` (1–50). Ver mapeo en `backend/src/scrapers/boe.ts`.
+- **El auto-sync en cada búsqueda está DESACTIVADO** vía `APIFY_SYNC_ENABLED=false` (la cuenta Apify agotó créditos: "Monthly usage hard limit exceeded"). La app funciona sobre la caché en PostgreSQL. Poner `APIFY_SYNC_ENABLED=true` para reactivar cuando haya créditos.
+
+### Filtros de búsqueda (2 niveles)
+- **Nivel 1 · Apify** (consulta real al Actor): Tipo de Bien, Provincia, Puja Min hasta (€), Score Mínimo, Máx. Resultados. Defaults: Inmueble · Castellón · 1000 · MUY_ALTO · 10.
+- **Nivel 2 · Local** (filtra en el navegador sobre lo ya cargado, sin llamar al backend): Tipo de Propiedad, Tasación Máxima, Ordenar Por, Área Mínima, Puja Mínima desde, texto. Estado de Subasta y Ocupación se eliminaron (siempre Activa / Desconocida).
+
+### Cambios Recientes (2026-07-11/12)
+1. ✅ **Apify conectado por filtro**: el Actor recibía `{maxResults}` (campo inexistente); ahora mapea provincia→código INE, `precioMaximo`, `scoreMinimo`. Auto-sync gateado por `APIFY_SYNC_ENABLED`.
+2. ✅ **Fix persistencia**: faltaba columna `importe_deposito_eur` (migración 003) e `INSERT` con nº de columnas incorrecto en `services/apify.ts`.
+3. ✅ **Ficha (AuctionCard) rediseñada**: cifra principal = **Tasación** (antes Puja Mínima); diseño compacto, etiqueta a la izquierda del valor, sin subheaders.
+4. ✅ **Filtros 2 niveles** normalizados a grid responsive; eliminados Estado de Subasta y Ocupación.
+5. ✅ **Fix Favoritos**: overlay `SectionNumber` (z-index) bloqueaba el corazón — componente eliminado por completo. Manejo global de 401 (sesión expirada → login). `getUserWatchlist` ahora trae todos los campos (tasación, GPS, etc.).
+6. ✅ **Header responsive**: se envuelve en pantalla estrecha (ya no se desborda).
+7. ✅ **Icono de app** reemplazado (mazo sobre verde) en todas las densidades mipmap + adaptive + favicon web. Fuente: `frontend/assets-src/app-icon.png`.
+
+### Build Android (Capacitor)
+```bash
+cd frontend
+# 1. Build web apuntando al backend del host visto desde el emulador (10.0.2.2)
+VITE_API_URL=http://10.0.2.2:3000/api npm run build   # (localhost para navegador normal)
+npx cap sync android
+# 2. APK debug (requiere JAVA_HOME al JBR de Android Studio)
+cd android && ./gradlew.bat assembleDebug
+# APK: android/app/build/outputs/apk/debug/app-debug.apk
+```
+- `appId`: `com.csuba.app`. Manifest con `usesCleartextTraffic=true` y `androidScheme: http` (en `capacitor.config.ts`) para permitir HTTP a `10.0.2.2` sin bloqueo mixed-content.
+- Los assets web copiados (`android/app/src/main/assets/public/`) están gitignored: regenerar con `cap sync` tras `npm run build`.
 
 ### Próximos Pasos
-- [ ] Scrapers de BOE (Phase 2)
+- [ ] Recargar créditos Apify y reactivar `APIFY_SYNC_ENABLED=true`
 - [ ] Integración Hacienda/SS
-- [ ] React Native Android
 - [ ] Alertas por email
+- [ ] Release firmado (AAB) para Play Store
 
 Commit todos los cambios en rama `master` (no en `main`). Tag para releases.

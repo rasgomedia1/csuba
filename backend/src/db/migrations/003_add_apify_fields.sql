@@ -5,6 +5,7 @@
 ALTER TABLE auctions
 ADD COLUMN IF NOT EXISTS minimum_bid_eur DECIMAL(15,2),
 ADD COLUMN IF NOT EXISTS valor_tasacion_eur DECIMAL(15,2),
+ADD COLUMN IF NOT EXISTS importe_deposito_eur DECIMAL(15,2),
 ADD COLUMN IF NOT EXISTS investment_score VARCHAR(20),
 ADD COLUMN IF NOT EXISTS legal_charges_description TEXT;
 

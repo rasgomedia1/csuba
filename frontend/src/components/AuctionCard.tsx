@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { SectionNumber } from './SectionNumber';
 
 interface Auction {
   id: string;
+  external_id?: string;
   title: string;
   description?: string;
   price_initial: number;
@@ -30,149 +30,126 @@ interface AuctionCardProps {
   isInWatchlist?: boolean;
 }
 
-const getStatusBadge = (status: string): string => {
-  const status_lower = status.toLowerCase();
-  if (status_lower === 'activa') return 'Active';
-  if (status_lower === 'completada') return 'Completed';
-  if (status_lower === 'desierta') return 'Deserted';
-  return status;
-};
-
 const formatPrice = (price: number): string => {
   const rounded = Math.round(price);
   return '€ ' + rounded.toLocaleString('en-US', { style: 'decimal' })
     .replace(/,/g, '.');
 };
 
+// Label-left field: title always to the left of the value, single tight line.
+const Field: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
+  <div className="leading-tight">
+    <span className="text-gray-600">{label} </span>
+    <span className="font-semibold">{children}</span>
+  </div>
+);
+
 export const AuctionCard: React.FC<AuctionCardProps> = ({
   auction,
   onAddToWatchlist,
   isInWatchlist
 }) => {
-  const pricePerM2 = auction.property_constructed_sqm
-    ? Math.round(auction.price_initial / auction.property_constructed_sqm)
+  const basisPrice = auction.valor_tasacion_eur || auction.price_initial;
+  const pricePerM2 = auction.property_constructed_sqm && basisPrice
+    ? Math.round(basisPrice / auction.property_constructed_sqm)
     : null;
 
   return (
     <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
       <div className="flex flex-col relative">
-        {/* Heart/Favorite Button */}
         {onAddToWatchlist && (
           <button
             onClick={() => onAddToWatchlist(auction.id)}
-            className="absolute top-3 right-3 text-2xl z-10 hover:scale-110 transition-transform"
+            className="absolute top-2 right-2 text-xl z-10 hover:scale-110 transition-transform"
             title={isInWatchlist ? 'Remove from favorites' : 'Add to favorites'}
           >
             {isInWatchlist ? '❤️' : '🤍'}
           </button>
         )}
 
-        {/* Top section - Information */}
-        <div className="p-6 relative">
-          <SectionNumber number={1} />
-          <p className="text-sm text-gray-600 mb-4">
-            ID: <span className="font-mono font-semibold text-brand-600">{auction.external_id || auction.id.substring(0, 8)}</span>
-          </p>
+        <div className="p-3 leading-tight">
+          <Field label="ID:">
+            <span className="font-mono text-brand-600">{auction.external_id || auction.id.substring(0, 8)}</span>
+          </Field>
 
-          <div className="mb-6">
-            <p className="text-3xl font-bold text-brand-600">
-              {formatPrice(auction.price_initial)}
-            </p>
-            {pricePerM2 && (
-              <p className="text-sm text-gray-600">Price m2 {formatPrice(pricePerM2)}</p>
-            )}
-          </div>
-
-          {/* Minimum Bid Section - Main */}
-          {auction.minimum_bid_eur && (
-            <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded">
-              <p className="text-sm text-gray-600 mb-1">🏷️ Puja Mínima</p>
-              <p className="text-2xl font-bold text-brand-600">{formatPrice(auction.minimum_bid_eur)}</p>
-              {auction.valor_tasacion_eur && (
-                <p className="text-base text-gray-700 mt-2">
-                  💎 Tasación: <span className="font-semibold">{formatPrice(auction.valor_tasacion_eur)}</span>
-                </p>
+          {/* Tasación — main figure */}
+          {auction.valor_tasacion_eur ? (
+            <div className="mt-2 mb-2 p-2 bg-blue-50 border border-blue-200 rounded leading-tight">
+              <p className="text-xs text-gray-600">💎 Tasación</p>
+              <p className="text-2xl font-bold text-brand-600">{formatPrice(auction.valor_tasacion_eur)}</p>
+              {pricePerM2 && (
+                <Field label="Price m2">{formatPrice(pricePerM2)}</Field>
               )}
-              {auction.importe_deposito_eur && (
-                <p className="text-base text-gray-700 mt-1">
-                  🏦 Depósito: <span className="font-semibold">{formatPrice(auction.importe_deposito_eur)}</span>
-                </p>
+              {auction.minimum_bid_eur !== undefined && (
+                <Field label="🏷️ Puja Mínima:">{formatPrice(auction.minimum_bid_eur)}</Field>
               )}
+              {auction.importe_deposito_eur !== undefined && (
+                <Field label="🏦 Depósito:">{formatPrice(auction.importe_deposito_eur)}</Field>
+              )}
+            </div>
+          ) : (
+            <div className="mt-2 mb-2 leading-tight">
+              <p className="text-2xl font-bold text-brand-600">{formatPrice(auction.price_initial)}</p>
+              {pricePerM2 && <Field label="Price m2">{formatPrice(pricePerM2)}</Field>}
             </div>
           )}
 
-          <div className="grid grid-cols-2 gap-4 mb-4 text-sm">
-            <div>
-              <span className="text-gray-600">Location &nbsp;</span>
+          <div className="grid grid-cols-2 gap-x-3 gap-y-0.5 text-sm mb-2">
+            <Field label="Location">
               {auction.gps_latitude && auction.gps_longitude ? (
                 <a
                   href={`https://www.google.com/maps/?q=${auction.gps_latitude},${auction.gps_longitude}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="font-semibold text-brand-600 hover:text-brand-700 underline"
+                  className="text-brand-600 hover:text-brand-700 underline"
                 >
                   {auction.province}
                 </a>
               ) : (
-                <p className="font-semibold">{auction.province}</p>
+                auction.province
               )}
-            </div>
-            <div>
-              <span className="text-gray-600">Type</span>
-              <p className="font-semibold">{auction.property_type}</p>
-            </div>
+            </Field>
+            <Field label="Type">{auction.property_type}</Field>
             {auction.property_constructed_sqm && (
-              <div>
-                <span className="text-gray-600">Area</span>
-                <p className="font-semibold">{auction.property_constructed_sqm} m2</p>
-              </div>
+              <Field label="Area">{auction.property_constructed_sqm} m2</Field>
             )}
             {auction.property_year_catastro && (
-              <div>
-                <span className="text-gray-600">Built</span>
-                <p className="font-semibold">{auction.property_year_catastro}</p>
-              </div>
-            )}
-          </div>
-
-          <div className="flex gap-2 mb-4 flex-wrap text-xs">
-            <span className="px-2 py-1 bg-gray-100 text-gray-700 rounded">
-              {getStatusBadge(auction.auction_status)}
-            </span>
-            {auction.investment_score && (
-              <span className="px-2 py-1 bg-indigo-100 text-indigo-700 rounded font-semibold">
-                Score: {auction.investment_score}
-              </span>
+              <Field label="Built">{auction.property_year_catastro}</Field>
             )}
             {auction.auction_end && (
-              <div className="text-xs space-y-1">
-                <p className="text-gray-600">📅 Fecha Cierre</p>
-                <span className="px-2 py-1 bg-purple-100 text-purple-700 rounded text-sm">
+              <div className="leading-tight">
+                <span className="text-gray-600">📅 Fecha Cierre </span>
+                <span className="px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-semibold">
                   {new Date(auction.auction_end).toLocaleDateString('es-ES')}
                 </span>
               </div>
             )}
           </div>
 
-          {/* Description Box - Fixed Height */}
-          <div className="bg-gray-50 border border-gray-200 rounded p-3 mb-4 h-32 overflow-y-auto text-sm text-gray-900">
-            <p className="whitespace-pre-wrap leading-relaxed">
+          {auction.investment_score && (
+            <div className="mb-2">
+              <span className="px-2 py-0.5 bg-indigo-100 text-indigo-700 rounded text-xs font-semibold">
+                Score: {auction.investment_score}
+              </span>
+            </div>
+          )}
+
+          <div className="bg-gray-50 border border-gray-200 rounded p-2 mb-2 h-20 overflow-y-auto text-xs text-gray-900">
+            <p className="whitespace-pre-wrap leading-snug">
               {auction.description || 'No description available'}
             </p>
           </div>
 
           <Link
             to={`/auctions/${auction.id}`}
-            className="px-4 py-2 bg-brand-600 text-white rounded hover:bg-brand-700 text-center font-semibold text-sm block"
+            className="px-3 py-1.5 bg-brand-600 text-white rounded hover:bg-brand-700 text-center font-semibold text-sm block"
           >
             View Details
           </Link>
         </div>
 
-        {/* Bottom section - Map Preview */}
         {auction.gps_latitude && auction.gps_longitude && (
-          <div className="bg-gray-50 border-t relative">
-            <SectionNumber number={2} />
+          <div className="bg-gray-50 border-t">
             <div className="relative overflow-hidden bg-gray-200" style={{ aspectRatio: '16 / 9' }}>
               <iframe
                 style={{
