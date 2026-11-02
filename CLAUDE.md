@@ -140,8 +140,8 @@ cd backend && npm run dev
 cd frontend && npm run dev
 
 # 3. Acceder
-# Frontend: http://localhost:5174
-# Backend: http://localhost:3000
+# Frontend: http://localhost:5174 (proxy /api → backend)
+# Backend: http://localhost:4006 (PORT en backend/.env)
 ```
 
 ### Filtros Disponibles
@@ -352,19 +352,21 @@ app.use('/api/new', newRoutes);
 ```bash
 cd frontend
 # 1. Build web apuntando al backend del host visto desde el emulador (10.0.2.2)
-VITE_API_URL=http://10.0.2.2:3000/api npm run build   # (localhost para navegador normal)
+VITE_API_URL=https://csuba.vercel.app/api npm run build   # móvil real (Poco) contra producción
+# VITE_API_URL=http://10.0.2.2:4006/api npm run build    # emulador contra el backend local
 npx cap sync android
 # 2. APK debug (requiere JAVA_HOME al JBR de Android Studio)
 cd android && ./gradlew.bat assembleDebug
 # APK: android/app/build/outputs/apk/debug/app-debug.apk
 ```
-- `appId`: `com.csuba.app`. Manifest con `usesCleartextTraffic=true` y `androidScheme: http` (en `capacitor.config.ts`) para permitir HTTP a `10.0.2.2` sin bloqueo mixed-content.
+- `applicationId`: **`es.rasgomedia.csuba`** (desde 2026-11-02; antes `com.csuba.app`, nunca publicada). El `namespace` Java sigue siendo `com.csuba.app`.
+- `versionName` sale de `frontend/package.json` y `versionCode` = nº de commits (`git rev-list --count HEAD`) o `BUILD_NUMBER`; es el mismo número que muestra el footer (`v0.2.0 (N)`). Manifest con `usesCleartextTraffic=true` y `androidScheme: http` (en `capacitor.config.ts`) para permitir HTTP a `10.0.2.2` sin bloqueo mixed-content.
 - Los assets web copiados (`android/app/src/main/assets/public/`) están gitignored: regenerar con `cap sync` tras `npm run build`.
 
 ### Deploy en Vercel (2026-07-17/18)
 - ✅ Desplegado en producción: **https://csuba.vercel.app** (proyecto `rasgo-media/csuba`, modelo `services` en `vercel.json`).
 - Vinculado vía `vercel link`/`vercel --prod` (CLI), no el flujo "Import Project" del dashboard — ese flujo tenía un bug 500 en `api/v1/integrations/search-repo` del lado de Vercel.
-- Variables de entorno declaradas en Production: `DATABASE_URL` (host `-pooler` de Neon), `JWT_SECRET`, `APIFY_API_KEY`, `APIFY_ACTOR_ID`, `APIFY_SYNC_ENABLED=false`.
+- Variables de entorno declaradas en Production: `DATABASE_URL` (host `-pooler` de Neon), `JWT_SECRET`, `APIFY_API_KEY`, `APIFY_ACTOR_ID`, `APIFY_SYNC_ENABLED=false`, `ADMIN_TOKEN` y `VITE_GOOGLE_MAPS_KEY` (2026-11-02).
 - Pendiente: apuntar `csuba.rasgomedia.com` (CNAME) al deployment y añadirlo en Vercel → Settings → Domains.
 
 ### Identidad de marca (2026-07-18)
@@ -380,4 +382,14 @@ cd android && ./gradlew.bat assembleDebug
 - [ ] Alertas por email
 - [ ] Release firmado (AAB) para Play Store
 
-Commit todos los cambios en rama `master` (no en `main`). Tag para releases.
+### Revisión y endurecimiento (2026-11-02)
+- **Seguridad**: `JWT_SECRET` obligatorio (≥16 caracteres, sin fallback); `/api/scrapers/*` solo con cabecera `x-admin-token` = `ADMIN_TOKEN` (sin esa variable quedan desactivados); rate limit 10/15 min en login/registro; ninguna respuesta devuelve `password_hash`; errores 500 genéricos.
+- **Clave de Google Maps** fuera del código: `VITE_GOOGLE_MAPS_KEY` en `frontend/.env.local` y en Vercel. Sigue en el historial de git del repo público → **restringirla por referrer/API en Google Cloud** (pendiente del usuario).
+- **Login** acepta `identifier` (email o usuario, "Email or User"); `email` sigue aceptado por compatibilidad.
+- **BD**: un solo pool (`db/connection.ts`); sin mock. Migraciones con tabla `schema_migrations` (`npm run migrate`, idempotente). 005: único `auction_details(auction_id)`; 006: provincias guardadas como código INE → nombre.
+- **Búsqueda**: el filtro de provincia casa nombres bilingües del BOE ("Castellón/Castelló"), alias (Vizcaya/Bizkaia…) y código INE — antes la búsqueda por defecto (Castellón) devolvía 0. `investmentScore` = mínimo (MUY_ALTO ≥ ALTO ≥ MEDIO ≥ BAJO). `limit` máx. 100.
+- **Apify**: upsert completo por `external_id` (precio, estado, fecha…), tolera campos nulos; sync en segundo plano con `waitUntil` y enfriamiento de 30 min por filtro.
+- **Frontend**: footer Rasgo Media + versión, Open Graph (`public/og-image.jpg`), PWA (`vite-plugin-pwa`, SW desactivado dentro de Capacitor), rutas protegidas, toasts en vez de `alert()`, `PasswordInput`, mapa de cada ficha bajo demanda, puja mínima 0 = "Sin mínimo".
+- **Tests**: `npx playwright test` (e2e en `e2e/app.spec.ts`, con backend :4006 y frontend :5174 arrancados). Crea usuarios `e2e<timestamp>`; limpiar con `DELETE FROM users WHERE username LIKE 'e2e%'`.
+
+La rama de trabajo es `main` (no existe `master`). Tag para releases.

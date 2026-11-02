@@ -1,88 +1,47 @@
-import express from 'express';
-import { testBoeScraperEndpoint, syncBoeAuctions, runBoeScraperProcess } from '../scrapers/boe.js';
+import express, { Request, Response, NextFunction } from 'express';
+import { runBoeScraperProcess } from '../scrapers/boe.js';
 import { persistApifyAuctions } from '../services/apify.js';
-import { db } from '../db/index.js';
+import { getPool } from '../db/connection.js';
+import { adminMiddleware } from '../middleware/auth.js';
 
+// Every endpoint here starts a paid Apify run, so the whole router is
+// admin-only (header x-admin-token = ADMIN_TOKEN).
 const router = express.Router();
+router.use(adminMiddleware);
 
-router.post('/boe/test', async (req, res) => {
-  try {
-    console.log('[API] BOE Scraper test endpoint called');
-    const result = await testBoeScraperEndpoint();
-    return res.json(result);
-  } catch (error) {
-    console.error('[API] Scraper error:', error);
-    return res.status(500).json({
-      status: 'error',
-      timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : String(error),
-    });
-  }
-});
-
-router.post('/boe/sync', async (req, res) => {
-  try {
-    console.log('[API] BOE Scraper sync endpoint called');
-    const result = await syncBoeAuctions();
-    return res.json({
-      status: 'success',
-      timestamp: new Date().toISOString(),
-      ...result,
-      message: `✅ Synced ${result.count} auctions from BOE via Apify`,
-    });
-  } catch (error) {
-    console.error('[API] Sync error:', error);
-    return res.status(500).json({
-      status: 'error',
-      timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : String(error),
-    });
-  }
-});
-
-router.post('/boe/sync-to-db', async (req, res) => {
-  try {
-    console.log('[API] BOE Scraper sync-to-db endpoint called');
-
-    const auctions = await runBoeScraperProcess();
-    const apifyRunId = `run_${Date.now()}`;
-
-    const persistResult = await persistApifyAuctions(db.pool!, auctions as any, apifyRunId);
-
-    return res.json({
-      status: 'success',
-      timestamp: new Date().toISOString(),
-      count: persistResult.count,
-      apifyRunId,
-      message: `✅ Synced ${persistResult.count} auctions to PostgreSQL database`,
-    });
-  } catch (error) {
-    console.error('[API] Sync to DB error:', error);
-    return res.status(500).json({
-      status: 'error',
-      timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : String(error),
-    });
-  }
-});
-
-router.get('/status', (req, res) => {
+router.get('/status', (req: Request, res: Response) => {
   res.json({
     status: 'ready',
     timestamp: new Date().toISOString(),
     scraper: {
       name: 'BOE Auction Scraper (Apify)',
-      type: 'Apify Actor',
       actor_id: process.env.APIFY_ACTOR_ID || 'olican/spain-subastas-boe-catastro',
-      status: 'configured',
-      api_key: process.env.APIFY_API_KEY ? '***configured***' : '***missing***',
-    },
-    endpoints: {
-      test: 'POST /api/scrapers/boe/test - Execute scraper and get sample data',
-      sync: 'POST /api/scrapers/boe/sync - Sync scraped data to database',
-      status: 'GET /api/scrapers/status - Check scraper configuration',
-    },
+      api_key: process.env.APIFY_API_KEY ? 'configured' : 'missing',
+      auto_sync: process.env.APIFY_SYNC_ENABLED === 'true'
+    }
   });
+});
+
+// Runs the actor and returns a sample without touching the database.
+router.post('/boe/test', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const auctions = await runBoeScraperProcess({ maxResultados: 5 });
+    res.json({ status: 'success', count: auctions.length, sample: auctions.slice(0, 3) });
+  } catch (error) {
+    next(error);
+  }
+});
+
+// Runs the actor and upserts the results into PostgreSQL.
+router.post('/boe/sync-to-db', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const auctions = await runBoeScraperProcess();
+    const apifyRunId = `run_${Date.now()}`;
+    const result = await persistApifyAuctions(getPool(), auctions, apifyRunId);
+    res.json({ status: 'success', apifyRunId, count: result.count, skipped: result.skipped });
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;

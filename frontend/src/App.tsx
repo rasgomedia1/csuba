@@ -1,6 +1,9 @@
 import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
+import { ToastProvider } from './context/ToastContext';
+import { RequireAuth } from './components/RequireAuth';
+import { Footer } from './components/Footer';
 import { Header } from './components/Header';
 import { Home } from './pages/Home';
 import { Login } from './pages/Login';
@@ -15,6 +18,7 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
+        <ToastProvider>
         <div className="min-h-screen flex flex-col bg-gray-50">
           <Header />
           <main className="flex-1">
@@ -24,12 +28,14 @@ function App() {
               <Route path="/register" element={<Register />} />
               <Route path="/search" element={<Search />} />
               <Route path="/auctions/:id" element={<AuctionDetail />} />
-              <Route path="/watchlist" element={<Watchlist />} />
-              <Route path="/profile" element={<Profile />} />
+              <Route path="/watchlist" element={<RequireAuth><Watchlist /></RequireAuth>} />
+              <Route path="/profile" element={<RequireAuth><Profile /></RequireAuth>} />
               <Route path="*" element={<Navigate to="/" />} />
             </Routes>
           </main>
+          <Footer />
         </div>
+        </ToastProvider>
       </AuthProvider>
     </BrowserRouter>
   );

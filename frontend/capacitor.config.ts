@@ -1,7 +1,7 @@
 import type { CapacitorConfig } from '@capacitor/cli';
 
 const config: CapacitorConfig = {
-  appId: 'com.csuba.app',
+  appId: 'es.rasgomedia.csuba',
   appName: 'CSUBA',
   webDir: 'dist',
   server: {

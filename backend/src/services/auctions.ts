@@ -1,5 +1,38 @@
 import { query } from '../db/connection.js';
-import { v4 as uuidv4 } from 'uuid';
+import { HttpError } from '../validation.js';
+import { PROVINCE_CODES } from '../scrapers/boe.js';
+
+// The BOE stores bilingual names ("Castellón/Castelló", "Alicante/Alacant"),
+// Basque/Catalan forms ("Bizkaia") and occasionally the INE code ("12"). A
+// province filter matches any slash-separated part, any alias, or the code.
+const PROVINCE_ALIASES: string[][] = [
+  ['Vizcaya', 'Bizkaia', 'Biscay'],
+  ['Guipúzcoa', 'Gipuzkoa'],
+  ['Álava', 'Araba', 'Alava'],
+  ['Baleares', 'Illes Balears', 'Islas Baleares', 'Balears'],
+  ['A Coruña', 'La Coruña', 'Coruña'],
+  ['Girona', 'Gerona'],
+  ['Lleida', 'Lérida'],
+  ['Ourense', 'Orense'],
+  ['Castellón', 'Castelló', 'Castellon'],
+  ['Alicante', 'Alacant'],
+  ['Valencia', 'València'],
+  ['Asturias', 'Principado de Asturias'],
+  ['Navarra', 'Nafarroa'],
+  ['Las Palmas', 'Palmas (Las)'],
+  ['Santa Cruz de Tenerife', 'Tenerife']
+];
+
+export function provinceVariants(province: string): string[] {
+  const norm = (s: string) => s.trim().toLowerCase();
+  const variants = new Set([norm(province)]);
+  for (const group of PROVINCE_ALIASES) {
+    if (group.some((g) => norm(g) === norm(province))) group.forEach((g) => variants.add(norm(g)));
+  }
+  const code = Object.entries(PROVINCE_CODES).find(([name]) => variants.has(norm(name)))?.[1];
+  if (code) variants.add(code);
+  return [...variants];
+}
 
 export interface SearchFilters {
   province?: string;
@@ -14,10 +47,29 @@ export interface SearchFilters {
   minimumBidMax?: number;
   minimumBidMin?: number;
   search?: string;
-  sortBy?: 'price' | 'date' | 'investmentScore' | 'pricePerM2' | 'auctionEnd' | 'minimumBid' | 'depositAmount';
-  limit?: number;
-  offset?: number;
+  sortBy?: string;
+  limit: number;
+  offset: number;
 }
+
+// Investment score scale, worst → best. The filter means "at least this score",
+// matching the Apify actor's `scoreMinimo` semantics.
+export const SCORE_LEVELS = ['BAJO', 'MEDIO', 'ALTO', 'MUY_ALTO'] as const;
+
+const SCORE_RANK_SQL = `CASE a.investment_score
+  WHEN 'MUY_ALTO' THEN 4 WHEN 'ALTO' THEN 3 WHEN 'MEDIO' THEN 2 WHEN 'BAJO' THEN 1 ELSE 0 END`;
+
+const SORT_MAP: Record<string, string> = {
+  price: 'a.price_initial ASC NULLS LAST',
+  date: 'a.auction_end ASC NULLS LAST',
+  auctionEnd: 'a.auction_end ASC NULLS LAST',
+  minimumBid: 'a.minimum_bid_eur ASC NULLS LAST',
+  depositAmount: 'a.importe_deposito_eur ASC NULLS LAST',
+  tasacion: 'a.valor_tasacion_eur DESC NULLS LAST',
+  investmentScore: `${SCORE_RANK_SQL} DESC`,
+  pricePerM2:
+    'CASE WHEN ad.property_constructed_sqm > 0 THEN (COALESCE(a.valor_tasacion_eur, a.price_initial) / ad.property_constructed_sqm) END ASC NULLS LAST'
+};
 
 export async function searchAuctions(filters: SearchFilters) {
   let sql = `SELECT a.*,
@@ -29,131 +81,71 @@ export async function searchAuctions(filters: SearchFilters) {
   LEFT JOIN auction_details ad ON a.id = ad.auction_id
   WHERE 1=1`;
   const params: any[] = [];
-  let paramIndex = 1;
+  const add = (clause: string, value: any) => {
+    params.push(value);
+    sql += ` AND ${clause.replace('?', `$${params.length}`)}`;
+  };
 
   if (filters.province) {
-    sql += ` AND province = $${paramIndex}`;
-    params.push(filters.province);
-    paramIndex++;
+    add(
+      "EXISTS (SELECT 1 FROM unnest(string_to_array(a.province, '/')) AS part WHERE lower(trim(part)) = ANY(?))",
+      provinceVariants(filters.province)
+    );
   }
-
-  if (filters.propertyType) {
-    sql += ` AND property_type = $${paramIndex}`;
-    params.push(filters.propertyType);
-    paramIndex++;
-  }
-
-  if (filters.priceMin !== undefined) {
-    sql += ` AND price_initial >= $${paramIndex}`;
-    params.push(filters.priceMin);
-    paramIndex++;
-  }
-
-  if (filters.priceMax !== undefined) {
-    sql += ` AND a.price_initial <= $${paramIndex}`;
-    params.push(filters.priceMax);
-    paramIndex++;
-  }
-
-  if (filters.minimumBidMax !== undefined) {
-    sql += ` AND a.minimum_bid_eur <= $${paramIndex}`;
-    params.push(filters.minimumBidMax);
-    paramIndex++;
-  }
-
-  if (filters.minimumBidMin !== undefined) {
-    sql += ` AND a.minimum_bid_eur >= $${paramIndex}`;
-    params.push(filters.minimumBidMin);
-    paramIndex++;
-  }
-
-  if (filters.areaMin !== undefined) {
-    sql += ` AND ad.property_constructed_sqm >= $${paramIndex}`;
-    params.push(filters.areaMin);
-    paramIndex++;
-  }
-
-  if (filters.auctionStatus) {
-    sql += ` AND a.auction_status = $${paramIndex}`;
-    params.push(filters.auctionStatus);
-    paramIndex++;
-  }
-
-  if (filters.occupancyStatus) {
-    sql += ` AND occupancy_status = $${paramIndex}`;
-    params.push(filters.occupancyStatus);
-    paramIndex++;
-  }
-
-  if (filters.maxRiskScore !== undefined) {
-    sql += ` AND risk_score_overall <= $${paramIndex}`;
-    params.push(filters.maxRiskScore);
-    paramIndex++;
-  }
+  if (filters.propertyType) add('a.property_type = ?', filters.propertyType);
+  if (filters.priceMin !== undefined) add('a.price_initial >= ?', filters.priceMin);
+  if (filters.priceMax !== undefined) add('a.price_initial <= ?', filters.priceMax);
+  if (filters.minimumBidMax !== undefined) add('a.minimum_bid_eur <= ?', filters.minimumBidMax);
+  if (filters.minimumBidMin !== undefined) add('a.minimum_bid_eur >= ?', filters.minimumBidMin);
+  if (filters.areaMin !== undefined) add('ad.property_constructed_sqm >= ?', filters.areaMin);
+  if (filters.auctionStatus) add('a.auction_status = ?', filters.auctionStatus);
+  if (filters.occupancyStatus) add('a.occupancy_status = ?', filters.occupancyStatus);
+  if (filters.maxRiskScore !== undefined) add('a.risk_score_overall <= ?', filters.maxRiskScore);
 
   if (filters.investmentScore) {
-    sql += ` AND investment_score = $${paramIndex}`;
-    params.push(filters.investmentScore);
-    paramIndex++;
+    const idx = SCORE_LEVELS.indexOf(filters.investmentScore as any);
+    if (idx >= 0) add('a.investment_score = ANY(?)', SCORE_LEVELS.slice(idx));
   }
 
   if (filters.search) {
-    sql += ` AND (a.title ILIKE $${paramIndex} OR a.description ILIKE $${paramIndex} OR ad.cadastre_address ILIKE $${paramIndex})`;
     params.push(`%${filters.search}%`);
-    paramIndex++;
+    const p = `$${params.length}`;
+    sql += ` AND (a.title ILIKE ${p} OR a.description ILIKE ${p} OR ad.cadastre_address ILIKE ${p})`;
   }
 
-  // Sorting
-  const sortMap: Record<string, string> = {
-    price: 'a.price_initial ASC',
-    date: 'a.auction_end ASC',
-    auctionEnd: 'a.auction_end ASC',
-    minimumBid: 'a.minimum_bid_eur ASC',
-    depositAmount: 'a.importe_deposito_eur ASC',
-    investmentScore: 'a.investment_score DESC',
-    pricePerM2: 'CASE WHEN ad.property_constructed_sqm > 0 THEN (a.price_initial / ad.property_constructed_sqm) ELSE a.price_initial END ASC'
-  };
+  sql += ` ORDER BY ${SORT_MAP[filters.sortBy || 'date'] || SORT_MAP.date}, a.id`;
 
-  sql += ` ORDER BY ${sortMap[filters.sortBy || 'date'] || sortMap['date']}`;
-
-  // Pagination
-  sql += ` LIMIT $${paramIndex} OFFSET $${paramIndex + 1}`;
-  params.push(filters.limit || 20, filters.offset || 0);
+  params.push(filters.limit, filters.offset);
+  sql += ` LIMIT $${params.length - 1} OFFSET $${params.length}`;
 
   const result = await query(sql, params);
   return result.rows;
 }
 
-export async function getAuctionById(auctionId: string) {
-  const auctionResult = await query(
-    'SELECT * FROM auctions WHERE id = $1',
-    [auctionId]
-  );
+async function assertAuctionExists(auctionId: string) {
+  const r = await query('SELECT 1 FROM auctions WHERE id = $1', [auctionId]);
+  if (r.rows.length === 0) throw new HttpError(404, 'Auction not found');
+}
 
+export async function getAuctionById(auctionId: string) {
+  const auctionResult = await query('SELECT * FROM auctions WHERE id = $1', [auctionId]);
   if (auctionResult.rows.length === 0) {
-    throw new Error('Auction not found');
+    throw new HttpError(404, 'Auction not found');
   }
 
-  const auction = auctionResult.rows[0];
-
-  const detailsResult = await query(
-    'SELECT * FROM auction_details WHERE auction_id = $1',
-    [auctionId]
-  );
-
-  const priceHistoryResult = await query(
-    'SELECT * FROM price_history WHERE auction_id = $1 ORDER BY recorded_at ASC',
-    [auctionId]
-  );
+  const [detailsResult, priceHistoryResult] = await Promise.all([
+    query('SELECT * FROM auction_details WHERE auction_id = $1', [auctionId]),
+    query('SELECT * FROM price_history WHERE auction_id = $1 ORDER BY recorded_at ASC', [auctionId])
+  ]);
 
   return {
-    ...auction,
+    ...auctionResult.rows[0],
     details: detailsResult.rows[0],
     priceHistory: priceHistoryResult.rows
   };
 }
 
-export async function getUserWatchlist(userId: string, limit: number = 50, offset: number = 0) {
+export async function getUserWatchlist(userId: string, limit: number, offset: number) {
   const result = await query(
     `SELECT a.*,
             ad.property_constructed_sqm, ad.property_land_sqm, ad.property_year_catastro,
@@ -171,23 +163,30 @@ export async function getUserWatchlist(userId: string, limit: number = 50, offse
   return result.rows;
 }
 
+export async function isInWatchlist(userId: string, auctionId: string) {
+  const r = await query(
+    `SELECT 1 FROM user_tracking WHERE user_id = $1 AND auction_id = $2 AND status = 'watchlist'`,
+    [userId, auctionId]
+  );
+  return r.rows.length > 0;
+}
+
 export async function addToWatchlist(userId: string, auctionId: string, notes?: string) {
+  await assertAuctionExists(auctionId);
   await query(
-    `INSERT INTO user_tracking (id, user_id, auction_id, status, personal_notes)
-     VALUES ($1, $2, $3, 'watchlist', $4)
+    `INSERT INTO user_tracking (user_id, auction_id, status, personal_notes)
+     VALUES ($1, $2, 'watchlist', $3)
      ON CONFLICT (user_id, auction_id) DO UPDATE
-     SET status = 'watchlist', personal_notes = COALESCE($4, EXCLUDED.personal_notes), updated_at = NOW()`,
-    [uuidv4(), userId, auctionId, notes || null]
+     SET status = 'watchlist',
+         personal_notes = COALESCE(EXCLUDED.personal_notes, user_tracking.personal_notes),
+         updated_at = NOW()`,
+    [userId, auctionId, notes ?? null]
   );
 
-  return { success: true, auction_id: auctionId, user_id: userId };
+  return { success: true, auction_id: auctionId };
 }
 
 export async function removeFromWatchlist(userId: string, auctionId: string) {
-  await query(
-    'DELETE FROM user_tracking WHERE user_id = $1 AND auction_id = $2',
-    [userId, auctionId]
-  );
-
+  await query('DELETE FROM user_tracking WHERE user_id = $1 AND auction_id = $2', [userId, auctionId]);
   return { success: true };
 }

@@ -2,18 +2,21 @@ import React, { useState } from 'react';
 import { useNavigate, Link, useSearchParams } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
+import { PasswordInput } from '../components/PasswordInput';
 import content from '../content.json';
 
 export const Login: React.FC = () => {
-  const [email, setEmail] = useState('');
+  const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
   const [searchParams] = useSearchParams();
   const sessionExpired = searchParams.get('expired') === '1';
+  // Only allow in-app relative paths as the post-login destination.
+  const nextParam = searchParams.get('next');
+  const next = nextParam && nextParam.startsWith('/') && !nextParam.startsWith('//') ? nextParam : '/search';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -21,9 +24,9 @@ export const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      const response = await authAPI.login(email, password);
+      const response = await authAPI.login(identifier.trim(), password);
       login(response.data.token, response.data.user);
-      navigate('/search');
+      navigate(next, { replace: true });
     } catch (err: any) {
       setError(err.response?.data?.error || content.login.errorFallback);
     } finally {
@@ -32,7 +35,7 @@ export const Login: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-50 to-blue-50 flex items-center justify-center">
+    <div className="min-h-[75vh] py-8 px-4 bg-gradient-to-br from-brand-50 to-blue-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-center mb-8">{content.login.title}</h1>
 
@@ -54,10 +57,13 @@ export const Login: React.FC = () => {
               {content.login.emailLabel}
             </label>
             <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              value={identifier}
+              onChange={(e) => setIdentifier(e.target.value)}
               required
+              autoComplete="username"
+              autoCapitalize="none"
+              spellCheck={false}
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
               placeholder={content.login.emailPlaceholder}
             />
@@ -67,24 +73,13 @@ export const Login: React.FC = () => {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               {content.login.passwordLabel}
             </label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-                placeholder={content.login.passwordPlaceholder}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? content.common.hidePassword : content.common.showPassword}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-brand-600"
-              >
-                {showPassword ? '🙈' : '👁️'}
-              </button>
-            </div>
+            <PasswordInput
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              autoComplete="current-password"
+              placeholder={content.login.passwordPlaceholder}
+            />
           </div>
 
           <button

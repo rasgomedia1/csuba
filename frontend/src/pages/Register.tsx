@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { authAPI } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
+import { PasswordInput } from '../components/PasswordInput';
 import content from '../content.json';
 
 export const Register: React.FC = () => {
   const [email, setEmail] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
   const [userPlan, setUserPlan] = useState<'free' | 'donor'>('free');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
@@ -35,7 +35,7 @@ export const Register: React.FC = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-brand-50 to-blue-50 flex items-center justify-center">
+    <div className="min-h-[75vh] py-8 px-4 bg-gradient-to-br from-brand-50 to-blue-50 flex items-center justify-center">
       <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md">
         <h1 className="text-3xl font-bold text-center mb-8">{content.register.title}</h1>
 
@@ -55,6 +55,7 @@ export const Register: React.FC = () => {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
+              autoComplete="email"
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
               placeholder={content.register.emailPlaceholder}
             />
@@ -69,6 +70,13 @@ export const Register: React.FC = () => {
               value={username}
               onChange={(e) => setUsername(e.target.value)}
               required
+              minLength={3}
+              maxLength={30}
+              pattern="[A-Za-z0-9_.\-]{3,30}"
+              title={content.register.usernameHint}
+              autoComplete="username"
+              autoCapitalize="none"
+              spellCheck={false}
               className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
               placeholder={content.register.usernamePlaceholder}
             />
@@ -78,24 +86,16 @@ export const Register: React.FC = () => {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               {content.register.passwordLabel}
             </label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-                placeholder={content.register.passwordPlaceholder}
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword((v) => !v)}
-                aria-label={showPassword ? content.common.hidePassword : content.common.showPassword}
-                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-brand-600"
-              >
-                {showPassword ? '🙈' : '👁️'}
-              </button>
-            </div>
+            <PasswordInput
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              minLength={8}
+              maxLength={128}
+              autoComplete="new-password"
+              placeholder={content.register.passwordPlaceholder}
+            />
+            <p className="text-xs text-gray-500 mt-1">{content.register.passwordHint}</p>
           </div>
 
           <div className="border-t pt-4">

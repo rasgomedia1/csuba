@@ -3,6 +3,7 @@ import { SearchFilters, ApifyFilterState, LocalFilterState } from '../components
 import { AuctionCard } from '../components/AuctionCard';
 import { auctionsAPI } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
+import { useToast } from '../context/ToastContext';
 import content from '../content.json';
 
 interface Auction {
@@ -50,24 +51,38 @@ const applyLocalFilters = (auctions: Auction[], filters: LocalFilterState): Auct
   });
 
   // Numeric fields (valor_tasacion_eur, minimum_bid_eur, etc.) arrive from the
-  // API as strings (Postgres DECIMAL serialization), so every numeric key must
-  // be coerced with Number() explicitly rather than relying on typeof checks.
-  const numericSortKey: Record<string, (a: Auction) => number> = {
-    tasacion: (a: Auction) => Number(a.valor_tasacion_eur) || 0,
-    date: (a: Auction) => new Date(a.auction_end).getTime() || 0,
-    pricePerM2: (a: Auction) => (a.property_constructed_sqm ? (Number(a.valor_tasacion_eur) || Number(a.price_initial) || 0) / a.property_constructed_sqm : 0),
-    auctionEnd: (a: Auction) => new Date(a.auction_end).getTime() || 0,
-    minimumBid: (a: Auction) => Number(a.minimum_bid_eur) || 0,
-    depositAmount: (a: Auction) => Number(a.importe_deposito_eur) || 0
+  // API as strings (Postgres DECIMAL serialization), so every key is coerced
+  // with Number(). Missing values sort last regardless of direction.
+  // dir: 1 = ascending (cheapest/soonest first), -1 = descending.
+  const toNum = (v: unknown) => (v === null || v === undefined || v === '' ? NaN : Number(v));
+  const scoreRank: Record<string, number> = { BAJO: 1, MEDIO: 2, ALTO: 3, MUY_ALTO: 4 };
+  const sortSpec: Record<string, { key: (a: Auction) => number; dir: 1 | -1 }> = {
+    tasacion: { key: (a) => toNum(a.valor_tasacion_eur), dir: -1 },
+    investmentScore: { key: (a) => scoreRank[a.investment_score || ''] ?? NaN, dir: -1 },
+    date: { key: (a) => new Date(a.auction_end).getTime(), dir: 1 },
+    auctionEnd: { key: (a) => new Date(a.auction_end).getTime(), dir: 1 },
+    minimumBid: { key: (a) => toNum(a.minimum_bid_eur), dir: 1 },
+    depositAmount: { key: (a) => toNum(a.importe_deposito_eur), dir: 1 },
+    pricePerM2: {
+      key: (a) => {
+        const area = toNum(a.property_constructed_sqm);
+        const price = toNum(a.valor_tasacion_eur ?? a.price_initial);
+        return area > 0 ? price / area : NaN;
+      },
+      dir: 1
+    }
   };
 
-  if (filters.sortBy === 'investmentScore') {
-    result = [...result].sort((a, b) => (b.investment_score || '').localeCompare(a.investment_score || ''));
-  } else {
-    const getKey = numericSortKey[filters.sortBy];
-    if (getKey) {
-      result = [...result].sort((a, b) => getKey(b) - getKey(a));
-    }
+  const spec = sortSpec[filters.sortBy];
+  if (spec) {
+    result = [...result].sort((a, b) => {
+      const ka = spec.key(a);
+      const kb = spec.key(b);
+      const aMissing = !Number.isFinite(ka);
+      const bMissing = !Number.isFinite(kb);
+      if (aMissing || bMissing) return Number(aMissing) - Number(bMissing);
+      return (ka - kb) * spec.dir;
+    });
   }
 
   return result;
@@ -82,6 +97,7 @@ export const Search: React.FC = () => {
   const [initialLocalFilters, setInitialLocalFilters] = useState<LocalFilterState | undefined>(undefined);
   const [localFilters, setLocalFilters] = useState<LocalFilterState>(defaultLocalFilters);
   const { user } = useAuth();
+  const toast = useToast();
 
   const loadWatchlist = async () => {
     if (!user) return;
@@ -117,8 +133,15 @@ export const Search: React.FC = () => {
     const savedApify = localStorage.getItem('lastApifyFilters');
     const savedLocal = localStorage.getItem('lastLocalFilters');
 
-    const apifyFilters = savedApify ? JSON.parse(savedApify) : defaultApifyFilters;
-    const localFiltersInit = savedLocal ? JSON.parse(savedLocal) : defaultLocalFilters;
+    const parse = <T,>(raw: string | null, fallback: T): T => {
+      try {
+        return raw ? { ...fallback, ...JSON.parse(raw) } : fallback;
+      } catch {
+        return fallback;
+      }
+    };
+    const apifyFilters = parse(savedApify, defaultApifyFilters);
+    const localFiltersInit = parse(savedLocal, defaultLocalFilters);
 
     setInitialApifyFilters(apifyFilters);
     setInitialLocalFilters(localFiltersInit);
@@ -137,7 +160,7 @@ export const Search: React.FC = () => {
 
   const handleAddToWatchlist = async (auctionId: string) => {
     if (!user) {
-      alert(content.search.loginRequired);
+      toast(content.search.loginRequired, 'info');
       return;
     }
 
@@ -156,7 +179,7 @@ export const Search: React.FC = () => {
     } catch (err: any) {
       // 401 is handled globally by the API interceptor (session expired → redirect).
       if (err.response?.status !== 401) {
-        alert(content.search.watchlistError);
+        toast(content.search.watchlistError);
       }
     }
   };

@@ -3,6 +3,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { auctionsAPI } from '../services/api';
 import { useAuth } from '../hooks/useAuth';
 import { StreetView } from '../components/StreetView';
+import { useToast } from '../context/ToastContext';
+import { formatEur, formatDate } from '../utils/format';
 import content from '../content.json';
 
 interface AuctionDetail {
@@ -40,6 +42,7 @@ export const AuctionDetail: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [inWatchlist, setInWatchlist] = useState(false);
+  const toast = useToast();
 
   useEffect(() => {
     loadAuction();
@@ -54,9 +57,11 @@ export const AuctionDetail: React.FC = () => {
       setAuction(response.data);
 
       if (user) {
-        const watchlistResponse = await auctionsAPI.getWatchlist();
-        const isInWatchlist = watchlistResponse.data.watchlist?.some((a: any) => a.id === id);
-        setInWatchlist(!!isInWatchlist);
+        // Favorite state is secondary: a failure here must not hide the auction.
+        auctionsAPI
+          .isInWatchlist(id)
+          .then((r) => setInWatchlist(r.data.inWatchlist))
+          .catch(() => {});
       }
     } catch (err: any) {
       setError(err.response?.data?.error || content.auctionDetail.loadError);
@@ -81,8 +86,8 @@ export const AuctionDetail: React.FC = () => {
         await auctionsAPI.addToWatchlist(id);
         setInWatchlist(true);
       }
-    } catch {
-      alert(content.common.watchlistError);
+    } catch (err: any) {
+      if (err.response?.status !== 401) toast(content.common.watchlistError);
     }
   };
 
@@ -198,20 +203,20 @@ export const AuctionDetail: React.FC = () => {
               <div>
                 <p className="text-gray-600 text-sm">{content.auctionDetail.precioInicial}</p>
                 <p className="text-lg font-semibold text-brand-600">
-                  €{auction.price_initial?.toLocaleString('es-ES')}
+                  {Number(auction.price_initial) === 0 ? content.auctionCard.noMinimumBid : formatEur(auction.price_initial)}
                 </p>
               </div>
               <div>
                 <p className="text-gray-600 text-sm">{content.auctionDetail.estimado}</p>
                 <p className="text-lg font-semibold">
-                  €{auction.price_estimate?.toLocaleString('es-ES')}
+                  {formatEur(auction.price_estimate)}
                 </p>
               </div>
               {auction.price_final && (
                 <div>
                   <p className="text-gray-600 text-sm">{content.auctionDetail.precioFinal}</p>
                   <p className="text-lg font-semibold text-green-600">
-                    €{auction.price_final?.toLocaleString('es-ES')}
+                    {formatEur(auction.price_final)}
                   </p>
                 </div>
               )}
@@ -281,13 +286,13 @@ export const AuctionDetail: React.FC = () => {
               <div>
                 <p className="text-sm text-gray-600">{content.auctionDetail.inicio}</p>
                 <p className="font-semibold">
-                  {new Date(auction.auction_start).toLocaleDateString('es-ES')}
+                  {formatDate(auction.auction_start)}
                 </p>
               </div>
               <div>
                 <p className="text-sm text-gray-600">{content.auctionDetail.finalizacion}</p>
                 <p className="font-semibold">
-                  {new Date(auction.auction_end).toLocaleDateString('es-ES')}
+                  {formatDate(auction.auction_end)}
                 </p>
               </div>
             </div>

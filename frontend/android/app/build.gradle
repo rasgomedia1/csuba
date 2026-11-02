@@ -1,14 +1,23 @@
 apply plugin: 'com.android.application'
 
+import groovy.json.JsonSlurper
+
+// Same version/build shown in the web footer: versionName from package.json,
+// versionCode = number of git commits (or BUILD_NUMBER from CI).
+def appVersionName = new JsonSlurper().parse(file("../../package.json")).version
+def appVersionCode = (System.getenv("BUILD_NUMBER") ?: providers.exec {
+    commandLine 'git', 'rev-list', '--count', 'HEAD'
+}.standardOutput.asText.get().trim()).toInteger()
+
 android {
     namespace = "com.csuba.app"
     compileSdk = rootProject.ext.compileSdkVersion
     defaultConfig {
-        applicationId "com.csuba.app"
+        applicationId "es.rasgomedia.csuba"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "1.0"
+        versionCode appVersionCode
+        versionName appVersionName
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.

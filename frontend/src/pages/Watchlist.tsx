@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auctionsAPI } from '../services/api';
 import { AuctionCard } from '../components/AuctionCard';
+import { useToast } from '../context/ToastContext';
 import content from '../content.json';
 
 interface Auction {
@@ -13,7 +14,6 @@ interface Auction {
   property_type: string;
   auction_status: string;
   occupancy_status: string;
-  risk_score_overall: number;
   auction_end: string;
 }
 
@@ -22,6 +22,7 @@ export const Watchlist: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+  const toast = useToast();
 
   useEffect(() => {
     loadWatchlist();
@@ -45,7 +46,7 @@ export const Watchlist: React.FC = () => {
     } catch (err: any) {
       // 401 is handled globally by the API interceptor (session expired → redirect).
       if (err.response?.status !== 401) {
-        alert(content.watchlist.removeError);
+        toast(content.watchlist.removeError);
       }
     }
   };

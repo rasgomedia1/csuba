@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+import { formatEur, formatDate, toNumber } from '../utils/format';
 import content from '../content.json';
 
 interface Auction {
@@ -31,12 +32,6 @@ interface AuctionCardProps {
   isInWatchlist?: boolean;
 }
 
-const formatPrice = (price: number): string => {
-  const rounded = Math.round(price);
-  return '€ ' + rounded.toLocaleString('en-US', { style: 'decimal' })
-    .replace(/,/g, '.');
-};
-
 // Label-left field: title always to the left of the value, single tight line.
 const Field: React.FC<{ label: string; children: React.ReactNode }> = ({ label, children }) => (
   <div className="leading-tight">
@@ -50,17 +45,23 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
   onAddToWatchlist,
   isInWatchlist
 }) => {
-  const basisPrice = auction.valor_tasacion_eur || auction.price_initial;
-  const pricePerM2 = auction.property_constructed_sqm && basisPrice
-    ? Math.round(basisPrice / auction.property_constructed_sqm)
-    : null;
+  const [showMap, setShowMap] = useState(false);
+  const tasacion = toNumber(auction.valor_tasacion_eur);
+  const area = toNumber(auction.property_constructed_sqm);
+  const basisPrice = tasacion ?? toNumber(auction.price_initial);
+  const pricePerM2 = area && area > 0 && basisPrice !== null ? basisPrice / area : null;
+  const minimumBid = toNumber(auction.minimum_bid_eur);
+  const deposit = toNumber(auction.importe_deposito_eur);
 
   return (
     <div className="bg-white rounded-lg shadow hover:shadow-lg transition-shadow overflow-hidden">
       <div className="flex flex-col relative">
         {onAddToWatchlist && (
           <button
+            type="button"
             onClick={() => onAddToWatchlist(auction.id)}
+            aria-label={isInWatchlist ? content.common.removeFavorite : content.common.addFavorite}
+            aria-pressed={!!isInWatchlist}
             className="absolute top-2 right-2 text-xl z-10 hover:scale-110 transition-transform"
             title={isInWatchlist ? content.common.removeFavorite : content.common.addFavorite}
           >
@@ -74,24 +75,24 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
           </Field>
 
           {/* Tasación — main figure */}
-          {auction.valor_tasacion_eur ? (
+          {tasacion !== null ? (
             <div className="mt-2 mb-2 p-2 bg-blue-50 border border-blue-200 rounded leading-tight">
               <p className="text-xs text-gray-600">{content.auctionCard.tasacion}</p>
-              <p className="text-2xl font-bold text-brand-600">{formatPrice(auction.valor_tasacion_eur)}</p>
-              {pricePerM2 && (
-                <Field label={content.auctionCard.priceM2}>{formatPrice(pricePerM2)}</Field>
+              <p className="text-2xl font-bold text-brand-600">{formatEur(tasacion)}</p>
+              {pricePerM2 !== null && (
+                <Field label={content.auctionCard.priceM2}>{formatEur(pricePerM2)}</Field>
               )}
-              {auction.minimum_bid_eur !== undefined && (
-                <Field label={content.auctionCard.pujaMinima}>{formatPrice(auction.minimum_bid_eur)}</Field>
+              {minimumBid !== null && (
+                <Field label={content.auctionCard.pujaMinima}>{minimumBid === 0 ? content.auctionCard.noMinimumBid : formatEur(minimumBid)}</Field>
               )}
-              {auction.importe_deposito_eur !== undefined && (
-                <Field label={content.auctionCard.deposito}>{formatPrice(auction.importe_deposito_eur)}</Field>
+              {deposit !== null && (
+                <Field label={content.auctionCard.deposito}>{formatEur(deposit)}</Field>
               )}
             </div>
           ) : (
             <div className="mt-2 mb-2 leading-tight">
-              <p className="text-2xl font-bold text-brand-600">{formatPrice(auction.price_initial)}</p>
-              {pricePerM2 && <Field label={content.auctionCard.priceM2}>{formatPrice(pricePerM2)}</Field>}
+              <p className="text-2xl font-bold text-brand-600">{formatEur(auction.price_initial)}</p>
+              {pricePerM2 !== null && <Field label={content.auctionCard.priceM2}>{formatEur(pricePerM2)}</Field>}
             </div>
           )}
 
@@ -111,8 +112,8 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
               )}
             </Field>
             <Field label={content.auctionCard.type}>{auction.property_type}</Field>
-            {auction.property_constructed_sqm && (
-              <Field label={content.auctionCard.area}>{auction.property_constructed_sqm} m2</Field>
+            {area !== null && (
+              <Field label={content.auctionCard.area}>{area} {content.common.areaUnit}</Field>
             )}
             {auction.property_year_catastro && (
               <Field label={content.auctionCard.built}>{auction.property_year_catastro}</Field>
@@ -121,7 +122,7 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
               <div className="leading-tight">
                 <span className="text-gray-600">{content.auctionCard.fechaCierre} </span>
                 <span className="px-1.5 py-0.5 bg-purple-100 text-purple-700 rounded text-xs font-semibold">
-                  {new Date(auction.auction_end).toLocaleDateString('es-ES')}
+                  {formatDate(auction.auction_end)}
                 </span>
               </div>
             )}
@@ -149,23 +150,28 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
           </Link>
         </div>
 
+        {/* Embedded map loads only on demand: one iframe per card was heavy with 50 results. */}
         {auction.gps_latitude && auction.gps_longitude && (
           <div className="bg-gray-50 border-t">
-            <div className="relative overflow-hidden bg-gray-200" style={{ aspectRatio: '16 / 9' }}>
-              <iframe
-                style={{
-                  position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  border: 'none'
-                }}
-                src={`https://www.google.com/maps?q=${auction.gps_latitude},${auction.gps_longitude}&output=embed&z=15`}
-                allowFullScreen={true}
-                loading="lazy"
-              ></iframe>
-            </div>
+            <button
+              type="button"
+              onClick={() => setShowMap((v) => !v)}
+              aria-expanded={showMap}
+              className="w-full py-1.5 text-sm text-brand-600 hover:bg-brand-50 font-semibold"
+            >
+              {showMap ? content.auctionCard.hideMap : content.auctionCard.showMap}
+            </button>
+            {showMap && (
+              <div className="relative overflow-hidden bg-gray-200" style={{ aspectRatio: '16 / 9' }}>
+                <iframe
+                  className="absolute inset-0 w-full h-full border-0"
+                  src={`https://www.google.com/maps?q=${auction.gps_latitude},${auction.gps_longitude}&output=embed&z=15`}
+                  title={content.auctionCard.location}
+                  allowFullScreen={true}
+                  loading="lazy"
+                ></iframe>
+              </div>
+            )}
           </div>
         )}
       </div>

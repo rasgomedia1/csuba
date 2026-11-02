@@ -12,18 +12,14 @@
     "setup-db": "npm run migrate && npm run seed"
   },
   "dependencies": {
+    "@vercel/functions": "^3.10.5",
     "apify-client": "^2.23.4",
-    "bcrypt": "^5.1.0",
-    "bull": "^4.11.3",
-    "cheerio": "^1.0.0-rc.12",
+    "bcrypt": "^6.0.0",
     "cors": "^2.8.5",
     "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.0",
-    "pg": "^8.10.0",
-    "puppeteer": "^19.0.0",
-    "redis": "^4.6.5",
-    "uuid": "^9.0.0"
+    "pg": "^8.10.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^6.0.0",
@@ -32,8 +28,12 @@
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^20.0.0",
     "@types/pg": "^8.10.0",
-    "@types/uuid": "^9.0.0",
     "tsx": "^3.12.7",
     "typescript": "^5.0.0"
+  },
+  "overrides": {
+    "basic-ftp": "^6.2.5",
+    "qs": "^6.17.1",
+    "zod": "^4.6.7"
   }
 }

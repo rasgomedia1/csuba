@@ -1,6 +1,6 @@
+-- Idempotent base schema: safe to run on every migration.
 -- Enable extensions
 CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "postgis";
 
 -- Users table
 CREATE TABLE IF NOT EXISTS users (
@@ -116,13 +116,13 @@ CREATE TABLE IF NOT EXISTS saved_filters (
 );
 
 -- Indices for performance
-CREATE INDEX idx_auctions_source ON auctions(source);
-CREATE INDEX idx_auctions_status ON auctions(auction_status);
-CREATE INDEX idx_auctions_province ON auctions(province);
-CREATE INDEX idx_auctions_price ON auctions(price_initial);
-CREATE INDEX idx_auctions_dates ON auctions(auction_start, auction_end);
-CREATE INDEX idx_auctions_risk ON auctions(risk_score_overall);
-CREATE INDEX idx_user_tracking_user ON user_tracking(user_id);
-CREATE INDEX idx_user_tracking_auction ON user_tracking(auction_id);
-CREATE INDEX idx_alerts_user ON alerts(user_id);
-CREATE INDEX idx_price_history_auction ON price_history(auction_id);
+CREATE INDEX IF NOT EXISTS idx_auctions_source ON auctions(source);
+CREATE INDEX IF NOT EXISTS idx_auctions_status ON auctions(auction_status);
+CREATE INDEX IF NOT EXISTS idx_auctions_province ON auctions(province);
+CREATE INDEX IF NOT EXISTS idx_auctions_price ON auctions(price_initial);
+CREATE INDEX IF NOT EXISTS idx_auctions_dates ON auctions(auction_start, auction_end);
+CREATE INDEX IF NOT EXISTS idx_auctions_risk ON auctions(risk_score_overall);
+CREATE INDEX IF NOT EXISTS idx_user_tracking_user ON user_tracking(user_id);
+CREATE INDEX IF NOT EXISTS idx_user_tracking_auction ON user_tracking(auction_id);
+CREATE INDEX IF NOT EXISTS idx_alerts_user ON alerts(user_id);
+CREATE INDEX IF NOT EXISTS idx_price_history_auction ON price_history(auction_id);

@@ -1,6 +1,6 @@
 import { ApifyClient } from 'apify-client';
 
-interface BoeAuction {
+export interface BoeAuction {
   subasta_id: string;
   estado_subasta: string;
   fecha_cierre: string;
@@ -36,7 +36,7 @@ const apifyClient = new ApifyClient({
 });
 
 // INE province codes expected by the Apify actor's `provincia` input field
-const PROVINCE_CODES: Record<string, string> = {
+export const PROVINCE_CODES: Record<string, string> = {
   'Álava': '01', 'Albacete': '02', 'Alicante': '03', 'Almería': '04', 'Ávila': '05',
   'Badajoz': '06', 'Baleares': '07', 'Illes Balears': '07', 'Palma': '07',
   'Barcelona': '08', 'Burgos': '09', 'Cáceres': '10', 'Cádiz': '11', 'Castellón': '12',
@@ -104,45 +104,5 @@ export async function runBoeScraperProcess(filters: BoeSyncFilters = {}): Promis
   } catch (error) {
     console.error(`[CSUBA-BOE] Error: ${error instanceof Error ? error.message : String(error)}`);
     throw error;
-  }
-}
-
-export async function syncBoeAuctions(filters: BoeSyncFilters = {}): Promise<{ count: number; auctions: BoeAuction[] }> {
-  try {
-    console.log('[CSUBA-BOE] Starting BOE auction sync...');
-
-    const auctions = await runBoeScraperProcess(filters);
-
-    if (!auctions || auctions.length === 0) {
-      console.warn('[CSUBA-BOE] No auctions scraped');
-      return { count: 0, auctions: [] };
-    }
-
-    console.log(`[CSUBA-BOE] Sync complete: ${auctions.length} auctions`);
-    return { count: auctions.length, auctions };
-  } catch (error) {
-    console.error(`[CSUBA-BOE] Sync failed: ${error instanceof Error ? error.message : String(error)}`);
-    throw error;
-  }
-}
-
-export async function testBoeScraperEndpoint(): Promise<any> {
-  try {
-    console.log('[CSUBA-BOE] Test endpoint called');
-    const auctions = await runBoeScraperProcess();
-    return {
-      status: 'success',
-      timestamp: new Date().toISOString(),
-      count: auctions.length,
-      sample: auctions.slice(0, 3),
-      message: `Scraped ${auctions.length} auctions from BOE via Apify`,
-    };
-  } catch (error) {
-    console.error(`[CSUBA-BOE] Test failed: ${error}`);
-    return {
-      status: 'error',
-      timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : String(error),
-    };
   }
 }

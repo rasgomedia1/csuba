@@ -1,6 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
 
 const api: AxiosInstance = axios.create({
   baseURL: API_BASE_URL,
@@ -32,7 +32,7 @@ api.interceptors.response.use(
       localStorage.removeItem('user');
       const path = window.location.pathname;
       if (path !== '/login' && path !== '/register') {
-        window.location.assign('/login?expired=1');
+        window.location.assign(`/login?expired=1&next=${encodeURIComponent(path)}`);
       }
     }
     return Promise.reject(error);
@@ -43,8 +43,9 @@ api.interceptors.response.use(
 export const authAPI = {
   register: (email: string, username: string, password: string, userPlan?: 'free' | 'donor') =>
     api.post('/auth/register', { email, username, password, userPlan }),
-  login: (email: string, password: string) =>
-    api.post('/auth/login', { email, password })
+  // `identifier` = email or username ("Email or User")
+  login: (identifier: string, password: string) =>
+    api.post('/auth/login', { identifier, password })
 };
 
 // Auctions
@@ -53,10 +54,10 @@ export const auctionsAPI = {
     api.get('/auctions/search', { params: filters }),
   getById: (id: string) =>
     api.get(`/auctions/${id}`),
-  getRiskScore: (id: string) =>
-    api.post(`/auctions/${id}/risk-score`),
   getWatchlist: (limit?: number, offset?: number) =>
     api.get('/auctions/watchlist/my-list', { params: { limit, offset } }),
+  isInWatchlist: (id: string) =>
+    api.get<{ inWatchlist: boolean }>(`/auctions/${id}/watchlist`),
   addToWatchlist: (id: string, notes?: string) =>
     api.post(`/auctions/${id}/watchlist`, { notes }),
   removeFromWatchlist: (id: string) =>

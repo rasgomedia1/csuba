@@ -36,9 +36,9 @@
     "title": "Iniciar Sesión",
     "sessionExpired": "Vuelve a iniciar sesión para continuar.",
     "errorFallback": "Error al iniciar sesión",
-    "emailLabel": "Email",
-    "emailPlaceholder": "tu@email.com",
-    "passwordLabel": "Contraseña",
+    "emailLabel": "Email or User",
+    "emailPlaceholder": "tu@email.com o tu_usuario",
+    "passwordLabel": "Password",
     "passwordPlaceholder": "••••••••",
     "submit": "Iniciar Sesión",
     "submitting": "⏳ Iniciando sesión...",
@@ -52,7 +52,7 @@
     "emailPlaceholder": "tu@email.com",
     "usernameLabel": "Usuario",
     "usernamePlaceholder": "tu_usuario",
-    "passwordLabel": "Contraseña",
+    "passwordLabel": "Password",
     "passwordPlaceholder": "••••••••",
     "planLabel": "Elige tu plan",
     "planFreeTitle": "One Free Search",
@@ -62,7 +62,9 @@
     "submit": "Crear Cuenta",
     "submitting": "⏳ Registrando...",
     "haveAccount": "¿Ya tienes cuenta?",
-    "loginLink": "Inicia sesión"
+    "loginLink": "Inicia sesión",
+    "passwordHint": "Mínimo 8 caracteres",
+    "usernameHint": "3-30 caracteres: letras, números, punto, guion o guion bajo"
   },
   "profile": {
     "loadError": "Error al cargar perfil",
@@ -149,7 +151,10 @@
     "fechaCierre": "📅 Fecha Cierre",
     "scorePrefix": "Score:",
     "noDescription": "No description available",
-    "viewDetails": "View Details"
+    "viewDetails": "View Details",
+    "showMap": "🗺️ Ver mapa",
+    "hideMap": "Ocultar mapa",
+    "noMinimumBid": "Sin mínimo"
   },
   "auctionDetail": {
     "back": "← Volver a búsqueda",
@@ -189,8 +194,12 @@
     "addFavorite": "Add to favorites",
     "removeFavorite": "Remove from favorites",
     "watchlistError": "Error al actualizar lista de guardados",
-    "showPassword": "Mostrar contraseña",
-    "hidePassword": "Ocultar contraseña"
+    "showPassword": "Mostrar password",
+    "hidePassword": "Ocultar password",
+    "close": "Cerrar",
+    "areaUnit": "m²",
+    "streetViewAlt": "Vista de la calle del inmueble",
+    "loginRequired": "Inicia sesión para continuar"
   },
   "watchlist": {
     "loadError": "Error al cargar lista de guardados",
@@ -201,5 +210,15 @@
     "goToSearch": "🔍 Ir a Buscar",
     "countOne": "{count} subasta guardada",
     "countOther": "{count} subastas guardadas"
+  },
+  "footer": {
+    "firma": "Rasgo Media -",
+    "firmaDominio": "rasgomedia.es",
+    "firmaUrl": "https://rasgomedia.es",
+    "version": "v{version} ({build})"
+  },
+  "meta": {
+    "title": "CSUBA - Subastas del BOE en España",
+    "description": "Busca subastas del BOE con datos del Catastro, tasación, puja mínima y score de inversión."
   }
 }

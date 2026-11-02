@@ -55,3 +55,9 @@ scrapers/boe/*.pyc
 
 .vercel
 .env*
+
+# Test artifacts and local data
+test-results/
+playwright-report/
+dataset_*.json
+backend/*.log
