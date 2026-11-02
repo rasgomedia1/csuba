@@ -6,6 +6,7 @@
     "build": "tsc --noEmit && esbuild src/app.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/app.js --external:pg-native",
     "start": "tsx src/server.ts",
     "migrate": "tsx src/db/runMigrations.ts",
+    "create-admin": "tsx src/db/createAdmin.ts",
     "seed": "tsx src/db/seed.ts",
     "cleanup": "tsx src/db/cleanup.ts",
     "setup-db": "npm run migrate && npm run seed"

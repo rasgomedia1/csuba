@@ -5,6 +5,7 @@ export interface User {
   email: string;
   username: string;
   user_plan?: 'free' | 'donor';
+  is_admin?: boolean;
 }
 
 interface AuthContextType {

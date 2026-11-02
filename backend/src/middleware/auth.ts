@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 import { getJwtSecret } from '../config.js';
+import { query } from '../db/connection.js';
 
 declare global {
   namespace Express {
@@ -30,15 +31,29 @@ export function authMiddleware(req: Request, res: Response, next: NextFunction) 
   }
 }
 
-// Admin-only endpoints (Apify scraper triggers). Disabled entirely unless
-// ADMIN_TOKEN is configured, so they can never be called anonymously.
-export function adminMiddleware(req: Request, res: Response, next: NextFunction) {
+// Admin-only endpoints (Apify scraper triggers). Two ways in:
+//  - header x-admin-token = ADMIN_TOKEN (scripts/cron), or
+//  - a logged-in user whose users.is_admin is true (checked in the DB on every
+//    request, never trusted from the JWT, so revoking takes effect at once).
+export async function adminMiddleware(req: Request, res: Response, next: NextFunction) {
   const expected = process.env.ADMIN_TOKEN;
-  if (!expected) {
-    return res.status(503).json({ error: 'Admin endpoints disabled' });
+  if (expected && req.headers['x-admin-token'] === expected) return next();
+
+  const header = req.headers.authorization;
+  const token = header?.startsWith('Bearer ') ? header.slice(7) : undefined;
+  if (token) {
+    try {
+      const { userId } = jwt.verify(token, getJwtSecret()) as { userId?: string };
+      if (userId) {
+        const r = await query('SELECT is_admin FROM users WHERE id = $1', [userId]);
+        if (r.rows[0]?.is_admin) {
+          req.userId = userId;
+          return next();
+        }
+      }
+    } catch {
+      /* invalid token → 403 below */
+    }
   }
-  if (req.headers['x-admin-token'] !== expected) {
-    return res.status(403).json({ error: 'Forbidden' });
-  }
-  next();
+  res.status(403).json({ error: 'Forbidden' });
 }

@@ -8,7 +8,7 @@ export type UserPlan = 'free' | 'donor';
 
 // Columns safe to send to the client (never password_hash).
 const PUBLIC_USER_COLUMNS =
-  'id, email, username, user_plan, investment_min, investment_max, province_preferences, property_type_preferences';
+  'id, email, username, user_plan, is_admin, investment_min, investment_max, province_preferences, property_type_preferences';
 
 // Valid bcrypt hash of a random string, used to keep login timing constant
 // when the user does not exist.
@@ -51,7 +51,7 @@ export async function registerUser(
 // wins; usernames are unique, so there is never more than one candidate.
 export async function loginUser(identifier: string, password: string) {
   const result = await query(
-    `SELECT id, email, username, user_plan, password_hash FROM users
+    `SELECT id, email, username, user_plan, is_admin, password_hash FROM users
      WHERE lower(email) = lower($1) OR lower(username) = lower($1)
      ORDER BY (lower(email) = lower($1)) DESC
      LIMIT 1`,
@@ -70,7 +70,7 @@ export async function loginUser(identifier: string, password: string) {
 
   return {
     token,
-    user: { id: user.id, email: user.email, username: user.username, user_plan: user.user_plan }
+    user: { id: user.id, email: user.email, username: user.username, user_plan: user.user_plan, is_admin: user.is_admin }
   };
 }
 
