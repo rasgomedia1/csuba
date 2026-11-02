@@ -8,7 +8,8 @@ export async function registerUser(
   username: string,
   password: string,
   investmentMin?: number,
-  investmentMax?: number
+  investmentMax?: number,
+  userPlan?: 'free' | 'donor'
 ) {
   const existingUser = await query('SELECT id FROM users WHERE email = $1 OR username = $2', [email, username]);
 
@@ -20,10 +21,10 @@ export async function registerUser(
   const userId = uuidv4();
 
   const result = await query(
-    `INSERT INTO users (id, email, username, password_hash, investment_min, investment_max)
-     VALUES ($1, $2, $3, $4, $5, $6)
-     RETURNING id, email, username`,
-    [userId, email, username, passwordHash, investmentMin || null, investmentMax || null]
+    `INSERT INTO users (id, email, username, password_hash, investment_min, investment_max, user_plan)
+     VALUES ($1, $2, $3, $4, $5, $6, $7)
+     RETURNING id, email, username, user_plan`,
+    [userId, email, username, passwordHash, investmentMin || null, investmentMax || null, userPlan || 'free']
   );
 
   return result.rows[0];

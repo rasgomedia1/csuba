@@ -52,3 +52,6 @@ scrapers/boe/newbies.csv
 scrapers/boe/selenium_driver/
 scrapers/boe/__pycache__/
 scrapers/boe/*.pyc
+
+.vercel
+.env*

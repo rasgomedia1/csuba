@@ -5,13 +5,17 @@ const router = express.Router();
 
 router.post('/register', async (req: Request, res: Response) => {
   try {
-    const { email, username, password, investmentMin, investmentMax } = req.body;
+    const { email, username, password, investmentMin, investmentMax, userPlan } = req.body;
 
     if (!email || !username || !password) {
       return res.status(400).json({ error: 'Missing required fields' });
     }
 
-    const user = await authService.registerUser(email, username, password, investmentMin, investmentMax);
+    if (userPlan && userPlan !== 'free' && userPlan !== 'donor') {
+      return res.status(400).json({ error: 'Invalid userPlan' });
+    }
+
+    const user = await authService.registerUser(email, username, password, investmentMin, investmentMax, userPlan);
 
     res.status(201).json({
       message: 'User registered successfully',

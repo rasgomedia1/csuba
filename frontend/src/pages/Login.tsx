@@ -7,6 +7,7 @@ import content from '../content.json';
 export const Login: React.FC = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -66,14 +67,24 @@ export const Login: React.FC = () => {
             <label className="block text-sm font-semibold text-gray-700 mb-2">
               {content.login.passwordLabel}
             </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-              className="w-full px-4 py-3 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
-              placeholder={content.login.passwordPlaceholder}
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? 'text' : 'password'}
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+                className="w-full px-4 py-3 pr-12 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-brand-500"
+                placeholder={content.login.passwordPlaceholder}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword((v) => !v)}
+                aria-label={showPassword ? content.common.hidePassword : content.common.showPassword}
+                className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500 hover:text-brand-600"
+              >
+                {showPassword ? '🙈' : '👁️'}
+              </button>
+            </div>
           </div>
 
           <button

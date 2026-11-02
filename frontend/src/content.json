@@ -54,9 +54,11 @@
     "usernamePlaceholder": "tu_usuario",
     "passwordLabel": "Contraseña",
     "passwordPlaceholder": "••••••••",
-    "investmentRange": "💰 Rango de inversión (opcional):",
-    "investmentMinPlaceholder": "Mín (€)",
-    "investmentMaxPlaceholder": "Máx (€)",
+    "planLabel": "Elige tu plan",
+    "planFreeTitle": "One Free Search",
+    "planFreeDescription": "Prueba la búsqueda gratis, sin compromiso",
+    "planDonorTitle": "Donate $5 ?",
+    "planDonorDescription": "Agradecemos tu apoyo humanitario",
     "submit": "Crear Cuenta",
     "submitting": "⏳ Registrando...",
     "haveAccount": "¿Ya tienes cuenta?",
@@ -186,7 +188,9 @@
     "favoritesTitle": "Favorites",
     "addFavorite": "Add to favorites",
     "removeFavorite": "Remove from favorites",
-    "watchlistError": "Error al actualizar lista de guardados"
+    "watchlistError": "Error al actualizar lista de guardados",
+    "showPassword": "Mostrar contraseña",
+    "hidePassword": "Ocultar contraseña"
   },
   "watchlist": {
     "loadError": "Error al cargar lista de guardados",

@@ -10,6 +10,7 @@ CREATE TABLE IF NOT EXISTS users (
   password_hash VARCHAR(255) NOT NULL,
   investment_min DECIMAL(10,2),
   investment_max DECIMAL(10,2),
+  user_plan VARCHAR(20) NOT NULL DEFAULT 'free',
   province_preferences VARCHAR(100)[],
   property_type_preferences VARCHAR(50)[],
   created_at TIMESTAMP DEFAULT NOW(),

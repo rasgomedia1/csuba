@@ -361,7 +361,20 @@ cd android && ./gradlew.bat assembleDebug
 - `appId`: `com.csuba.app`. Manifest con `usesCleartextTraffic=true` y `androidScheme: http` (en `capacitor.config.ts`) para permitir HTTP a `10.0.2.2` sin bloqueo mixed-content.
 - Los assets web copiados (`android/app/src/main/assets/public/`) están gitignored: regenerar con `cap sync` tras `npm run build`.
 
+### Deploy en Vercel (2026-07-17/18)
+- ✅ Desplegado en producción: **https://csuba.vercel.app** (proyecto `rasgo-media/csuba`, modelo `services` en `vercel.json`).
+- Vinculado vía `vercel link`/`vercel --prod` (CLI), no el flujo "Import Project" del dashboard — ese flujo tenía un bug 500 en `api/v1/integrations/search-repo` del lado de Vercel.
+- Variables de entorno declaradas en Production: `DATABASE_URL` (host `-pooler` de Neon), `JWT_SECRET`, `APIFY_API_KEY`, `APIFY_ACTOR_ID`, `APIFY_SYNC_ENABLED=false`.
+- Pendiente: apuntar `csuba.rasgomedia.com` (CNAME) al deployment y añadirlo en Vercel → Settings → Domains.
+
+### Identidad de marca (2026-07-18)
+- Paleta de `tailwind.config.js` (`brand-*`, `accent-*`) alineada a **rasgomedia.es** (azul `#0066ff` / verde `#00c795`) — ver detalle en el `CLAUDE.md` global, sección "Rasgomedia Brand Identity".
+- **Register/Login**: agregado toggle de mostrar/ocultar contraseña (👁️/🙈).
+- **Register**: sección "Rango de inversión" reemplazada por selector de plan al crear cuenta — "One Free Search" (free) vs "Donate $5 ?" (donor), persistido en `users.user_plan` (migración `004_add_user_plan.sql`). Sin pasarela de pago conectada todavía (WhyDonate requiere que el usuario cree la cuenta/vincule tarjeta manualmente antes de integrar el enlace de donación).
+
 ### Próximos Pasos
+- [ ] Configurar cuenta WhyDonate (KYC + tarjeta SEPA, manual) y conectar el botón "Donate $5" a la campaña
+- [ ] DNS: CNAME `csuba.rasgomedia.com` → deployment de Vercel
 - [ ] Recargar créditos Apify y reactivar `APIFY_SYNC_ENABLED=true`
 - [ ] Integración Hacienda/SS
 - [ ] Alertas por email
