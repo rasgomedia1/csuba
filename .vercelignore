@@ -1,0 +1,17 @@
+# Never upload local secrets, build outputs or test artifacts
+.env
+.env.*
+**/.env
+**/.env.*
+!**/.env.example
+!frontend/.env.production
+node_modules
+**/node_modules
+backend/dist
+frontend/dist
+frontend/android
+test-results
+playwright-report
+.tmp_shots
+dataset_*.json
+*.log
