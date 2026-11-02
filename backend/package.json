@@ -1,10 +1,9 @@
 {
   "name": "subasta-backend",
   "version": "0.1.0",
-  "type": "module",
   "scripts": {
     "dev": "tsx watch src/server.ts",
-    "build": "tsc --noEmit && esbuild src/app.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/app.js --external:pg-native && node -e \"require('fs').writeFileSync('dist/package.json',JSON.stringify({type:'commonjs'}))\"",
+    "build": "tsc --noEmit && esbuild src/app.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/app.js --external:pg-native",
     "start": "tsx src/server.ts",
     "migrate": "tsx src/db/runMigrations.ts",
     "seed": "tsx src/db/seed.ts",

@@ -1,12 +1,12 @@
 import { Pool } from 'pg';
 import { promises as fs } from 'fs';
 import path from 'path';
-import { fileURLToPath } from 'url';
 import dotenv from 'dotenv';
 
 dotenv.config();
 
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+// Run from the backend folder (npm run migrate).
+const dbDir = path.resolve(process.cwd(), 'src/db');
 
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
 
@@ -22,7 +22,7 @@ async function runMigrations() {
       applied_at TIMESTAMP DEFAULT NOW()
     )`);
 
-    const schemaSql = await fs.readFile(path.join(__dirname, 'schema.sql'), 'utf-8');
+    const schemaSql = await fs.readFile(path.join(dbDir, 'schema.sql'), 'utf-8');
     await client.query(schemaSql);
     console.log('✅ schema.sql applied');
 
@@ -30,7 +30,7 @@ async function runMigrations() {
       (await client.query('SELECT filename FROM schema_migrations')).rows.map((r) => r.filename)
     );
 
-    const migrationsDir = path.join(__dirname, 'migrations');
+    const migrationsDir = path.join(dbDir, 'migrations');
     const files = (await fs.readdir(migrationsDir)).filter((f) => f.endsWith('.sql')).sort();
 
     for (const file of files) {

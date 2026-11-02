@@ -7,7 +7,7 @@
 !frontend/.env.production
 node_modules
 **/node_modules
-backend/dist
+
 frontend/dist
 frontend/android
 test-results
