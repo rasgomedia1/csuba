@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import { formatEur, formatDate, toNumber } from '../utils/format';
+import { mapEmbedUrl, streetViewUrl } from '../utils/maps';
 import content from '../content.json';
 
 interface Auction {
@@ -45,7 +46,6 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
   onAddToWatchlist,
   isInWatchlist
 }) => {
-  const [showMap, setShowMap] = useState(false);
   const tasacion = toNumber(auction.valor_tasacion_eur);
   const area = toNumber(auction.property_constructed_sqm);
   const basisPrice = tasacion ?? toNumber(auction.price_initial);
@@ -150,28 +150,25 @@ export const AuctionCard: React.FC<AuctionCardProps> = ({
           </Link>
         </div>
 
-        {/* Embedded map loads only on demand: one iframe per card was heavy with 50 results. */}
         {auction.gps_latitude && auction.gps_longitude && (
           <div className="bg-gray-50 border-t">
-            <button
-              type="button"
-              onClick={() => setShowMap((v) => !v)}
-              aria-expanded={showMap}
-              className="w-full py-1.5 text-sm text-brand-600 hover:bg-brand-50 font-semibold"
+            <div className="relative overflow-hidden bg-gray-200" style={{ aspectRatio: '16 / 9' }}>
+              <iframe
+                className="absolute inset-0 w-full h-full border-0"
+                src={mapEmbedUrl(auction.gps_latitude, auction.gps_longitude)}
+                title={content.auctionCard.location}
+                allowFullScreen={true}
+                loading="lazy"
+              ></iframe>
+            </div>
+            <a
+              href={streetViewUrl(auction.gps_latitude, auction.gps_longitude)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="block w-full py-1.5 text-sm text-center text-brand-600 hover:bg-brand-50 font-semibold"
             >
-              {showMap ? content.auctionCard.hideMap : content.auctionCard.showMap}
-            </button>
-            {showMap && (
-              <div className="relative overflow-hidden bg-gray-200" style={{ aspectRatio: '16 / 9' }}>
-                <iframe
-                  className="absolute inset-0 w-full h-full border-0"
-                  src={`https://www.google.com/maps?q=${auction.gps_latitude},${auction.gps_longitude}&output=embed&z=15`}
-                  title={content.auctionCard.location}
-                  allowFullScreen={true}
-                  loading="lazy"
-                ></iframe>
-              </div>
-            )}
+              {content.auctionCard.streetView}
+            </a>
           </div>
         )}
       </div>

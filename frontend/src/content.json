@@ -152,9 +152,8 @@
     "scorePrefix": "Score:",
     "noDescription": "No description available",
     "viewDetails": "View Details",
-    "showMap": "🗺️ Ver mapa",
-    "hideMap": "Ocultar mapa",
-    "noMinimumBid": "Sin mínimo"
+    "noMinimumBid": "Sin mínimo",
+    "streetView": "🚶 Street View"
   },
   "auctionDetail": {
     "back": "← Volver a búsqueda",
@@ -187,7 +186,8 @@
     "fechas": "📅 Fechas",
     "inicio": "Inicio",
     "finalizacion": "Finalización",
-    "verEnBoe": "🔗 Ver en BOE"
+    "verEnBoe": "🔗 Ver en BOE",
+    "streetView": "🚶 Street View"
   },
   "common": {
     "favoritesTitle": "Favorites",

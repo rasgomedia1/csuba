@@ -89,18 +89,30 @@ test.describe.serial('CSUBA', () => {
     await expect(page.getByRole('link', { name: 'Sign In' })).toBeVisible();
   });
 
-  test('search cards label zero minimum bid and load maps on demand', async ({ page }) => {
+  test('search cards label zero minimum bid and show the location map', async ({ page }) => {
     await page.goto('/search');
     await expect(page.locator('a:has-text("View Details")').first()).toBeVisible({ timeout: 15000 });
     await expect(page.getByText(/^0\s?€$/)).toHaveCount(0);
 
-    // Map loads only on demand
-    await expect(page.locator('iframe')).toHaveCount(0);
-    const mapBtn = page.getByRole('button', { name: /Ver mapa/ }).first();
-    if (await mapBtn.count()) {
-      await mapBtn.click();
-      await expect(page.locator('iframe')).toHaveCount(1);
+    // Location map is visible on cards with GPS, with a keyless Street View link
+    const cardsWithMap = page.locator('iframe[src*="output=embed"]');
+    if (await cardsWithMap.count()) {
+      await expect(page.getByRole('link', { name: /Street View/ }).first()).toHaveAttribute('href', /map_action=pano/);
     }
+  });
+
+  test('detail shows a location image even when the Maps key is rejected', async ({ page }) => {
+    await page.goto('/search');
+    await page.locator('select').nth(1).selectOption('');
+    await page.getByRole('button', { name: 'Buscar', exact: true }).click();
+    const withGps = page.locator('div.bg-white:has(iframe) a:has-text("View Details")').first();
+    await expect(withGps).toBeVisible({ timeout: 15000 });
+    await withGps.click();
+    await expect(page.getByRole('link', { name: /Street View/ })).toHaveAttribute('href', /map_action=pano/);
+    // Either the Street View photo loaded, or the keyless satellite map replaced it
+    await expect(page.locator('img[alt="Vista de la calle del inmueble"], iframe[title="Vista de la calle del inmueble"]').first()).toBeVisible({ timeout: 10000 });
+    await page.waitForTimeout(1500);
+    await expect(page.locator('iframe[title="Vista de la calle del inmueble"]')).toHaveCount(1);
   });
 
   test('mobile viewport: no horizontal overflow on search', async ({ browser }) => {

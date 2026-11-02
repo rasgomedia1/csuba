@@ -5,6 +5,7 @@ import { useAuth } from '../hooks/useAuth';
 import { StreetView } from '../components/StreetView';
 import { useToast } from '../context/ToastContext';
 import { formatEur, formatDate } from '../utils/format';
+import { streetViewUrl } from '../utils/maps';
 import content from '../content.json';
 
 interface AuctionDetail {
@@ -152,7 +153,7 @@ export const AuctionDetail: React.FC = () => {
             {/* Street View Section */}
             {auction.details?.gps_latitude && auction.details?.gps_longitude && (
               <div className="mb-8 flex justify-center">
-                <div className="w-1/2">
+                <div className="w-full md:w-2/3 lg:w-1/2">
                   <h2 className="text-xl font-semibold mb-4">{content.auctionDetail.location}</h2>
                   <div className="rounded-lg overflow-hidden shadow-md">
                     <StreetView
@@ -160,8 +161,16 @@ export const AuctionDetail: React.FC = () => {
                       longitude={auction.details.gps_longitude}
                     />
                   </div>
-                  <div className="mt-4 flex gap-2">
-                    <p className="text-xs text-gray-500 mb-2">{content.auctionDetail.gps} {auction.details.gps_latitude}, {auction.details.gps_longitude}</p>
+                  <p className="text-xs text-gray-500 mt-2">{content.auctionDetail.gps} {auction.details.gps_latitude}, {auction.details.gps_longitude}</p>
+                  <div className="mt-2 flex gap-2">
+                    <a
+                      href={streetViewUrl(auction.details.gps_latitude, auction.details.gps_longitude)}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="flex-1 px-3 py-2 bg-accent-600 text-white text-sm rounded hover:bg-accent-500 text-center font-semibold"
+                    >
+                      {content.auctionDetail.streetView}
+                    </a>
                     <a
                       href={`https://www.google.com/maps/@${auction.details.gps_latitude},${auction.details.gps_longitude},16z/data=!5m1!1e1`}
                       target="_blank"
