@@ -391,6 +391,7 @@ cd android && ./gradlew.bat assembleDebug
 - **Build backend**: esbuild empaqueta `src/app.ts` en un único CJS `dist/app.js`; `bcryptjs` en vez de `bcrypt` nativo. Con `tsc` a ESM, Vercel cargaba el `.js` como CommonJS y la API daba 500 (`FUNCTION_INVOCATION_FAILED`, 2026-11-02).
 - **Apify**: upsert completo por `external_id` (precio, estado, fecha…), tolera campos nulos; sync en segundo plano con `waitUntil` y enfriamiento de 30 min por filtro.
 - **Frontend**: footer Rasgo Media + versión, Open Graph (`public/og-image.jpg`), PWA (`vite-plugin-pwa`, SW desactivado dentro de Capacitor), rutas protegidas, toasts en vez de `alert()`, `PasswordInput`, mapa en cada ficha + enlace «Street View» sin clave (Maps URLs); si la foto de Street View falla (la clave actual da 403 por facturación desactivada) se muestra el mapa satélite incrustado, puja mínima 0 = "Sin mínimo".
+- **Android, barras del sistema**: NO usar `viewport-fit=cover` en `index.html`: con él Capacitor 8 dibuja la WebView bajo la barra de estado y la de navegación del Poco. Sin él, la pantalla queda comprimida entre ambas (2026-11-02).
 - **Tests**: `npx playwright test` (e2e en `e2e/app.spec.ts`, con backend :4006 y frontend :5174 arrancados). Crea usuarios `e2e<timestamp>`; limpiar con `DELETE FROM users WHERE username LIKE 'e2e%'`.
 
 La rama de trabajo es `main` (no existe `master`). Tag para releases.

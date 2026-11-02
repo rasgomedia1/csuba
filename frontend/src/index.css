@@ -17,7 +17,9 @@ html {
   scroll-behavior: smooth;
 }
 
-/* Edge-to-edge (Android 15+ / PWA): keep content clear of the status and
+/* Safe-area padding. On Android the app does NOT use viewport-fit=cover, so Capacitor
+   shrinks the WebView between the status and navigation bars (insets are 0 here);
+   kept for browsers. Previously: keep content clear of the status and
    navigation bars. Capacitor 8 injects --safe-area-inset-*; browsers use env(). */
 body {
   padding-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
