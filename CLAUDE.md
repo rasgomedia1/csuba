@@ -383,7 +383,7 @@ cd android && ./gradlew.bat assembleDebug
 - [ ] Release firmado (AAB) para Play Store
 
 ### Revisión y endurecimiento (2026-11-02)
-- **Seguridad**: `JWT_SECRET` obligatorio (≥16 caracteres, sin fallback); `/api/scrapers/*` solo con cabecera `x-admin-token` = `ADMIN_TOKEN` (sin esa variable quedan desactivados); rate limit 10/15 min en login/registro; ninguna respuesta devuelve `password_hash`; errores 500 genéricos.
+- **Seguridad**: `JWT_SECRET` obligatorio (sin fallback; aviso en log si tiene menos de 32 caracteres); `/api/scrapers/*` solo con cabecera `x-admin-token` = `ADMIN_TOKEN` (sin esa variable quedan desactivados); rate limit 10/15 min en login/registro; ninguna respuesta devuelve `password_hash`; errores 500 genéricos.
 - **Clave de Google Maps** fuera del código: `VITE_GOOGLE_MAPS_KEY` en `frontend/.env.local` y en Vercel. Sigue en el historial de git del repo público → **restringirla por referrer/API en Google Cloud** (pendiente del usuario).
 - **Login** acepta `identifier` (email o usuario, "Email or User"); `email` sigue aceptado por compatibilidad.
 - **BD**: un solo pool (`db/connection.ts`); sin mock. Migraciones con tabla `schema_migrations` (`npm run migrate`, idempotente). 005: único `auction_details(auction_id)`; 006: provincias guardadas como código INE → nombre.

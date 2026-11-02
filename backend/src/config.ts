@@ -6,11 +6,13 @@ dotenv.config();
 // if the env var were ever missing in a deploy.
 export function getJwtSecret(): string {
   const secret = process.env.JWT_SECRET;
-  if (!secret || secret.length < 16) {
-    throw new Error('JWT_SECRET is missing or too short (min 16 chars)');
+  if (!secret) {
+    throw new Error('JWT_SECRET is not set');
   }
   return secret;
 }
 
 // Fail fast at import time so a misconfigured deploy never serves requests.
-getJwtSecret();
+if ((getJwtSecret().length ?? 0) < 32) {
+  console.warn('⚠️ JWT_SECRET is shorter than 32 characters; rotate it to a long random value.');
+}
