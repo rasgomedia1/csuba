@@ -101,7 +101,7 @@ test.describe.serial('CSUBA', () => {
     }
   });
 
-  test('detail shows a location image even when the Maps key is rejected', async ({ page }) => {
+  test('detail shows the location (Street View embed or satellite map)', async ({ page }) => {
     await page.goto('/search');
     await page.locator('select').nth(1).selectOption('');
     await page.getByRole('button', { name: 'Buscar', exact: true }).click();

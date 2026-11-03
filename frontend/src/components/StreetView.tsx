@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
-import content from '../content.json';
-import { mapEmbedUrl } from '../utils/maps';
+import React, { useState } from "react";
+import content from "../content.json";
+import { mapEmbedUrl } from "../utils/maps";
 
 interface StreetViewProps {
   latitude: number;
@@ -8,33 +8,59 @@ interface StreetViewProps {
   className?: string;
 }
 
+// Maps Embed API key (free, unlimited). Restricted in Google Cloud to the
+// Maps Embed API and to csuba.vercel.app / localhost referrers.
 const API_KEY = import.meta.env.VITE_GOOGLE_MAPS_KEY;
 
-// Street View Static photo of the location. If there is no key, no panorama,
-// or Google rejects the key (e.g. billing disabled → 403), it falls back to a
-// keyless embedded satellite map so the location is always visible.
-export const StreetView: React.FC<StreetViewProps> = ({ latitude, longitude, className = '' }) => {
-  const [failed, setFailed] = useState(!API_KEY);
-  const loc = `${latitude},${longitude}`;
+// Interactive Street View panorama of the location, shown as soon as the
+// auction opens. A toggle switches to the keyless satellite map (useful where
+// Google has no street imagery); without a key only the satellite map shows.
+export const StreetView: React.FC<StreetViewProps> = ({
+  latitude,
+  longitude,
+  className = "",
+}) => {
+  const [mode, setMode] = useState<"street" | "satellite">(
+    API_KEY ? "street" : "satellite",
+  );
+  const src =
+    mode === "street"
+      ? `https://www.google.com/maps/embed/v1/streetview?key=${API_KEY}&location=${latitude},${longitude}&heading=0&pitch=0&fov=90`
+      : mapEmbedUrl(latitude, longitude, true);
 
   return (
-    <div className={`relative w-full bg-gray-200 ${className}`} style={{ aspectRatio: '16 / 9' }}>
-      {failed ? (
+    <div className={className}>
+      <div
+        className="relative w-full bg-gray-200"
+        style={{ aspectRatio: "16 / 9" }}
+      >
         <iframe
+          key={mode}
           className="absolute inset-0 w-full h-full border-0"
-          src={mapEmbedUrl(latitude, longitude, true)}
+          src={src}
           title={content.common.streetViewAlt}
           loading="lazy"
+          referrerPolicy="no-referrer-when-downgrade"
           allowFullScreen
         />
-      ) : (
-        <img
-          src={`https://maps.googleapis.com/maps/api/streetview?size=800x450&location=${loc}&fov=90&return_error_code=true&key=${API_KEY}`}
-          alt={content.common.streetViewAlt}
-          loading="lazy"
-          className="absolute inset-0 w-full h-full object-cover"
-          onError={() => setFailed(true)}
-        />
+      </div>
+      {/* Toggle sits below the frame: Google draws its own controls on top */}
+      {API_KEY && (
+        <div className="flex text-xs font-semibold border-t border-gray-200">
+          {(["street", "satellite"] as const).map((m) => (
+            <button
+              key={m}
+              type="button"
+              onClick={() => setMode(m)}
+              aria-pressed={mode === m}
+              className={`flex-1 py-2 ${mode === m ? "bg-brand-600 text-white" : "bg-white text-gray-800"}`}
+            >
+              {m === "street"
+                ? content.common.viewStreet
+                : content.common.viewSatellite}
+            </button>
+          ))}
+        </div>
       )}
     </div>
   );

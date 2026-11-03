@@ -199,6 +199,8 @@
     "close": "Cerrar",
     "areaUnit": "m²",
     "streetViewAlt": "Vista de la calle del inmueble",
+    "viewStreet": "Calle",
+    "viewSatellite": "Satélite",
     "loginRequired": "Inicia sesión para continuar"
   },
   "watchlist": {
